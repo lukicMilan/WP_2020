@@ -1,4 +1,4 @@
-package src.model;
+package model;
 
 public enum UserType {
 	ADMINISTRATOR, HOST, GUEST;

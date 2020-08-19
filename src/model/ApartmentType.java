@@ -1,4 +1,4 @@
-package src.model;
+package model;
 
 public enum ApartmentType {
 	FULL, ONE_ROOM; 

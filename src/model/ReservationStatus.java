@@ -1,4 +1,4 @@
-package src.model;
+package model;
 
 public enum ReservationStatus {
 	CREATED, DENIDED, CANCELED, ACCEPTED, PASSED;
