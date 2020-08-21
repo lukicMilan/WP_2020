@@ -8,6 +8,19 @@ public abstract class User {
 	UserGender gender;
 	UserType userType;
 	
+	public User() {
+		
+	}
+	
+	public User(String username, String password, String name, String surname, UserGender userGender, UserType userType) {
+		this.username = username;
+		this.password = password;
+		this.name = name;
+		this.surname = surname;
+		this.gender = userGender;
+		this.userType = userType;
+	}
+	
 	public String getUsername() {
 		return username;
 	}
