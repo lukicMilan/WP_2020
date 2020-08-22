@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 public class Apartment {
+	long id;
 	ApartmentType type;
 	int roomNumber;
 	int guestNumber;
@@ -42,6 +43,14 @@ public class Apartment {
 		this.leaveTime = leaveTime;
 		this.active = active;
 		this.amenities = amenities;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
 	}
 
 	public ApartmentType getType() {
