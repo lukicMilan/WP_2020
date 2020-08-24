@@ -1,6 +1,6 @@
 package model;
 
-public abstract class User {
+public abstract class User implements WorkaroundInterface{
 	String username;
 	String password;
 	String name;
