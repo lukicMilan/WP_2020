@@ -12,9 +12,9 @@ public class UserHost extends User {
 		super();
 		this.apartments = new ArrayList<Apartment>();
 	}
-	public UserHost(String username, String password, String name, String surname, UserGender userGender, UserType userType, List<Apartment> apartments) {
+	public UserHost(String username, String password, String name, String surname, UserGender userGender, UserType userType, List<Apartment> list) {
 		super(username, password, name, surname, userGender, userType);
-		this.apartments = apartments;
+		this.apartments = list;
 	}
 
 	public UserHost(List<Apartment> apartments) {

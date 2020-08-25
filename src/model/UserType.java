@@ -12,7 +12,7 @@ public enum UserType {
 			case "GUEST": 
 				return UserType.GUEST;
 			default: 
-				return UserType.GUEST;
+				return null;
 		}
 	}
 }

@@ -1,5 +1,4 @@
 package dao;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -7,14 +6,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import javax.sound.midi.Soundbank;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.type.MapType;
-import com.fasterxml.jackson.databind.type.TypeFactory;
 
+import dto.UserDTO;
 import model.Apartment;
 import model.Reservation;
 import model.User;
@@ -47,6 +45,61 @@ public class UserDAO {
 	
 	public Map<String, User> getAllUsers() {
 		return this.users;
+	}
+	
+	public boolean usernameExists(String username) {
+		return users.containsKey(username);
+	}
+	
+	public boolean changeUsername(String oldUsername, String newUsername) {
+		if(users.containsKey(newUsername)) {
+			return false;
+		}
+		
+		
+		User user = users.get(oldUsername);
+		user.setUsername(newUsername);
+		users.put(newUsername, user);
+		
+		users.remove(oldUsername);
+		System.out.println("Username changed from " + oldUsername + " to "+ newUsername);
+		
+		return true;
+	}
+	
+	public boolean changeUserDetails(UserDTO userDTO) {
+		if(!users.containsKey(userDTO.getUsername())) {
+			return false;
+		}
+		
+		users.put(userDTO.getUsername(), UserDTO.toUser(userDTO));
+		System.out.println("User " + userDTO.getUsername() + " updated profile info.");
+		
+		return true;
+	}
+	
+	public boolean addUser(UserDTO userDTO) {
+		if (users.containsKey(userDTO.getUsername())) {
+			return false;
+		}
+		
+		users.put(userDTO.getUsername(), UserDTO.toUser(userDTO));
+
+		System.out.println("User " + userDTO.getUsername() + " added");
+		saveUsers();
+		
+		return true;
+	}
+	
+	public boolean removeUser(String username) {
+		if(!users.containsKey(username)) {
+			return false;
+		}
+		
+		users.remove(username);
+		System.out.println("User " + username + " removed");
+		
+		return true;
 	}
 	
 	public boolean credentialOk(String username, String password) {
@@ -83,7 +136,6 @@ public class UserDAO {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	public Map<String, User> loadUsers() {
 		Map<String, User> users = null;
 		
@@ -96,8 +148,6 @@ public class UserDAO {
 			objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
            
 			this.users = objectMapper.readValue(file, new TypeReference<HashMap<String, User>>() {});
-			System.out.println("Baja ucitao sledece:");
-			System.out.println(this.users.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
 		} 
