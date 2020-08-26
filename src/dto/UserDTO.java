@@ -1,6 +1,15 @@
 package dto;
 
+import java.util.ArrayList;
+
 import model.User;
+import model.UserAdministrator;
+import model.UserGender;
+import model.UserGuest;
+import model.UserHost;
+import model.UserType;
+import model.Apartment;
+import model.Reservation;
 
 public class UserDTO {
 	private String username;
@@ -17,6 +26,19 @@ public class UserDTO {
 		this.surname = user.getSurname();
 		this.gender = user.getGender().toString();
 		this.userType = user.getUserType().toString();
+	}
+	
+	public static User toUser(UserDTO userDTO) {
+		switch (userDTO.userType) {
+		case "ADMINISTRATOR": 
+			return new UserAdministrator(userDTO.username, userDTO.password, userDTO.name, userDTO.surname, UserGender.valueOf(userDTO.gender), UserType.ADMINISTRATOR);
+		case "HOST":
+			return new UserHost(userDTO.username, userDTO.password, userDTO.name, userDTO.surname, UserGender.valueOf(userDTO.gender), UserType.HOST, new ArrayList<Apartment>());
+		case "GUEST":
+			return new UserGuest(userDTO.username, userDTO.password, userDTO.name, userDTO.surname, UserGender.valueOf(userDTO.gender), UserType.HOST, new ArrayList<Apartment>(), new ArrayList<Reservation>());
+		default:
+			return null;
+		}
 	}
 
 	public String getUsername() {
