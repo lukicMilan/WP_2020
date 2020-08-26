@@ -63,6 +63,7 @@ public class UserDAO {
 		
 		users.remove(oldUsername);
 		System.out.println("Username changed from " + oldUsername + " to "+ newUsername);
+		saveUsers();
 		
 		return true;
 	}
@@ -74,6 +75,7 @@ public class UserDAO {
 		
 		users.put(userDTO.getUsername(), UserDTO.toUser(userDTO));
 		System.out.println("User " + userDTO.getUsername() + " updated profile info.");
+		saveUsers();
 		
 		return true;
 	}
@@ -98,6 +100,7 @@ public class UserDAO {
 		
 		users.remove(username);
 		System.out.println("User " + username + " removed");
+		saveUsers();
 		
 		return true;
 	}

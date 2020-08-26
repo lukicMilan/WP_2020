@@ -4,8 +4,10 @@ import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -66,6 +68,49 @@ public class UserService {
 		}
 		
 		userDAO.addUser(userDTO);
+		return Response.status(200).build();
+	}
+	
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response changeUserInfo(UserDTO userDTO, @Context HttpServletRequest request) {
+		UserDAO userDAO = (UserDAO) ctx.getAttribute("userDAO");
+		
+		User oldUserInfo = (User) request.getSession().getAttribute("loggedInUser");
+		
+		if(oldUserInfo == null){
+			return Response.status(401).build();
+		}
+		
+		if(userDAO.usernameExists(userDTO.getUsername())) {
+			return Response.status(409).build();
+		}
+		
+		if(oldUserInfo.getUsername() != userDTO.getUsername()) {
+			userDAO.changeUsername(oldUserInfo.getUsername(), userDTO.getUsername());
+		}
+		
+		userDAO.changeUserDetails(userDTO);
+		
+		return Response.status(200).build();
+	}
+	
+	@DELETE
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response deleteUser(UserCredentials userCredentials, @Context HttpServletRequest request) {
+		UserDAO userDAO = (UserDAO) ctx.getAttribute("userDAO");
+		
+		User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
+		
+		if((userDAO.credentialOk(userCredentials.getUsername(), userCredentials.getPassword()) 
+				&& loggedInUser.getUsername() == userCredentials.getUsername()) 
+				|| loggedInUser.getUserType() == UserType.ADMINISTRATOR) {
+			userDAO.removeUser(userCredentials.getUsername());
+		} else {
+			return Response.status(401).build();
+		}
+		
+		
 		return Response.status(200).build();
 	}
 	
