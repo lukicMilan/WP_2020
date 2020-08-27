@@ -81,6 +81,21 @@ public class ApartmentService {
 		return Response.status(200).entity(new ApartmentDTO(ap)).build();
 	}
 	
+	@GET
+	@Path("/{username}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getAllPostedBy(@PathParam(value = "username") String username, @Context HttpServletRequest request) {
+		ApartmentDAO apDAO = (ApartmentDAO) ctx.getAttribute("apartmentDAO");
+		
+		Map<Long, Apartment> aps = apDAO.getAllPostedBy(username);
+		
+		if(aps == null) {
+			return Response.status(204).build();
+		}
+		
+		return Response.status(200).entity(new HashMap<Long, Apartment>(aps)).build();
+	}
+	
 	@DELETE
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response deleteApartment(ApartmentDTO apDTO, @Context HttpServletRequest request) {

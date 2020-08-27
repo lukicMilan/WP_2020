@@ -34,6 +34,18 @@ public class ApartmentDAO {
 		return this.apartments;
 	}
 	
+	public Map<Long, Apartment> getAllPostedBy(String username) {
+		Map<Long, Apartment> aps = new HashMap<Long, Apartment>();
+		
+		for(Map.Entry<Long, Apartment> entry : this.apartments.entrySet()) {
+			if(entry.getValue().getHost().getUsername() == username) {
+				aps.put(entry.getKey(), entry.getValue());
+			}
+		}
+		
+		return aps;
+	}
+	
 	public boolean addApartment(ApartmentDTO apartmentDTO) {
 		if(this.apartments.containsKey(apartmentDTO.getId())) {
 			return false;
