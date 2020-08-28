@@ -37,9 +37,7 @@ public class AmenitiesDAO {
 	}
 	
 	public boolean addAmenity(AmenitiesDTO amenitiesDTO) {
-		if(this.amenities.containsKey(amenitiesDTO.getId())) {
-			return false;
-		}
+		amenitiesDTO.setId(this.amenities.size()+1);
 		amenities.put(amenitiesDTO.getId(), AmenitiesDTO.toAmenities(amenitiesDTO));
 		saveAmenities();
 		

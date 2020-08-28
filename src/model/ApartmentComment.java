@@ -1,36 +1,46 @@
 package model;
 
 public class ApartmentComment {
-	UserGuest guest;
-	Apartment apartment;
+	long id;
+	String username;
+	long apartment;
 	String comment;
-	int stars;
+	long stars;
 	
 	public ApartmentComment() {
 		super();
 	}
 
-	public ApartmentComment(UserGuest guest, Apartment apartment, String comment, int stars) {
+	public ApartmentComment(long id, String username, long apartment, String comment, long stars) {
 		super();
-		this.guest = guest;
+		this.id = id;
+		this.username = username;
 		this.apartment = apartment;
 		this.comment = comment;
 		this.stars = stars;
 	}
-
-	public UserGuest getGuest() {
-		return guest;
+	
+	public long getId() {
+		return id;
 	}
 
-	public void setGuest(UserGuest guest) {
-		this.guest = guest;
+	public void setId(long id) {
+		this.id = id;
 	}
 
-	public Apartment getApartment() {
+	public String getUser() {
+		return username;
+	}
+
+	public void setUser(String username) {
+		this.username = username;
+	}
+
+	public long getApartment() {
 		return apartment;
 	}
 
-	public void setApartment(Apartment apartment) {
+	public void setApartment(long apartment) {
 		this.apartment = apartment;
 	}
 
@@ -42,17 +52,17 @@ public class ApartmentComment {
 		this.comment = comment;
 	}
 
-	public int getStars() {
+	public long getStars() {
 		return stars;
 	}
 
-	public void setStars(int stars) {
+	public void setStars(long stars) {
 		this.stars = stars;
 	}
 
 	@Override
 	public String toString() {
-		return "ApartmentComment [guest=" + guest + ", apartment=" + apartment + ", comment=" + comment + ", stars="
+		return "ApartmentComment [guest=" + username + ", apartment=" + apartment + ", comment=" + comment + ", stars="
 				+ stars + "]";
 	}
 	

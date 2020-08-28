@@ -47,9 +47,7 @@ public class ApartmentDAO {
 	}
 	
 	public boolean addApartment(ApartmentDTO apartmentDTO) {
-		if(this.apartments.containsKey(apartmentDTO.getId())) {
-			return false;
-		}
+		apartmentDTO.setId(this.apartments.size()+1);
 		apartments.put(apartmentDTO.getId(), ApartmentDTO.toApartment(apartmentDTO));
 		saveApartments();
 		
