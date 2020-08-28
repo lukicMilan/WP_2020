@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 public class Apartment {
+	long id;
 	ApartmentType type;
 	int roomNumber;
 	int guestNumber;
@@ -13,7 +14,7 @@ public class Apartment {
 	List<Date> freeDates;
 	UserHost host;
 	List<ApartmentComment> comments;
-	List<Image> imageList;
+	List<String> imageList;
 	long price;
 	int entryTime = 14;
 	int leaveTime = 10;
@@ -25,7 +26,7 @@ public class Apartment {
 	}
 
 	public Apartment(ApartmentType type, int roomNumber, int guestNumber, Location location, List<Date> rentDates,
-			List<Date> freeDates, UserHost host, List<ApartmentComment> comments, List<Image> imageList, long price,
+			List<Date> freeDates, UserHost host, List<ApartmentComment> comments, List<String> imageList, long price,
 			int entryTime, int leaveTime, boolean active, List<Amenities> amenities) {
 		super();
 		this.type = type;
@@ -42,6 +43,14 @@ public class Apartment {
 		this.leaveTime = leaveTime;
 		this.active = active;
 		this.amenities = amenities;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
 	}
 
 	public ApartmentType getType() {
@@ -108,11 +117,11 @@ public class Apartment {
 		this.comments = comments;
 	}
 
-	public List<Image> getImageList() {
+	public List<String> getImageList() {
 		return imageList;
 	}
 
-	public void setImageList(List<Image> imageList) {
+	public void setImageList(List<String> imageList) {
 		this.imageList = imageList;
 	}
 
