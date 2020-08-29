@@ -66,8 +66,10 @@ public class ApartmentService {
 		return Response.status(200).build();
 	}
 	
+	
+	//izmeni ako ti se ne svidja doslo je do konflikta jer se oba zavrsavaju sa /{} pa nece da inicijalizuje
 	@GET
-	@Path("/{id}")
+	@Path("/id/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getApartmentById(@PathParam(value = "id") long id, @Context HttpServletRequest request) {
 		ApartmentDAO apDAO = (ApartmentDAO) ctx.getAttribute("apartmentDAO");
@@ -82,7 +84,7 @@ public class ApartmentService {
 	}
 	
 	@GET
-	@Path("/{username}")
+	@Path("/username/{username}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllPostedBy(@PathParam(value = "username") String username, @Context HttpServletRequest request) {
 		ApartmentDAO apDAO = (ApartmentDAO) ctx.getAttribute("apartmentDAO");

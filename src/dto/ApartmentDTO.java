@@ -17,7 +17,7 @@ public class ApartmentDTO {
 	private Location location;
 	private List<String> rentDates;
 	private List<String> freeDates;
-	private UserHost host;
+	private String hostUsername;
 	private List<ApartmentComment> comments;
 	private List<String> imageList;
 	private long price;
@@ -27,7 +27,7 @@ public class ApartmentDTO {
 	private List<Amenities> amenities;
 	
 	public ApartmentDTO(long id, String type, int roomNumber, int guestNumber, Location location,
-			List<String> rentDates, List<String> freeDates, UserHost host, List<ApartmentComment> comments,
+			List<String> rentDates, List<String> freeDates, String hostUsername, List<ApartmentComment> comments,
 			List<String> imageList, long price, int entryTim, int leaveTime, boolean active,
 			List<Amenities> amenities) {
 		super();
@@ -38,7 +38,7 @@ public class ApartmentDTO {
 		this.location = location;
 		this.rentDates = rentDates;
 		this.freeDates = freeDates;
-		this.host = host;
+		this.hostUsername = hostUsername;
 		this.comments = comments;
 		this.imageList = imageList;
 		this.price = price;
@@ -55,7 +55,7 @@ public class ApartmentDTO {
 		this.guestNumber = ap.getGuestNumber();
 //		this.rentDates = ap.getRentDates();
 //		this.freeDates = ap.getFreeDates();
-		this.host = ap.getHost();
+		this.hostUsername = ap.getHostUsername();
 		this.comments = ap.getComments();
 		this.imageList = ap.getImageList();
 		this.price = ap.getPrice();
@@ -73,7 +73,7 @@ public class ApartmentDTO {
 		ap.setGuestNumber(apartmentDTO.guestNumber);
 		ap.setLocation(apartmentDTO.location);
 		//rent dates i free dates????
-		ap.setHost(apartmentDTO.host);
+		ap.setHostUsername(apartmentDTO.hostUsername);
 		ap.setComments(apartmentDTO.comments);
 		ap.setImageList(apartmentDTO.imageList);
 		ap.setPrice(apartmentDTO.price);
@@ -129,11 +129,11 @@ public class ApartmentDTO {
 	public void setFreeDates(List<String> freeDates) {
 		this.freeDates = freeDates;
 	}
-	public UserHost getHost() {
-		return host;
+	public String getHostUsername() {
+		return hostUsername;
 	}
-	public void setHost(UserHost host) {
-		this.host = host;
+	public void setHostUsername(String hostUsername) {
+		this.hostUsername = hostUsername;
 	}
 	public List<ApartmentComment> getComments() {
 		return comments;
