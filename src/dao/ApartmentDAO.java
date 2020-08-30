@@ -3,15 +3,22 @@ package dao;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import dto.ApartmentDTO;
+import model.Amenities;
 import model.Apartment;
+import model.ApartmentComment;
+import model.ApartmentType;
+import model.Location;
 
 
 public class ApartmentDAO {
@@ -19,9 +26,22 @@ public class ApartmentDAO {
 	private Map<Long, Apartment> apartments = new HashMap<>();
 	
 	public ApartmentDAO(String contextPath) {
-		Apartment ap = new Apartment();
+		this.contextPath = contextPath;
+		Location location = new Location();
+		List<Date> rentDates = new ArrayList<Date>();
+		List<Date> freeDates = new ArrayList<Date>();
+		List<ApartmentComment> apartmentComments = new ArrayList<ApartmentComment>();
+		List<String> imageList = new ArrayList<String>();
+		List<Amenities> amenities = new ArrayList<Amenities>();
+		Amenities amenity = new Amenities("Inside", "Room service");
+		//treba jos id dodati na amenity
+		amenities.add(amenity);
+		
+		Apartment ap = new Apartment(ApartmentType.FULL, 1, 5, location, rentDates, freeDates, 
+				"host", apartmentComments, imageList, (long) 50 , 14, 10, true, amenities);
+		ap.setId(getFreeId(1));
 		this.apartments.put(ap.getId(), ap);
-		loadApartments();
+		saveApartments();
 	}
 	
 	public Apartment getApartmentById(long id) {
@@ -33,6 +53,7 @@ public class ApartmentDAO {
 	}
 	
 	public Map<Long, Apartment> getAllPostedBy(String username) {
+		loadApartments();
 		Map<Long, Apartment> aps = new HashMap<Long, Apartment>();
 		
 		for(Map.Entry<Long, Apartment> entry : this.apartments.entrySet()) {

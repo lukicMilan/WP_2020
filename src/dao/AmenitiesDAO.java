@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -13,13 +14,16 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import dto.AmenitiesDTO;
 import dto.ApartmentDTO;
 import model.Amenities;
+import model.Apartment;
 
 public class AmenitiesDAO {
 	private String contextPath;
 	private Map<Long, Amenities> amenities = new HashMap<>();
 	
 	public AmenitiesDAO(String contextPath) {
-		Amenities amenity = new Amenities(1, "Outside", "Hot tub");
+		this.contextPath = contextPath;
+		Amenities amenity = new Amenities("Outside", "Hot tub");
+		amenity.setId(1);
 		this.amenities.put(amenity.getId(), amenity);
 		loadAmenities();
 	}
@@ -37,7 +41,7 @@ public class AmenitiesDAO {
 	}
 	
 	public boolean addAmenity(AmenitiesDTO amenitiesDTO) {
-		amenitiesDTO.setId(this.amenities.size()+1);
+		amenitiesDTO.setId(getFreeId(1));
 		amenities.put(amenitiesDTO.getId(), AmenitiesDTO.toAmenities(amenitiesDTO));
 		saveAmenities();
 		
@@ -95,5 +99,17 @@ public class AmenitiesDAO {
 			e.printStackTrace();
 		} 
 			
+	}
+	
+	private long getFreeId(long id) {
+		loadAmenities();
+		
+		for (Map.Entry<Long, Amenities> amenity : this.amenities.entrySet()) {
+			if(amenity.getValue().getId() == id) {
+				return getFreeId(id++);
+			}
+		}
+		
+		return id;
 	}
 }

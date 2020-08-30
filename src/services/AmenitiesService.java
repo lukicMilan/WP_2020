@@ -18,11 +18,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import dao.AmenitiesDAO;
-import dao.ApartmentDAO;
 import dto.AmenitiesDTO;
-import dto.ApartmentDTO;
 import model.Amenities;
-import model.Apartment;
 
 @Path("/amenities")
 public class AmenitiesService {

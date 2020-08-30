@@ -11,9 +11,8 @@ public class ApartmentComment {
 		super();
 	}
 
-	public ApartmentComment(long id, String username, long apartment, String comment, long stars) {
+	public ApartmentComment(String username, long apartment, String comment, long stars) {
 		super();
-		this.id = id;
 		this.username = username;
 		this.apartment = apartment;
 		this.comment = comment;
@@ -28,11 +27,11 @@ public class ApartmentComment {
 		this.id = id;
 	}
 
-	public String getUser() {
+	public String getUsername() {
 		return username;
 	}
 
-	public void setUser(String username) {
+	public void setUsernames(String username) {
 		this.username = username;
 	}
 
