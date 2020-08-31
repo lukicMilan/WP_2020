@@ -57,6 +57,10 @@ public class ApartmentCommentDAO {
 		
 		return true;
 	}
+	
+	public boolean apartmentCommentExists(long id) {
+		return comments.containsKey(id);
+	}
 
 	public void saveApartmentComments() {
 		ObjectMapper objectMapper = new ObjectMapper();
