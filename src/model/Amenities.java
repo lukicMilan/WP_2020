@@ -9,9 +9,8 @@ public class Amenities {
 		super();
 	}
 
-	public Amenities(long id, String type, String name) {
+	public Amenities(String type, String name) {
 		super();
-		this.id = id;
 		this.type = type;
 		this.name = name;
 	}

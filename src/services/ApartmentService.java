@@ -18,13 +18,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import dao.ApartmentDAO;
-import dao.UserDAO;
 import dto.ApartmentDTO;
-import dto.UserCredentials;
-import dto.UserDTO;
 import model.Apartment;
-import model.User;
-import model.UserType;
 
 @Path("/apartment")
 public class ApartmentService {
@@ -69,7 +64,7 @@ public class ApartmentService {
 	
 	//izmeni ako ti se ne svidja doslo je do konflikta jer se oba zavrsavaju sa /{} pa nece da inicijalizuje
 	@GET
-	@Path("/id/{id}")
+	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getApartmentById(@PathParam(value = "id") long id, @Context HttpServletRequest request) {
 		ApartmentDAO apDAO = (ApartmentDAO) ctx.getAttribute("apartmentDAO");
@@ -84,7 +79,7 @@ public class ApartmentService {
 	}
 	
 	@GET
-	@Path("/username/{username}")
+	@Path("/user/{username}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllPostedBy(@PathParam(value = "username") String username, @Context HttpServletRequest request) {
 		ApartmentDAO apDAO = (ApartmentDAO) ctx.getAttribute("apartmentDAO");
@@ -107,7 +102,6 @@ public class ApartmentService {
 		
 		return Response.status(200).build();
 	}
-	
 	
 }
 
