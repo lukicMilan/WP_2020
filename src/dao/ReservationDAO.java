@@ -16,6 +16,8 @@ import dto.ReservationDTO;
 import model.Reservation;
 import model.ReservationStatus;
 
+
+//potrebna dodatna ogranicenja za sve(npr pri kreiranju nove rezervacije
 public class ReservationDAO {
 	private String contextPath;
 	private Map<Long, Reservation> reservations = new HashMap<>();
@@ -23,6 +25,7 @@ public class ReservationDAO {
 	public ReservationDAO(String contextPath) {
 		this.contextPath = contextPath;
 		
+		@SuppressWarnings("deprecation")
 		Reservation reservation = new Reservation(getFreeId(1), 1, new Date(120, 11, 1), 2, 100, "Welcome to apartment", "guest", ReservationStatus.CREATED);
 		
 		reservations.put(reservation.getReservationId(), reservation);
@@ -45,24 +48,24 @@ public class ReservationDAO {
 		return reservationList;
 	}
 	
-	public ArrayList<Reservation> getAllFromApartment(long id) {
-		ArrayList<Reservation> reservationList = new ArrayList<>();
+	public ArrayList<ReservationDTO> getAllFromApartment(long id) {
+		ArrayList<ReservationDTO> reservationList = new ArrayList<>();
 		
 		for (Map.Entry<Long, Reservation> reservation : this.reservations.entrySet()) {
 			if(reservation.getValue().getApartmentId() == id) {
-				reservationList.add(reservation.getValue());
+				reservationList.add(new ReservationDTO(reservation.getValue()));
 			}
 		}
 		
 		return reservationList;
 	}
 	
-	public ArrayList<Reservation> getAllFromGuest(String username) {
-		ArrayList<Reservation> reservationList = new ArrayList<>();
+	public ArrayList<ReservationDTO> getAllFromGuest(String username) {
+		ArrayList<ReservationDTO> reservationList = new ArrayList<>();
 		
 		for (Map.Entry<Long, Reservation> reservation : this.reservations.entrySet()) {
 			if(reservation.getValue().getGuestUsername() == username) {
-				reservationList.add(reservation.getValue());
+				reservationList.add(new ReservationDTO(reservation.getValue()));
 			}
 		}
 		
@@ -83,8 +86,7 @@ public class ReservationDAO {
 	}
 	
 	public boolean addReservation(ReservationDTO reservationDTO) {
-		//Reservation reservation = reservationDTO.getReservation();
-		Reservation reservation = null;
+		Reservation reservation = reservationDTO.getReservationClass();
 		reservation.setReservationId(getFreeId(1));
 		
 		reservations.put(reservation.getReservationId(), reservation);

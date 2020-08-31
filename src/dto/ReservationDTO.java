@@ -44,10 +44,10 @@ public class ReservationDTO {
 		this.status = status;
 	}
 
-//	public Reservation getReservation() {
-//		return new Reservation(this.getReservationId(), this.apartmentId, this.getDate(), this.getNights(),
-//				this.getTotalPrice(), this.getWelcomeNote(), this.getGuestUsername(), this.getStatus());
-//	}
+	public Reservation getReservationClass() {
+		return new Reservation(this.getReservationId(), this.apartmentId, this.getDate(), this.getNights(),
+				this.getTotalPrice(), this.getWelcomeNote(), this.getGuestUsername(), this.getStatus());
+	}
 
 	public long getReservationId() {
 		return reservationId;
