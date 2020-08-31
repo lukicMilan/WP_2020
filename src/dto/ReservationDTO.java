@@ -1,8 +1,11 @@
-package model;
+package dto;
 
 import java.util.Date;
 
-public class Reservation {
+import model.Reservation;
+import model.ReservationStatus;
+
+public class ReservationDTO {
 	long reservationId;
 	long apartmentId;
 	Date date;
@@ -12,14 +15,24 @@ public class Reservation {
 	String guestUsername;
 	ReservationStatus status;
 	
-	public Reservation() {
+	ReservationDTO() {
 		super();
 	}
 	
-	
+	public ReservationDTO(Reservation reservation) {
+		super();
+		this.reservationId = reservation.getReservationId();
+		this.apartmentId = reservation.getApartmentId();
+		this.date = reservation.getDate();
+		this.nights = reservation.getNights();
+		this.totalPrice = reservation.getTotalPrice();
+		this.welcomeNote = reservation.getWelcomeNote();
+		this.guestUsername = reservation.getGuestUsername();
+		this.status = reservation.getStatus();
+	}
 
-	public Reservation(long reservationId, long apartmentId, Date date, int nights, float totalPrice, String welcomeNote,
-			String guestUsername, ReservationStatus status) {
+	public ReservationDTO(long reservationId, long apartmentId, Date date, int nights, float totalPrice,
+			String welcomeNote, String guestUsername, ReservationStatus status) {
 		super();
 		this.reservationId = reservationId;
 		this.apartmentId = apartmentId;
@@ -31,6 +44,10 @@ public class Reservation {
 		this.status = status;
 	}
 
+	public Reservation getReservationClass() {
+		return new Reservation(this.getReservationId(), this.apartmentId, this.getDate(), this.getNights(),
+				this.getTotalPrice(), this.getWelcomeNote(), this.getGuestUsername(), this.getStatus());
+	}
 
 	public long getReservationId() {
 		return reservationId;
@@ -44,7 +61,7 @@ public class Reservation {
 		return apartmentId;
 	}
 
-	public void setApartment(long apartmentId) {
+	public void setApartmentId(long apartmentId) {
 		this.apartmentId = apartmentId;
 	}
 
@@ -84,7 +101,7 @@ public class Reservation {
 		return guestUsername;
 	}
 
-	public void setGuest(String guestUsername) {
+	public void setGuestUsername(String guestUsername) {
 		this.guestUsername = guestUsername;
 	}
 
@@ -100,8 +117,9 @@ public class Reservation {
 
 	@Override
 	public String toString() {
-		return "Reservation [apartment=" + apartmentId + ", date=" + date + ", nights=" + nights + ", totalPrice="
-				+ totalPrice + ", welcomeNote=" + welcomeNote + ", guest=" + guestUsername + ", status=" + status + "]";
+		return "ReservationDTO [reservationId=" + reservationId + ", apartmentId=" + apartmentId + ", date=" + date
+				+ ", nights=" + nights + ", totalPrice=" + totalPrice + ", welcomeNote=" + welcomeNote
+				+ ", guestUsername=" + guestUsername + ", status=" + status + "]";
 	}
 	
 	

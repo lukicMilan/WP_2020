@@ -12,8 +12,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 import dto.ApartmentDTO;
 import model.Apartment;
-import model.ApartmentType;
-import model.Location;
 
 
 public class ApartmentDAO {
@@ -38,7 +36,7 @@ public class ApartmentDAO {
 		Map<Long, Apartment> aps = new HashMap<Long, Apartment>();
 		
 		for(Map.Entry<Long, Apartment> entry : this.apartments.entrySet()) {
-			if(entry.getValue().getHost().getUsername() == username) {
+			if(entry.getValue().getHostUsername() == username) {
 				aps.put(entry.getKey(), entry.getValue());
 			}
 		}
@@ -47,7 +45,7 @@ public class ApartmentDAO {
 	}
 	
 	public boolean addApartment(ApartmentDTO apartmentDTO) {
-		apartmentDTO.setId(this.apartments.size()+1);
+		apartmentDTO.setId(getFreeId(1));
 		apartments.put(apartmentDTO.getId(), ApartmentDTO.toApartment(apartmentDTO));
 		saveApartments();
 		
@@ -109,5 +107,20 @@ public class ApartmentDAO {
 			e.printStackTrace();
 		} 
 			
+	}
+	
+	//funkcija je rekurzivna
+	//vraca prvi slobodan id
+	//poziva se sa getFreeId(1)
+	private long getFreeId(long id) {
+		loadApartments();
+		
+		for (Map.Entry<Long, Apartment> apartment : this.apartments.entrySet()) {
+			if(apartment.getValue().getId() == id) {
+				return getFreeId(id++);
+			}
+		}
+		
+		return id;
 	}
 }

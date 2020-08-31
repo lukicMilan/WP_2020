@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.sound.midi.Soundbank;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -34,9 +32,9 @@ public class UserDAO {
 		users.put(admin.getUsername(), admin);
 		users.put(host.getUsername(), host);
 		users.put(guest.getUsername(), guest);
-		saveUsers();
 		
-		loadUsers();
+		//loadUsers();
+		saveUsers();
 	}
 	
 	public User getUserByUsername(String username) {
@@ -140,7 +138,7 @@ public class UserDAO {
 	}
 	
 	public Map<String, User> loadUsers() {
-		Map<String, User> users = null;
+		Map<String, User> users = new HashMap<String, User>();
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		File file = null;

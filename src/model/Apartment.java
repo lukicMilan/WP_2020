@@ -12,7 +12,7 @@ public class Apartment {
 	Location location;
 	List<Date> rentDates;
 	List<Date> freeDates;
-	UserHost host;
+	String hostUsername;
 	List<ApartmentComment> comments;
 	List<String> imageList;
 	long price;
@@ -26,7 +26,7 @@ public class Apartment {
 	}
 
 	public Apartment(ApartmentType type, int roomNumber, int guestNumber, Location location, List<Date> rentDates,
-			List<Date> freeDates, UserHost host, List<ApartmentComment> comments, List<String> imageList, long price,
+			List<Date> freeDates, String hostUsername, List<ApartmentComment> comments, List<String> imageList, long price,
 			int entryTime, int leaveTime, boolean active, List<Amenities> amenities) {
 		super();
 		this.type = type;
@@ -35,7 +35,7 @@ public class Apartment {
 		this.location = location;
 		this.rentDates = rentDates;
 		this.freeDates = freeDates;
-		this.host = host;
+		this.hostUsername = hostUsername;
 		this.comments = comments;
 		this.imageList = imageList;
 		this.price = price;
@@ -101,12 +101,12 @@ public class Apartment {
 		this.freeDates = freeDates;
 	}
 
-	public UserHost getHost() {
-		return host;
+	public String getHostUsername() {
+		return hostUsername;
 	}
 
-	public void setHost(UserHost host) {
-		this.host = host;
+	public void setHostUsername(String hostUsername) {
+		this.hostUsername = hostUsername;
 	}
 
 	public List<ApartmentComment> getComments() {
@@ -168,7 +168,7 @@ public class Apartment {
 	@Override
 	public String toString() {
 		return "Apartment [type=" + type + ", roomNumber=" + roomNumber + ", guestNumber=" + guestNumber + ", location="
-				+ location + ", rentDates=" + rentDates + ", freeDates=" + freeDates + ", host=" + host + ", comments="
+				+ location + ", rentDates=" + rentDates + ", freeDates=" + freeDates + ", host=" + hostUsername + ", comments="
 				+ comments + ", imageList=" + imageList + ", price=" + price + ", entryTime=" + entryTime
 				+ ", leaveTime=" + leaveTime + ", active=" + active + ", amenities=" + amenities + "]";
 	}
