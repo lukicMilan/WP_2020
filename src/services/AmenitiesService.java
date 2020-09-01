@@ -10,6 +10,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -19,7 +20,10 @@ import javax.ws.rs.core.Response;
 
 import dao.AmenitiesDAO;
 import dto.AmenitiesDTO;
+import dto.ApartmentDTO;
 import model.Amenities;
+import model.User;
+import model.UserType;
 
 @Path("/amenities")
 public class AmenitiesService {
@@ -49,12 +53,17 @@ public class AmenitiesService {
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response addAmenities(AmenitiesDTO amenitiesDTO)  {
+	public Response addAmenities(AmenitiesDTO amenitiesDTO, @Context HttpServletRequest request)  {
+		User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
 		
 		AmenitiesDAO amenitiesDAO =(AmenitiesDAO) ctx.getAttribute("amenitiesDAO");
 		
 		if(amenitiesDAO.amenityExists(amenitiesDTO.getId())) {
 			return Response.status(409).build();
+		}
+		if(loggedInUser.getUserType() != UserType.ADMINISTRATOR) {
+			System.out.println("Only the system administrator can add new amenities.");
+			return Response.status(403).build();
 		}
 		
 		amenitiesDAO.addAmenity(amenitiesDTO);		
@@ -74,6 +83,20 @@ public class AmenitiesService {
 		}
 		
 		return Response.status(200).entity(new AmenitiesDTO(amenity)).build();
+	}
+	
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response editApartment(AmenitiesDTO amenitiesDTO, @Context HttpServletRequest request) {
+		User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
+		AmenitiesDAO amDAO = (AmenitiesDAO) ctx.getAttribute("amenitiesDAO");
+		
+		if(loggedInUser.getUserType() != UserType.ADMINISTRATOR) {
+			System.out.println("Only the system administrator can make changes to amenities.");
+			return Response.status(403).build();
+		}
+		amDAO.editAmeniy(amenitiesDTO);
+		return Response.status(200).build();
 	}
 	
 	@DELETE
