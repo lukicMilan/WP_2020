@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from "vue-router"
 import App from './App.vue'
 import HelloWorld from "@/components/HelloWorld.vue"
+import Register from "@/components/Register.vue"
 import MainPageLayout from "./pages/layout/MainPageLayout.vue"
 
 import VueMaterial from "vue-material";
@@ -25,6 +26,11 @@ const router = new VueRouter({
         {
           path: "/home",
           name: "Home",
+        },
+        {
+          path: "/register",
+          name: "Register",
+          component: Register
         }
         ]
     }

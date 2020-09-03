@@ -5,6 +5,10 @@
             <md-icon>menu</md-icon>
         </md-button>
         <span class="md-title">My Title</span>
+        <div>
+          <md-button class="md-dense md-primary">Log in</md-button>
+          <md-button class="md-dense md-raised md-primary" to = "/register">Sign up</md-button>
+        </div>
         </md-toolbar>
         <md-drawer :md-active.sync="showNavigation" md-swipeable>
         <md-toolbar class="md-transparent" md-elevation="0">
