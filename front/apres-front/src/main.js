@@ -3,6 +3,7 @@ import VueRouter from "vue-router"
 import App from './App.vue'
 import HelloWorld from "@/components/HelloWorld.vue"
 import Register from "@/components/Register.vue"
+import Table from "@/components/Table.vue"
 import MainPageLayout from "./pages/layout/MainPageLayout.vue"
 
 import VueMaterial from "vue-material";
@@ -31,6 +32,11 @@ const router = new VueRouter({
           path: "/register",
           name: "Register",
           component: Register
+        },
+        {
+          path: "/table",
+          name: "Table",
+          component: Table
         }
         ]
     }

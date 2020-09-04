@@ -21,9 +21,9 @@
             <span class="md-list-item-text">Inbox</span>
             </md-list-item>
 
-            <md-list-item>
+            <md-list-item to="/table" >
             <md-icon>send</md-icon>
-            <span class="md-list-item-text">Sent Mail</span>
+            <span class="md-list-item-text" :items = "this.items" :columns = "this.columns">Table (example)</span>
             </md-list-item>
 
             <md-list-item>
@@ -45,7 +45,20 @@ export default {
     name: "side-bar",
     data: () => ({
       showNavigation: false,
-      showSidepanel: false
+      showSidepanel: false,
+      items: [{
+            'id':'1',
+            'title': 'hello',
+            'description': 'ok ok',
+            'created_date': '2018-09-09'
+        },
+        {
+            'id':'2',
+            'title': 'hello 2',
+            'description': 'ok ok 2',
+            'created_date': '2018-10-09'
+        }],
+        columns: ['id', 'title', 'description', 'created_date']
     })
 }
 </script>
