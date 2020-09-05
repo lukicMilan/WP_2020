@@ -66,15 +66,13 @@
                             <span class="md-error" v-else-if="!$v.form.password.minlength">Invalid password</span>
                         </md-field>
                         </div>
-                        <!-- Ovo je za potvrdu lozinke, ne znam da li ce nam trebati -->
-                        <!-- <div class="md-layout-item md-small-size-100">
-                        <md-field :class="getValidationClass('lastName')">
+                        <div class="md-layout-item md-small-size-100">
+                        <md-field :class="getValidationClass('passwordConfirm')">
                             <label for="passwordConfirm">Confirm password</label>
                             <md-input type = "password" name="passwordConfirm" id="passwordConfirm" v-model="form.passwordConfirm"  />
-                             <span class="md-error" v-if="!$v.form.lastName.required">The last name is required</span>
-                             <span class="md-error" v-else-if="!$v.form.lastName.minlength">Invalid last name</span>
+                             <span class="md-error" v-if="!$v.form.passwordConfirm.sameAsPassword">Passwords do not match</span>
                         </md-field>
-                        </div> -->
+                        </div>
                     </div>
 
                 </md-card-content>
@@ -92,6 +90,7 @@ import { validationMixin } from 'vuelidate'
     required,
     email,
     minLength,
+    sameAs
     // maxLength
   } from 'vuelidate/lib/validators'
 export default {
@@ -127,11 +126,10 @@ export default {
         },
         password: {
             required,
-            minLength: minLength(8)
+            minLength: minLength(6)
         },
-        confirmPassword: {
-            required,
-            minLength: minLength(3)
+        passwordConfirm: {
+            sameAsPassword: sameAs('password')
         },
         gender: {
           required
