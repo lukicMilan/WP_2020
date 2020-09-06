@@ -65,6 +65,63 @@ public class ApartmentDAO {
 		return aps;
 	}
 	
+	public Map<Long, Apartment> getAllActiveApartments()  {
+		Map<Long, Apartment> aps = new HashMap<Long, Apartment>();
+		
+		for(Map.Entry<Long, Apartment> entry : this.apartments.entrySet()) {
+			if(entry.getValue().isActive()) {
+				aps.put(entry.getKey(), entry.getValue());
+			}
+		}
+		
+		return aps;
+	}
+	
+	public Map<Long, Apartment> getAllActiveApartmentsPostedBy(String username)  {
+		Map<Long, Apartment> aps = new HashMap<Long, Apartment>();
+		
+		for(Map.Entry<Long, Apartment> entry : this.apartments.entrySet()) {
+			if(entry.getValue().isActive() && entry.getValue().getHostUsername() == username) {
+				aps.put(entry.getKey(), entry.getValue());
+			}
+		}
+		
+		return aps;
+	}
+	
+	public Map<Long, Apartment> getAllNonActiveApartments()  {
+		Map<Long, Apartment> aps = new HashMap<Long, Apartment>();
+		
+		for(Map.Entry<Long, Apartment> entry : this.apartments.entrySet()) {
+			if(!entry.getValue().isActive()) {
+				aps.put(entry.getKey(), entry.getValue());
+			}
+		}
+		
+		return aps;
+	}
+	
+	public Map<Long, Apartment> getAllNonActiveApartmentsPostedBy(String username)  {
+		Map<Long, Apartment> aps = new HashMap<Long, Apartment>();
+		
+		for(Map.Entry<Long, Apartment> entry : this.apartments.entrySet()) {
+			if(!entry.getValue().isActive() && entry.getValue().getHostUsername() == username) {
+				aps.put(entry.getKey(), entry.getValue());
+			}
+		}
+		
+		return aps;
+	}
+	
+	public boolean editApartment(ApartmentDTO apartmentDTO) {
+		if(!apartments.containsKey(apartmentDTO.getId())) {
+			return false;
+		}
+		apartments.put(apartmentDTO.getId(), ApartmentDTO.toApartment(apartmentDTO));
+		saveApartments();
+		return true;
+	}
+	
 	public boolean addApartment(ApartmentDTO apartmentDTO) {
 		apartmentDTO.setId(getFreeId(1));
 		apartments.put(apartmentDTO.getId(), ApartmentDTO.toApartment(apartmentDTO));

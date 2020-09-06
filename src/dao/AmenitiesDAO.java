@@ -59,6 +59,15 @@ public class AmenitiesDAO {
 		return true;
 	}
 	
+	public boolean editAmeniy(AmenitiesDTO amenitiesDTO) {
+		if(!amenities.containsKey(amenitiesDTO.getId())) {
+			return false;
+		}
+		amenities.put(amenitiesDTO.getId(), AmenitiesDTO.toAmenities(amenitiesDTO));
+		saveAmenities();
+		return true;
+	}
+	
 	public void saveAmenities() {
 		ObjectMapper objectMapper = new ObjectMapper();
 		File file = null;

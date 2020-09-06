@@ -17,8 +17,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.sun.media.jfxmedia.Media;
-
 import dao.ReservationDAO;
 import dto.ReservationDTO;
 import dto.ReservationStatusDTO;
@@ -52,8 +50,14 @@ public class ReservationService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response createNewReservation(ReservationDTO reservationDTO, @Context HttpServletRequest request) {
 		ReservationDAO reservationDAO = (ReservationDAO) ctx.getAttribute("reservationDAO");
+		User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
 		
 		if(request.getSession().getAttribute("loggedInUser") != null) {
+			return Response.status(403).build();
+		}
+		
+		if(loggedInUser.getUserType() != UserType.GUEST) {
+			System.out.println("Only guests can make reservations.");
 			return Response.status(403).build();
 		}
 		
