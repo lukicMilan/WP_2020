@@ -4,11 +4,15 @@ import App from './App.vue'
 import HelloWorld from "@/components/HelloWorld.vue"
 import Register from "@/components/Register.vue"
 import Table from "@/components/Table.vue"
+import Amenity from "@/components/Amenity.vue"
+import Apartment from "@/components/Apartment.vue"
 import MainPageLayout from "./pages/layout/MainPageLayout.vue"
 
 import VueMaterial from "vue-material";
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
+import VueGeolocation from 'vue-browser-geolocation'
+
 
 import SideBar from "./components/SidebarPlugin/SideBar"
 
@@ -37,6 +41,16 @@ const router = new VueRouter({
           path: "/table",
           name: "Table",
           component: Table
+        },
+        {
+          path: "/amenity",
+          name: "Amenity",
+          component: Amenity
+        },
+        {
+          path: "/apartment",
+          name: "Apartment",
+          component: Apartment
         }
         ]
     }
@@ -47,6 +61,9 @@ Vue.config.productionTip = false
 
 Vue.use(VueMaterial);
 Vue.component('side-bar', SideBar);
+
+Vue.config.productionTip = false
+Vue.use(VueGeolocation)
 
 new Vue({
   router,

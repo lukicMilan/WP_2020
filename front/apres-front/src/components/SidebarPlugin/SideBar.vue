@@ -26,14 +26,14 @@
             <span class="md-list-item-text" :items = "this.items" :columns = "this.columns">Table (example)</span>
             </md-list-item>
 
-            <md-list-item>
-            <md-icon>delete</md-icon>
-            <span class="md-list-item-text">Trash</span>
+            <md-list-item to="amenity">
+            <md-icon>add</md-icon>
+            <span class="md-list-item-text">Add Amenity</span>
             </md-list-item>
 
-            <md-list-item>
-            <md-icon>error</md-icon>
-            <span class="md-list-item-text">Spam</span>
+            <md-list-item to="apartment">
+            <md-icon>add</md-icon>
+            <span class="md-list-item-text">Add Apartment</span>
             </md-list-item>
         </md-list>
         </md-drawer>

@@ -3,9 +3,8 @@
         <form novalidate class="md-layout" @submit.prevent="validateUser">
             <md-card class="md-layout-item md-size-50 md-small-size-100">
                 <md-card-header>
-                <div class="md-title">Sign up</div>
+                    <div class="md-title">Sign up</div>
                 </md-card-header>
-
                 <md-card-content>
                     <div class="md-layout md-gutter">
                         <div class="md-layout-item md-small-size-100">
@@ -35,14 +34,13 @@
                         </md-field>
                     </div>
                     <div class="md-layout md-gutter">
-                        <div class="md-layout-item md-small-size-50">
-                        <md-field :class="getValidationClass('gender')" type = "password">
+                        <div class="md-layout-item md-small-size-100">
+                        <md-field :class="getValidationClass('gender')">
                             <label for="gender">Gender</label>
-                            <md-select name="gender" id="gender" v-model="form.gender" md-dense >
-                            <md-option></md-option>
-                            <md-option value="Male">Male</md-option>
-                            <md-option value="Female">Female</md-option>
-                            <md-option value="Other">Other</md-option>
+                            <md-select name="gender" id="gender" v-model="form.gender" md-dense placeholder = "Select gender">
+                            <md-option value="male">Male</md-option>
+                            <md-option value="female">Female</md-option>
+                            <md-option value="other">Other</md-option>
                             </md-select>
                             <span class="md-error">The gender is required</span>
                         </md-field>
@@ -52,7 +50,6 @@
                                 <label for="age">Age</label>
                                 <md-input type="number" id="age" name="age" autocomplete="age" v-model="form.age" />
                                 <span class="md-error" v-if="!$v.form.age.required">The age is required</span>
-                                <span class="md-error" v-else-if="!$v.form.age.maxlength">Invalid age</span>
                             </md-field>
                         </div>
                     </div>
@@ -165,7 +162,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .md-progress-bar {
+  form {
     position: center;
     top: 0;
     right: 0;
