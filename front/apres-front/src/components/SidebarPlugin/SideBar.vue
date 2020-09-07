@@ -35,6 +35,16 @@
             <md-icon>add</md-icon>
             <span class="md-list-item-text">Add Apartment</span>
             </md-list-item>
+
+            <md-list-item to="apartmentTable">
+            <md-icon>analytics</md-icon>
+            <span class="md-list-item-text">Show Apartments</span>
+            </md-list-item>
+
+            <md-list-item to="amenitiesTable">
+            <md-icon>dns</md-icon>
+            <span class="md-list-item-text">Show Amenities</span>
+            </md-list-item>
         </md-list>
         </md-drawer>
     </div>

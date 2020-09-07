@@ -7,14 +7,7 @@
                 </md-card-header>
                 <md-card-content>
                     <div class="md-layout md-gutter">
-                        <div class="md-layout-item md-small-size-100">
-                        <md-field :class="getValidationClass('name')">
-                            <label for="name">Name</label>
-                            <md-input name="name" id="name" v-model="form.name" />
-                            <span class="md-error" v-if="!$v.form.name.required">The name is required</span>
-                            <span class="md-error" v-else-if="!$v.form.name.minlength">Invalid name</span>
-                        </md-field>
-                        </div>
+                        
                         <div class="md-layout-item md-small-size-50">
                             <md-field :class="getValidationClass('type')">
                                 <label for="type">Apartment type</label>
@@ -68,17 +61,23 @@
                                 </md-select>
                             </md-field>
                         </div>
+                        
+                        <div class="md-layout-item md-small-size-100">
+                        <md-field :class="getValidationClass('location')">
+                            <label for="location">Adress</label>
+                            <md-input name="location" id="location" v-model="form.location" />
+                            <span class="md-error" v-if="!$v.form.location.required">The location is required</span>
+                            <span class="md-error" v-else-if="!$v.form.location.minlength">Invalid location</span>
+                        </md-field>
+                        </div>
+                        
                         <div class="md-layout-item md-small-size-50">
                             <md-field>
                                 <label>Select images</label>
                                 <md-file v-model="selectedImages" accept="image/*" multiple />
                             </md-field>
                         </div>
-                    </div>  
-                    <div>
-                        <map>
-                        </map>
-                    </div>        
+                    </div> 
 
                         <!-- Ovo je za datepicker, moramo se dogovoriti kako cemo to odraditi -->
                      <!-- </div>
@@ -118,7 +117,6 @@ export default {
     // components: {DateRangePicker},
     data: () => ({
         form: {
-            name: null,
             type: null,
             roomNumber: null,
             guestNumber: null,
@@ -139,10 +137,6 @@ export default {
     }, 
     validations: {
       form: {
-        name: {
-            required,
-            minLength: minLength(3)
-        },
         type: {
             required
         },
@@ -157,6 +151,10 @@ export default {
         }, 
         leaveTime: {
             required
+        },
+        location: {
+            required, 
+            minLength: minLength(3)
         }
       }
     },
