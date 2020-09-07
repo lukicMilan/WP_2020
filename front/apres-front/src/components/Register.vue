@@ -1,6 +1,6 @@
 <template>
     <div class = "register">
-        <form novalidate class="md-layout" @submit.prevent="validateUser">
+        <form novalidate class="md-layout md-centered" @submit.prevent="validateUser">
             <md-card class="md-layout-item md-size-50 md-small-size-100">
                 <md-card-header>
                 <div class="md-title">Sign up</div>
@@ -139,11 +139,11 @@ export default {
           email
         },
         age: {
-            required
+          required
         }
       }
     },
-     methods: {
+    methods: {
       getValidationClass (fieldName) {
         const field = this.$v.form[fieldName]
 
@@ -160,7 +160,7 @@ export default {
           this.saveUser()
         }
       }
-     }
+    }
 }
 </script>
 

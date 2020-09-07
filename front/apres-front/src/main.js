@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from "vue-router"
 import App from './App.vue'
+
 import HelloWorld from "@/components/HelloWorld.vue"
 import Register from "@/components/Register.vue"
 import Table from "@/components/Table.vue"
@@ -11,6 +12,7 @@ import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
 
 import SideBar from "./components/SidebarPlugin/SideBar"
+import LoginPage from "./pages/LoginPage"
 
 Vue.use(VueRouter);
 
@@ -37,6 +39,11 @@ const router = new VueRouter({
           path: "/table",
           name: "Table",
           component: Table
+        },
+        {
+          path: "/login",
+          name: "Login",
+          component: LoginPage
         }
         ]
     }

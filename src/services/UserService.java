@@ -126,7 +126,7 @@ public class UserService {
 		
 		request.getSession().setAttribute("loggedInUser", userDAO.getUserByUsername(userCredentials.getUsername()));
 		
-		return Response.status(200).build();
+		return Response.status(200).entity(userDAO.getUserByUsername(userCredentials.getUsername())).build();
 	}
 	
 	@POST
