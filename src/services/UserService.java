@@ -61,6 +61,8 @@ public class UserService {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response addUser(UserDTO userDTO) {
+
+		System.out.println("pogodio");
 		UserDAO userDAO = (UserDAO) ctx.getAttribute("userDAO");
 		
 		if(userDAO.usernameExists(userDTO.getUsername())) {

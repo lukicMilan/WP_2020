@@ -3,7 +3,7 @@
     <md-table v-model="searched" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
       <md-table-toolbar>
         <div class="md-toolbar-section-start">
-          <h1 class="md-title">Users</h1>
+          <h1 class="md-title">Apartments</h1>
         </div>
 
         <md-field md-clearable class="md-toolbar-section-end">
@@ -11,18 +11,14 @@
         </md-field>
       </md-table-toolbar>
 
-      <md-table-empty-state
-        md-label="No users found"
-        :md-description="`No user found for this '${search}' query. Try a different search term.`">
-      </md-table-empty-state>
-
       <md-table-row slot="md-table-row" slot-scope="{ item }">
         <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{ item.id }}</md-table-cell>
         <md-table-cell md-label="Type" md-sort-by="type">{{ item.type }}</md-table-cell>
         <md-table-cell md-label="RoomNumber" md-sort-by="roomNumber">{{ item.roomNumber }}</md-table-cell>
         <md-table-cell md-label="GuestNumber" md-sort-by="guestNumber">{{ item.guestNumber }}</md-table-cell>
         <md-table-cell md-label="EntryTime" md-sort-by="entryTime">{{ item.entryTime }}</md-table-cell>
-        <md-table-cell md-label="LeaveTime" md-sort-by="leaveTime">{{ item.entryTime }}</md-table-cell>
+        <md-table-cell md-label="LeaveTime" md-sort-by="leaveTime">{{ item.leaveTime }}</md-table-cell>
+        <md-table-cell md-label="Amenities" md-sort-by="amenities">{{ item.amenities }}</md-table-cell>
       </md-table-row>
     </md-table>
   </div>
@@ -46,51 +42,34 @@
     data: () => ({
       search: null,
       searched: [],
-      users: [
+      apartments: [
         {
           id: 1,
-          name: "Shawna Dubbin",
-          email: "sdubbin0@geocities.com",
-          gender: "Male",
-          title: "Assistant Media Planner"
+          type: "Full",
+          roomNumber: 2,
+          guestNumber: 5,
+          entryTime: 14,
+          leaveTime: 10,
+          amenities: ["Hot tub", "TV"]
         },
         {
           id: 2,
-          name: "Odette Demageard",
-          email: "odemageard1@spotify.com",
-          gender: "Female",
-          title: "Account Coordinator"
+          type: "One Room",
+          roomNumber: 1,
+          guestNumber: 2,
+          entryTime: 14,
+          leaveTime: 10,
+          amenities: ["Room service", "TV"]
         },
-        {
-          id: 3,
-          name: "Vera Taleworth",
-          email: "vtaleworth2@google.ca",
-          gender: "Male",
-          title: "Community Outreach Specialist"
-        },
-        {
-          id: 4,
-          name: "Lonnie Izkovitz",
-          email: "lizkovitz3@youtu.be",
-          gender: "Female",
-          title: "Operator"
-        },
-        {
-          id: 5,
-          name: "Thatcher Stave",
-          email: "tstave4@reference.com",
-          gender: "Male",
-          title: "Software Test Engineer III"
-        }
       ]
     }),
     methods: {
       searchOnTable () {
-        this.searched = searchByType(this.users, this.search)
+        this.searched = searchByType(this.apartments, this.search)
       }
     },
     created () {
-      this.searched = this.users
+      this.searched = this.apartments
     }
   }
 </script>
