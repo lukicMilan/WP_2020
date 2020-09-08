@@ -107,7 +107,6 @@ import { validationMixin } from 'vuelidate'
   } from 'vuelidate/lib/validators'
 //   import DateRangePicker from 'vue2-daterange-picker'
 //   import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
-import Map from '@/components/Map.vue'
 export default {
     name: 'Apartment',
     mixins: [validationMixin],

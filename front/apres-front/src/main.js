@@ -13,8 +13,6 @@ import MainPageLayout from "./pages/layout/MainPageLayout.vue"
 import VueMaterial from "vue-material";
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
-import VueGeolocation from 'vue-browser-geolocation'
-
 
 import SideBar from "./components/SidebarPlugin/SideBar"
 
@@ -73,9 +71,6 @@ Vue.config.productionTip = false
 
 Vue.use(VueMaterial);
 Vue.component('side-bar', SideBar);
-
-Vue.config.productionTip = false
-Vue.use(VueGeolocation)
 
 new Vue({
   router,
