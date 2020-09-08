@@ -12,8 +12,10 @@
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
     "vue-material": "^1.0.0-beta-15",
+    "vue-mj-daterangepicker": "^0.1.11",
     "vue-password": "^3.0.0",
     "vue-router": "^3.4.3",
+    "vue2-daterange-picker": "^0.5.1",
     "vuelidate": "^0.7.5"
   },
   "devDependencies": {
@@ -25,6 +27,7 @@
     "eslint-plugin-vue": "^6.2.2",
     "sass": "^1.26.10",
     "sass-loader": "^10.0.2",
+    "vue-browser-geolocation": "^1.8.0",
     "vue-template-compiler": "^2.6.11",
     "webpack": "^4.44.1"
   },
