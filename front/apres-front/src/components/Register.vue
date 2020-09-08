@@ -78,7 +78,6 @@
 import { validationMixin } from 'vuelidate'
   import {
     required,
-    email,
     minLength,
     sameAs
     // maxLength
