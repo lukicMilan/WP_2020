@@ -4,6 +4,10 @@ import App from './App.vue'
 import HelloWorld from "@/components/HelloWorld.vue"
 import Register from "@/components/Register.vue"
 import Table from "@/components/Table.vue"
+import Amenity from "@/components/Amenity.vue"
+import Apartment from "@/components/Apartment.vue"
+import ApartmentTable from "@/components/tables/ApartmentTable.vue"
+import AmenitiesTable from "@/components/tables/AmenitiesTable.vue"
 import MainPageLayout from "./pages/layout/MainPageLayout.vue"
 
 import VueMaterial from "vue-material";
@@ -37,6 +41,26 @@ const router = new VueRouter({
           path: "/table",
           name: "Table",
           component: Table
+        },
+        {
+          path: "/amenity",
+          name: "Amenity",
+          component: Amenity
+        },
+        {
+          path: "/apartment",
+          name: "Apartment",
+          component: Apartment
+        },
+        {
+          path: "/apartmentTable",
+          name: "ApartmentTable",
+          component: ApartmentTable
+        },
+        {
+          path: "/amenitiesTable",
+          name: "AmenitiesTable", 
+          component: AmenitiesTable
         }
         ]
     }
