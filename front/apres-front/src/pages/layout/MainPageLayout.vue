@@ -1,12 +1,12 @@
 <template>
 <div>
     <div class="wrapper ">
-        <side-bar/>
+        <side-bar :logged-in-user="loggedInUser" />
 
-        <div class="main-panel" :logged-in-user="loggedInUser">
+        <div class="main-panel">
             <!--top-navbar -->
             <!--content-->
-            <router-view @userLoggedIn="userLoggedIn($event)"></router-view>
+            <router-view  @userLoggedIn="userLoggedIn($event)"></router-view>
         </div>
     </div>
 </div>
@@ -15,12 +15,22 @@
 <script>
 export default {
     props: {
-        loggedInUser: null,
+
     },
     methods: {
         userLoggedIn(user) {
-            alert(JSON.stringify(user));
+            alert("VRATIO " + JSON.stringify(user));
+            this.loggedInUser = user;
+
+            alert(JSON.stringify(this.loggedInUser));
         }
-    }
+    },
+    data: 
+        function() {
+            return {
+                loggedInUser: null
+            }
+        }
+    
 };
 </script>
