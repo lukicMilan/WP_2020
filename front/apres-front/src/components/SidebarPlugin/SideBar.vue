@@ -8,7 +8,7 @@
         <div class="md-toolbar-section-end">
           <md-button v-if="!loggedInUser" class="md-dense md-primary" to = "/login">Log in</md-button>
           <md-button v-if="!loggedInUser" class="md-dense md-raised md-primary" to = "/register">Sign up</md-button>
-          <md-button v-if="loggedInUser" class="md-dense md-raised md-primary" to = "/login" @click.prevent="logout()">Logout</md-button>
+          <md-button v-if="loggedInUser" class="md-dense md-raised md-primary" to = "/login" @click.native="logout">Logout</md-button>
         </div>
         </md-toolbar>
         <md-drawer :md-active.sync="showNavigation" md-swipeable>

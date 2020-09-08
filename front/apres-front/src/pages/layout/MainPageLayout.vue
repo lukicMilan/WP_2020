@@ -1,7 +1,7 @@
 <template>
 <div>
     <div class="wrapper ">
-        <side-bar :logged-in-user="loggedInUser" />
+        <side-bar :logged-in-user="loggedInUser" @userLoggedIn="userLoggedIn($event)"/>
 
         <div class="main-panel">
             <!--top-navbar -->
@@ -19,18 +19,20 @@ export default {
     },
     methods: {
         userLoggedIn(user) {
-            alert("VRATIO " + JSON.stringify(user));
             this.loggedInUser = user;
-
-            alert(JSON.stringify(this.loggedInUser));
+            this.$cookie.set('loggedInUser', JSON.stringify(user));
         }
     },
+    
     data: 
         function() {
             return {
                 loggedInUser: null
             }
-        }
+        },
     
+    mounted() {
+      this.loggedInUser = JSON.parse(this.$cookie.get('loggedInUser'));
+    },
 };
 </script>
