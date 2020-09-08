@@ -80,10 +80,12 @@ public class UserDAO {
 	}
 	
 	public boolean addUser(UserDTO userDTO) {
+		
 		if (users.containsKey(userDTO.getUsername())) {
 			return false;
 		}
-		
+		System.out.println(userDTO.getUserType());
+//		userDTO.setUserType(UserType.GUEST.toString());
 		users.put(userDTO.getUsername(), UserDTO.toUser(userDTO));
 
 		System.out.println("User " + userDTO.getUsername() + " added");

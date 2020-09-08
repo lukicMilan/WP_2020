@@ -27,6 +27,8 @@
 </template>
 
 <script>
+  // import axios from 'axios'
+
   const toLower = text => {
     return text.toString().toLowerCase()
   }

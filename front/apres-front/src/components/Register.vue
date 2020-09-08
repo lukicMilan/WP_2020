@@ -8,20 +8,20 @@
                 <md-card-content>
                     <div class="md-layout md-gutter">
                         <div class="md-layout-item md-small-size-100">
-                        <md-field :class="getValidationClass('firstName')">
-                            <label for="first-name">First Name</label>
-                            <md-input name="first-name" id="first-name" v-model="form.firstName" />
-                            <span class="md-error" v-if="!$v.form.firstName.required">The first name is required</span>
-                            <span class="md-error" v-else-if="!$v.form.firstName.minlength">Invalid first name</span>
+                        <md-field :class="getValidationClass('name')">
+                            <label for="name">First Name</label>
+                            <md-input name="name" id="name" v-model="form.name" />
+                            <span class="md-error" v-if="!$v.form.name.required">The first name is required</span>
+                            <span class="md-error" v-else-if="!$v.form.name.minlength">Invalid first name</span>
                         </md-field>
                         </div>
 
                         <div class="md-layout-item md-small-size-100">
-                        <md-field :class="getValidationClass('lastName')">
-                            <label for="last-name">Last Name</label>
-                            <md-input name="last-name" id="last-name" v-model="form.lastName"  />
-                             <span class="md-error" v-if="!$v.form.lastName.required">The last name is required</span>
-                             <span class="md-error" v-else-if="!$v.form.lastName.minlength">Invalid last name</span>
+                        <md-field :class="getValidationClass('surname')">
+                            <label for="surname">Last Name</label>
+                            <md-input name="surname" id="surname" v-model="form.surname"  />
+                             <span class="md-error" v-if="!$v.form.surname.required">The last name is required</span>
+                             <span class="md-error" v-else-if="!$v.form.surname.minlength">Invalid last name</span>
                         </md-field>
                         </div>
                     </div>
@@ -32,15 +32,16 @@
                             <md-input name="username" id="username" v-model="form.username" />
                             <span class="md-error" v-if="!$v.form.username.required">The username is required</span>
                             <span class="md-error" v-else-if="!$v.form.username.minlength">Invalid username</span>
+                            <span class="md-error" v-else-if="!$v.form.username.notSameAs">Username already exists</span>
                         </md-field>
                       </div>
                       <div class="md-layout-item md-small-size-100">
                         <md-field :class="getValidationClass('gender')">
                             <label for="gender">Gender</label>
                             <md-select name="gender" id="gender" v-model="form.gender" md-dense placeholder = "Select gender">
-                            <md-option value="male">Male</md-option>
-                            <md-option value="female">Female</md-option>
-                            <md-option value="other">Other</md-option>
+                            <md-option value="MALE">Male</md-option>
+                            <md-option value="FEMALE">Female</md-option>
+                            <md-option value="OTHER">Other</md-option>
                             </md-select>
                             <span class="md-error">The gender is required</span>
                         </md-field>
@@ -78,11 +79,13 @@
 import { validationMixin } from 'vuelidate'
   import {
     required,
-    email,
+    //email,
     minLength,
-    sameAs
+    sameAs,
+    not
     // maxLength
   } from 'vuelidate/lib/validators'
+  import axios from 'axios'
 export default {
     name: 'Register',
     mixins: [validationMixin],
@@ -91,27 +94,28 @@ export default {
     },
     data: () => ({
         form: {
-            firstName: null,
-            lastName: null, 
+            name: null,
+            surname: null, 
             username: null,
             gender: null,
-            password: null,
-            confirmPassword: null
-        }
+            password: null
+        },
+        usernames: null
     }),
     validations: {
       form: {
-        firstName: {
+        name: {
           required,
           minLength: minLength(3)
         },
-        lastName: {
+        surname: {
           required,
           minLength: minLength(3)
         },
         username: {
             required,
-            minLength: minLength(3)
+            minLength: minLength(3),
+            notSameAs: not(sameAs('usernames'))
         },
         password: {
             required,
@@ -127,8 +131,8 @@ export default {
     },
     methods: {
       getValidationClass (fieldName) {
-        const field = this.$v.form[fieldName]
-        
+      const field = this.$v.form[fieldName]
+
       if (field) {
         return {
           'md-invalid': field.$invalid && field.$dirty
@@ -141,7 +145,31 @@ export default {
       if (!this.$v.$invalid) {
         this.saveUser()
       }
-    }
+    },
+     clearForm () {
+        this.$v.$reset()
+        this.form.name = null
+        this.form.surname = null
+        this.form.username = null
+        this.form.gender = null
+        this.form.password = null
+        this.form.passwordConfirm = null
+      },
+      saveUser: function () {
+        axios.post('http://localhost:8080/PocetniREST/rest/user',
+                    {
+                      username: this.form.username,
+                      password: this.form.password,
+                      name: this.form.name,
+                      surname: this.form.surname,
+                      gender: this.form.gender,
+                      userType: "GUEST"
+                    })
+                    .then((response) => { console.log(response) },
+                          (error) => { console.log(error) }
+      );
+        this.clearForm()
+      }
     }
 }
 </script>

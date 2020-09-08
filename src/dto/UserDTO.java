@@ -28,6 +28,20 @@ public class UserDTO {
 		this.userType = user.getUserType().toString();
 	}
 	
+	public UserDTO(String username, String password, String name, String surname, String gender, String userType) {
+		super();
+		this.username = username;
+		this.password = password;
+		this.name = name;
+		this.surname = surname;
+		this.gender = gender;
+		this.userType = userType;
+	}
+	
+	public UserDTO() {
+		super();
+	}
+
 	public static User toUser(UserDTO userDTO) {
 		switch (userDTO.userType) {
 		case "ADMINISTRATOR": 
@@ -35,7 +49,7 @@ public class UserDTO {
 		case "HOST":
 			return new UserHost(userDTO.username, userDTO.password, userDTO.name, userDTO.surname, UserGender.valueOf(userDTO.gender), UserType.HOST, new ArrayList<Apartment>());
 		case "GUEST":
-			return new UserGuest(userDTO.username, userDTO.password, userDTO.name, userDTO.surname, UserGender.valueOf(userDTO.gender), UserType.HOST, new ArrayList<Apartment>(), new ArrayList<Reservation>());
+			return new UserGuest(userDTO.username, userDTO.password, userDTO.name, userDTO.surname, UserGender.valueOf(userDTO.gender), UserType.GUEST, new ArrayList<Apartment>(), new ArrayList<Reservation>());
 		default:
 			return null;
 		}
