@@ -4,10 +4,11 @@
         <md-button class="md-icon-button" @click="showNavigation = true">
             <md-icon>menu</md-icon>
         </md-button>
-        <span class="md-title">My Title</span>
-        <div>
-          <md-button class="md-dense md-primary">Log in</md-button>
+        <span class="md-title">Bookomat</span>
+        <div class="md-toolbar-section-end">
+          <md-button class="md-dense md-primary" to = "/login">Log in</md-button>
           <md-button class="md-dense md-raised md-primary" to = "/register">Sign up</md-button>
+          <md-button class="md-dense md-raised md-primary" to = "/login" @click="logout()">Logout</md-button>
         </div>
         </md-toolbar>
         <md-drawer :md-active.sync="showNavigation" md-swipeable>
@@ -53,6 +54,23 @@
 <script>
 export default {
     name: "side-bar",
+    props: {
+      loggedInUser: null,
+    },
+    methods: {
+      logout: function() {
+        alert(JSON.stringify(this.loggedInUser));
+        this.$emit('loggedInUser', null);
+      },
+
+      ifLoggedIn: function () {
+        if(this.loggedInUser == null) {
+          return false;
+        } else {
+          return true;
+        }
+      }
+    },
     data: () => ({
       showNavigation: false,
       showSidepanel: false,

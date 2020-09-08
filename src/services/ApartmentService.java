@@ -46,8 +46,10 @@ public class ApartmentService {
 		User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
 		
 		Map<Long, Apartment> aps = new HashMap<Long, Apartment>();
-		
-		if(loggedInUser.getUserType()==UserType.GUEST) {
+		if(loggedInUser == null) {
+			aps = apartmentDAO.getAllActiveApartments();
+		}
+		else if(loggedInUser.getUserType()==UserType.GUEST) {
 			aps = apartmentDAO.getAllActiveApartments();
 		}else if(loggedInUser.getUserType()==UserType.HOST){
 			aps = apartmentDAO.getAllPostedBy(loggedInUser.getUsername());
@@ -59,6 +61,7 @@ public class ApartmentService {
 	}
 	
 	@GET
+	@Path("/nonActive")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getNonActiveApartments(@Context HttpServletRequest request) {
 		ApartmentDAO apartmentDAO = (ApartmentDAO) ctx.getAttribute("apartmentDAO");

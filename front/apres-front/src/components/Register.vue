@@ -1,6 +1,6 @@
 <template>
     <div class = "register">
-        <form novalidate class="md-layout" @submit.prevent="validateUser">
+        <form novalidate class="md-layout md-centered" @submit.prevent="validateUser">
             <md-card class="md-layout-item md-size-50 md-small-size-100">
                 <md-card-header>
                     <div class="md-title">Sign up</div>
@@ -123,16 +123,12 @@ export default {
         gender: {
           required
         },
-        email: {
-          required,
-          email
-        }
       }
     },
     methods: {
-    getValidationClass (fieldName) {
-      const field = this.$v.form[fieldName]
-
+      getValidationClass (fieldName) {
+        const field = this.$v.form[fieldName]
+        
       if (field) {
         return {
           'md-invalid': field.$invalid && field.$dirty

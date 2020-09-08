@@ -9,6 +9,7 @@ import java.util.Map;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
 
 import dto.UserDTO;
 import model.Apartment;
@@ -105,7 +106,8 @@ public class UserDAO {
 	
 	public boolean credentialOk(String username, String password) {
 		User user = getUserByUsername(username);
-		if(user != null && user.getPassword() != password) {
+	
+		if(user == null || !user.getPassword().equals(password)) {
 			return false;
 		}
 		return true;
