@@ -17,9 +17,9 @@
         </md-toolbar>
 
         <md-list>
-            <md-list-item  to="/hello">
-            <md-icon>move_to_inbox</md-icon>
-            <span class="md-list-item-text">Inbox</span>
+            <md-list-item v-if="loggedAdministrator" to="/usersTable">
+            <md-icon>group</md-icon>
+            <span class="md-list-item-text">Users Table</span>
             </md-list-item>
 
             <md-list-item to="/table" >
@@ -86,7 +86,17 @@ export default {
             'created_date': '2018-10-09'
         }],
         columns: ['id', 'title', 'description', 'created_date']
-    })
+    }),
+    computed: {
+      loggedAdministrator: function() {
+        if(this.loggedInUser===null) {
+          return false;
+        } else if(this.loggedInUser.userType === "ADMINISTRATOR") {
+          return true;
+        }
+        return false;
+      }
+    }
 }
 </script>
 

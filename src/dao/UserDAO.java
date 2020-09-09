@@ -46,6 +46,17 @@ public class UserDAO {
 		return this.users;
 	}
 	
+	public ArrayList<UserDTO> getAllUsersDTO() {
+		ArrayList<UserDTO> users = new ArrayList<>();
+		
+		loadUsers();
+		for (Map.Entry<String, User> userEntry : this.users.entrySet()) {
+			users.add(new UserDTO(userEntry.getValue()));
+		}
+		
+		return users;
+	}
+	
 	public boolean usernameExists(String username) {
 		return users.containsKey(username);
 	}
