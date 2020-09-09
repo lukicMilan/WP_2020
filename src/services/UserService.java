@@ -17,6 +17,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
 import dao.UserDAO;
 import dto.UserCredentials;
 import dto.UserDTO;
@@ -44,8 +48,16 @@ public class UserService {
 		UserDAO userDAO = (UserDAO) ctx.getAttribute("userDAO");
 		
 		User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
-		System.out.println(request.getSession().getAttributeNames());
-		
+//		ObjectMapper objectMapper = new ObjectMapper();
+//		objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+//		
+//		try {
+//			System.out.println(objectMapper.writeValueAsString(request.getSession().getAttributeNames()));
+//		} catch (JsonProcessingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
 		if(request.getSession().getAttribute("loggedInUser")!=null) {
 			if(loggedInUser.getUserType() != UserType.ADMINISTRATOR) {
 				return Response.status(403).build();
