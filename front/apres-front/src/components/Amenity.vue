@@ -1,5 +1,5 @@
 <template>
-    <div class = "amenity">
+    <div class = "amenity" >
         <form novalidate class="md-layout" @submit.prevent="validateAmenity">
             <md-card class="md-layout-item md-size-50 md-small-size-100">
                 <md-card-header>
@@ -91,10 +91,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    form {
-    position: center;
-    top: 0;
-    right: 0;
-    left: 0;
-  }
+
 </style>

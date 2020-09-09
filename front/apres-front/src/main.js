@@ -18,6 +18,7 @@ import 'vue-material/dist/theme/default.css'
 import SideBar from "./components/SidebarPlugin/SideBar"
 import LoginPage from "./pages/LoginPage"
 import UsersTable from "./components/tables/UsersTable"
+import AccessDenied from "./pages/AccessDenied"
 
 var VueCookie = require('vue-cookie');
 
@@ -77,6 +78,11 @@ const router = new VueRouter({
           path: "/usersTable",
           name: "UsersTable",
           component: UsersTable
+        },
+        {
+          path: "/accessDenied",
+          name: "AccessDenied",
+          component: AccessDenied
         }
         ]
     }
