@@ -7,7 +7,7 @@
         </div>
 
         <md-field md-clearable class="md-toolbar-section-end">
-          <md-input placeholder="Search by type..." v-model="search" @input="searchOnTable" />
+          <md-input placeholder="Search..." v-model="search" @input="searchOnTable" />
         </md-field>
       </md-table-toolbar>
 
@@ -21,7 +21,7 @@
         <md-table-cell md-label="Amenities" md-sort-by="amenities">{{ item.amenities }}</md-table-cell>
       </md-table-row>
     </md-table>
-    <md-button class="md-dense md-raised md-primary" to="/apartment">Add Apartment</md-button>
+    <md-button v-if="addButton" class="md-dense md-raised md-primary" to="/apartment">Add Apartment</md-button>
   </div>
 </template>
 
@@ -32,13 +32,27 @@
     return text.toString().toLowerCase()
   }
 
-  const searchByType = (items, term) => {
+  const searchOnTable = (items, term) => {
+    let searchedItems = [];
     if (term) {
-      return items.filter(item => toLower(item.type).includes(toLower(term)))
+      searchedItems = searchedItems.concat(items.filter(item => (item.id).includes(term)));
+      searchedItems = searchedItems.concat(items.filter(item => toLower(item.type).includes(toLower(term))));
+      searchedItems = searchedItems.concat(items.filter(item => (item.rootNumber).includes(term)));
+      searchedItems = searchedItems.concat(items.filter(item => (item.guestNumber).includes(term)));
+      searchedItems = searchedItems.concat(items.filter(item => (item.entryTime).includes(term)));
+      searchedItems = searchedItems.concat(items.filter(item => (item.leaveTime).includes(term)));
+      
+      searchedItems = uniqueElementsBy(searchedItems, (a,b) => a.id === b.id);
     }
 
-    return items
+    return searchedItems
   }
+
+  const uniqueElementsBy = (arr, fn) =>
+  arr.reduce((acc, v) => {
+    if (!acc.some(x => fn(v, x))) acc.push(v);
+    return acc;
+  }, []);
 
   export default {
     name: 'ApartmentTable',
@@ -47,20 +61,58 @@
       searched: [],
       apartments: []
     }),
+    props: {
+      loggedInUser: null,
+    },
     methods: {
       searchOnTable () {
-        this.searched = searchByType(this.apartments, this.search)
+        this.searched = searchOnTable(this.apartments, this.search)
       }
     },
-    created () {
+    mounted () {
+      if(this.loggedInUser === null) {
+        axios.get('http://localhost:8080/PocetniREST/rest/apartment/active')
+          .then(data => {
+            this.apartments = data.data;
+            this.searched = data.data;
+          });
+        return;
+      } 
+      if (this.loggedInUser.userType === "GUEST") {
+        axios.get('http://localhost:8080/PocetniREST/rest/apartment/active')
+          .then(data => {
+            this.apartments = data.data;
+            this.searched = data.data;
+          });
+        return;
+      }
+      if (this.loggedInUser.userType === "HOST") {
+        axios.get('http://localhost:8080/PocetniREST/rest/apartment/'+this.loggedInUser.username)
+          .then(data => {
+            this.apartments = data.data;
+            this.searched = data.data;
+          });
+        return;
+      }
+      if(this.loggedInUser.userType === "ADMINISTRATOR")
        axios.get('http://localhost:8080/PocetniREST/rest/apartment')
-                            .then(data => { 
-                              this.apartments = data.data
-                              this.searched = data.data})
-                            .catch(error => {
-                                console.log(error) 
-                            });
+            .then(data => { 
+              this.apartments = data.data
+              this.searched = data.data})
+            .catch(error => {
+                console.log(error) 
+            });
       console.log(this.apartments)
+    },
+    computed: {
+      addButton: function() {
+        if(this.loggedInUser===null) {
+          return false;
+        } else if(this.loggedInUser.userType === "HOST") {
+          return true;
+        }
+        return false;
+      }
     }
   }
 </script>
