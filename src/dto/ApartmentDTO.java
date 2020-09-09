@@ -21,7 +21,7 @@ public class ApartmentDTO {
 	private List<ApartmentComment> comments;
 	private List<String> imageList;
 	private long price;
-	private int entryTim;
+	private int entryTime;
 	private int leaveTime;
 	private boolean active;
 	private List<Amenities> amenities;
@@ -42,12 +42,16 @@ public class ApartmentDTO {
 		this.comments = comments;
 		this.imageList = imageList;
 		this.price = price;
-		this.entryTim = entryTim;
+		this.entryTime = entryTim;
 		this.leaveTime = leaveTime;
 		this.active = active;
 		this.amenities = amenities;
 	}
 	
+	public ApartmentDTO() {
+		super();
+	}
+
 	public ApartmentDTO(Apartment ap) {
 		this.id = ap.getId();
 		this.type = ap.getType().toString();
@@ -59,7 +63,7 @@ public class ApartmentDTO {
 		this.comments = ap.getComments();
 		this.imageList = ap.getImageList();
 		this.price = ap.getPrice();
-		this.entryTim = ap.getEntryTime();
+		this.entryTime = ap.getEntryTime();
 		this.leaveTime = ap.getLeaveTime();
 		this.active = ap.isActive();
 		this.amenities = ap.getAmenities();
@@ -77,14 +81,11 @@ public class ApartmentDTO {
 		ap.setComments(apartmentDTO.comments);
 		ap.setImageList(apartmentDTO.imageList);
 		ap.setPrice(apartmentDTO.price);
-		ap.setEntryTime(apartmentDTO.entryTim);
+		ap.setEntryTime(apartmentDTO.entryTime);
 		ap.setLeaveTime(apartmentDTO.leaveTime);
 		ap.setActive(apartmentDTO.active);
 		ap.setAmenities(apartmentDTO.amenities);
 		return ap;
-	}
-	
-	public ApartmentDTO() {
 	}
 	
 	public long getId() {
@@ -153,11 +154,11 @@ public class ApartmentDTO {
 	public void setPrice(long price) {
 		this.price = price;
 	}
-	public int getEntryTim() {
-		return entryTim;
+	public int getEntryTime() {
+		return entryTime;
 	}
-	public void setEntryTim(int entryTim) {
-		this.entryTim = entryTim;
+	public void setEntryTime(int entryTim) {
+		this.entryTime = entryTim;
 	}
 	public int getLeaveTime() {
 		return leaveTime;

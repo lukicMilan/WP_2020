@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+import dto.AmenitiesDTO;
 import dto.ApartmentDTO;
 import model.Amenities;
 import model.Apartment;
@@ -39,7 +40,7 @@ public class ApartmentDAO {
 		
 		Apartment ap = new Apartment(ApartmentType.FULL, 1, 5, location, rentDates, freeDates, 
 				"host", apartmentComments, imageList, (long) 50 , 14, 10, true, amenities);
-		ap.setId(getFreeId(1));
+		ap.setId(this.apartments.size()+1);
 		this.apartments.put(ap.getId(), ap);
 		saveApartments();
 	}
@@ -48,11 +49,18 @@ public class ApartmentDAO {
 		return this.apartments.get(id);
 	}
 	
-	public Map<Long, Apartment> getApartments() {
-		return this.apartments;
+	public ArrayList<ApartmentDTO> getApartments() {
+		ArrayList<ApartmentDTO> aps = new ArrayList<>();
+		
+		loadApartments();
+		for (Map.Entry<Long, Apartment> a : this.apartments.entrySet()) {
+			aps.add(new ApartmentDTO(a.getValue()));
+		}
+		
+		return aps;
 	}
 	
-	public Map<Long, Apartment> getAllPostedBy(String username) {
+	public ArrayList<ApartmentDTO> getAllPostedBy(String username) {
 		loadApartments();
 		Map<Long, Apartment> aps = new HashMap<Long, Apartment>();
 		
@@ -62,10 +70,16 @@ public class ApartmentDAO {
 			}
 		}
 		
-		return aps;
+		ArrayList<ApartmentDTO> a = new ArrayList<>();
+		
+		for (Map.Entry<Long, Apartment> ap : aps.entrySet()) {
+			a.add(new ApartmentDTO(ap.getValue()));
+		}
+		
+		return a;
 	}
 	
-	public Map<Long, Apartment> getAllActiveApartments()  {
+	public ArrayList<ApartmentDTO> getAllActiveApartments()  {
 		Map<Long, Apartment> aps = new HashMap<Long, Apartment>();
 		
 		for(Map.Entry<Long, Apartment> entry : this.apartments.entrySet()) {
@@ -74,10 +88,16 @@ public class ApartmentDAO {
 			}
 		}
 		
-		return aps;
+		ArrayList<ApartmentDTO> a = new ArrayList<>();
+		
+		for (Map.Entry<Long, Apartment> ap : aps.entrySet()) {
+			a.add(new ApartmentDTO(ap.getValue()));
+		}
+		
+		return a;
 	}
 	
-	public Map<Long, Apartment> getAllActiveApartmentsPostedBy(String username)  {
+	public ArrayList<ApartmentDTO> getAllActiveApartmentsPostedBy(String username)  {
 		Map<Long, Apartment> aps = new HashMap<Long, Apartment>();
 		
 		for(Map.Entry<Long, Apartment> entry : this.apartments.entrySet()) {
@@ -85,11 +105,16 @@ public class ApartmentDAO {
 				aps.put(entry.getKey(), entry.getValue());
 			}
 		}
+		ArrayList<ApartmentDTO> a = new ArrayList<>();
 		
-		return aps;
+		for (Map.Entry<Long, Apartment> ap : aps.entrySet()) {
+			a.add(new ApartmentDTO(ap.getValue()));
+		}
+		
+		return a;
 	}
 	
-	public Map<Long, Apartment> getAllNonActiveApartments()  {
+	public ArrayList<ApartmentDTO> getAllNonActiveApartments()  {
 		Map<Long, Apartment> aps = new HashMap<Long, Apartment>();
 		
 		for(Map.Entry<Long, Apartment> entry : this.apartments.entrySet()) {
@@ -97,11 +122,16 @@ public class ApartmentDAO {
 				aps.put(entry.getKey(), entry.getValue());
 			}
 		}
+		ArrayList<ApartmentDTO> a = new ArrayList<>();
 		
-		return aps;
+		for (Map.Entry<Long, Apartment> ap : aps.entrySet()) {
+			a.add(new ApartmentDTO(ap.getValue()));
+		}
+		
+		return a;
 	}
 	
-	public Map<Long, Apartment> getAllNonActiveApartmentsPostedBy(String username)  {
+	public ArrayList<ApartmentDTO> getAllNonActiveApartmentsPostedBy(String username)  {
 		Map<Long, Apartment> aps = new HashMap<Long, Apartment>();
 		
 		for(Map.Entry<Long, Apartment> entry : this.apartments.entrySet()) {
@@ -109,8 +139,13 @@ public class ApartmentDAO {
 				aps.put(entry.getKey(), entry.getValue());
 			}
 		}
+		ArrayList<ApartmentDTO> a = new ArrayList<>();
 		
-		return aps;
+		for (Map.Entry<Long, Apartment> ap : aps.entrySet()) {
+			a.add(new ApartmentDTO(ap.getValue()));
+		}
+		
+		return a;
 	}
 	
 	public boolean editApartment(ApartmentDTO apartmentDTO) {
@@ -123,7 +158,7 @@ public class ApartmentDAO {
 	}
 	
 	public boolean addApartment(ApartmentDTO apartmentDTO) {
-		apartmentDTO.setId(getFreeId(1));
+		apartmentDTO.setId(this.apartments.size()+1);
 		apartments.put(apartmentDTO.getId(), ApartmentDTO.toApartment(apartmentDTO));
 		saveApartments();
 		
@@ -185,20 +220,5 @@ public class ApartmentDAO {
 			e.printStackTrace();
 		} 
 			
-	}
-	
-	//funkcija je rekurzivna
-	//vraca prvi slobodan id
-	//poziva se sa getFreeId(1)
-	private long getFreeId(long id) {
-		loadApartments();
-		
-		for (Map.Entry<Long, Apartment> apartment : this.apartments.entrySet()) {
-			if(apartment.getValue().getId() == id) {
-				return getFreeId(id++);
-			}
-		}
-		
-		return id;
 	}
 }

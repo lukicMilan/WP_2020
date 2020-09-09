@@ -165,9 +165,10 @@ export default {
                       gender: this.form.gender,
                       userType: "GUEST"
                     })
-                    .then((response) => { console.log(response) },
-                          (error) => { console.log(error) }
-      );
+                    .then((response) => { console.log(response) })
+                    .catch(error => {
+                      console.log(error) 
+                    }) ;
         this.clearForm()
       }
     }

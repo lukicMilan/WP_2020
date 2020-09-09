@@ -12,12 +12,19 @@
                             <md-field :class="getValidationClass('type')">
                                 <label for="type">Apartment type</label>
                                 <md-select name="type" id="type" v-model="form.type" md-dense >
-                                <md-option value="full">Full</md-option>
-                                <md-option value="oneRoom">One room</md-option>
+                                <md-option value="FULL">Full</md-option>
+                                <md-option value="ONE_ROOM">One room</md-option>
                                 </md-select>
                                 <span class="md-error">Room type is required</span>
                             </md-field>
                         </div>
+                        <div class="md-layout-item md-small-size-50">
+                            <md-field :class="getValidationClass('price')">
+                                <label for="price">Price</label>
+                                <md-input type="number" id="price" name="price"  v-model="form.price" />
+                                <span class="md-error" v-if="!$v.form.price.required">The price is required</span>
+                            </md-field>
+                            </div>
                     </div>
                     <div class="md-layout md-gutter">
                         <div class="md-layout-item md-small-size-50">
@@ -54,10 +61,9 @@
                     <div class="md-layout md-gutter">
                         <div class="md-layout-item md-small-size-50">
                             <md-field>
-                                <label for="entryTime">Amenities</label>
+                                <label for="amenities">Amenities</label>
                                 <md-select v-model="selectedAmenities" name="amenities" id="amenities" multiple>
-                                    <md-option value="hot-tub">Hot tub</md-option>
-                                    <md-option value="room-service">Room Service</md-option>
+                                    <md-option v-for= "item in this.allAmenities" :key="item.id" :value="item">{{item.name}}</md-option>
                                 </md-select>
                             </md-field>
                         </div>
@@ -107,6 +113,7 @@ import { validationMixin } from 'vuelidate'
   } from 'vuelidate/lib/validators'
 //   import DateRangePicker from 'vue2-daterange-picker'
 //   import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
+import axios from 'axios'
 export default {
     name: 'Apartment',
     mixins: [validationMixin],
@@ -129,11 +136,9 @@ export default {
             amenities: []
         },
         selectedAmenities: [],
-        selectedImages: []
+        selectedImages: [],
+        allAmenities: []
     }),
-    component: {
-        Map
-    }, 
     validations: {
       form: {
         type: {
@@ -154,6 +159,9 @@ export default {
         location: {
             required, 
             minLength: minLength(3)
+        },
+        price: {
+            required
         }
       }
     },
@@ -173,8 +181,43 @@ export default {
         if (!this.$v.$invalid) {
           this.saveApartment()
         }
-      }
-    }
+      },
+      saveApartment: function() {
+        axios.post('http://localhost:8080/PocetniREST/rest/apartment',
+                    {
+                        type: this.form.type,
+                        roomNumber: this.form.roomNumber,
+                        guestNumber: this.form.guestNumber,
+                        location: {
+                            latitude : 0,
+                            longitude : 0,
+                            address : this.form.address
+                        },
+                        imageList: [],
+                        price: this.form.price,
+                        entryTime: this.form.entryTime,
+                        leaveTime: this.form.leaveTime,
+                        amenities: this.selectedAmenities,
+                        active: true,
+                        rentDates: [],
+                        freeDates: [],
+                        comments: [],
+                        hostUsername: "host"
+
+                    })
+                    .catch(error => {
+                        console.log(error) 
+                    });
+      },
+    },
+    created() {  
+        axios.get('http://localhost:8080/PocetniREST/rest/amenities')
+                            .then(data => { 
+                            this.allAmenities = data.data})
+                            .catch(error => {
+                                console.log(error) 
+                            });
+}
 }
 </script>
 

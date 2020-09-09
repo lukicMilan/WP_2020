@@ -3,6 +3,7 @@ package dao;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,8 +29,15 @@ public class AmenitiesDAO {
 		loadAmenities();
 	}
 	
-	public Map<Long, Amenities> getAmenities() {
-		return this.amenities;
+	public ArrayList<AmenitiesDTO> getAmenities() {
+		ArrayList<AmenitiesDTO> ams = new ArrayList<>();
+		
+		loadAmenities();
+		for (Map.Entry<Long, Amenities> a : this.amenities.entrySet()) {
+			ams.add(new AmenitiesDTO(a.getValue()));
+		}
+		
+		return ams;
 	}
 	
 	public Amenities getAmenitiesById(long id) {
@@ -41,7 +49,7 @@ public class AmenitiesDAO {
 	}
 	
 	public boolean addAmenity(AmenitiesDTO amenitiesDTO) {
-		amenitiesDTO.setId(getFreeId(1));
+		amenitiesDTO.setId(this.amenities.size()+1);
 		amenities.put(amenitiesDTO.getId(), AmenitiesDTO.toAmenities(amenitiesDTO));
 		saveAmenities();
 		
@@ -108,17 +116,5 @@ public class AmenitiesDAO {
 			e.printStackTrace();
 		} 
 			
-	}
-	
-	private long getFreeId(long id) {
-		loadAmenities();
-		
-		for (Map.Entry<Long, Amenities> amenity : this.amenities.entrySet()) {
-			if(amenity.getValue().getId() == id) {
-				return getFreeId(id++);
-			}
-		}
-		
-		return id;
 	}
 }

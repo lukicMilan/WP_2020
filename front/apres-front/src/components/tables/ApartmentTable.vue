@@ -21,10 +21,13 @@
         <md-table-cell md-label="Amenities" md-sort-by="amenities">{{ item.amenities }}</md-table-cell>
       </md-table-row>
     </md-table>
+    <md-button class="md-dense md-raised md-primary" to="/apartment">Add Apartment</md-button>
   </div>
 </template>
 
 <script>
+  import axios from 'axios'
+
   const toLower = text => {
     return text.toString().toLowerCase()
   }
@@ -42,26 +45,7 @@
     data: () => ({
       search: null,
       searched: [],
-      apartments: [
-        {
-          id: 1,
-          type: "Full",
-          roomNumber: 2,
-          guestNumber: 5,
-          entryTime: 14,
-          leaveTime: 10,
-          amenities: ["Hot tub", "TV"]
-        },
-        {
-          id: 2,
-          type: "One Room",
-          roomNumber: 1,
-          guestNumber: 2,
-          entryTime: 14,
-          leaveTime: 10,
-          amenities: ["Room service", "TV"]
-        },
-      ]
+      apartments: []
     }),
     methods: {
       searchOnTable () {
@@ -69,7 +53,14 @@
       }
     },
     created () {
-      this.searched = this.apartments
+       axios.get('http://localhost:8080/PocetniREST/rest/apartment')
+                            .then(data => { 
+                              this.apartments = data.data
+                              this.searched = data.data})
+                            .catch(error => {
+                                console.log(error) 
+                            });
+      console.log(this.apartments)
     }
   }
 </script>
