@@ -35,6 +35,7 @@
 <script>
 import { required } from 'vuelidate/lib/validators'
 import { validationMixin } from 'vuelidate'
+import axios from 'axios'
 export default {
     name: 'Amenity',
     mixins: [validationMixin],
@@ -73,8 +74,19 @@ export default {
         if (!this.$v.$invalid) {
           this.saveAmenity()
         }
+      },
+    saveAmenity: function() {
+        axios.post('http://localhost:8080/PocetniREST/rest/amenities',
+                    {
+                        type: this.form.type,
+                        name: this.form.name
+                    })
+                    .then((response) => { console.log(response) })
+                    .catch(error => {
+                        console.log(error) 
+                    });
       }
-    }
+    },
 }
 </script>
 

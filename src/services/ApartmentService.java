@@ -1,5 +1,6 @@
 package services;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,19 +45,20 @@ public class ApartmentService {
 	public Response getApartments(@Context HttpServletRequest request) {
 		ApartmentDAO apartmentDAO = (ApartmentDAO) ctx.getAttribute("apartmentDAO");
 		User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
-		
-		Map<Long, Apartment> aps = new HashMap<Long, Apartment>();
-		if(loggedInUser == null) {
-			aps = apartmentDAO.getAllActiveApartments();
-		}
-		else if(loggedInUser.getUserType()==UserType.GUEST) {
-			aps = apartmentDAO.getAllActiveApartments();
-		}else if(loggedInUser.getUserType()==UserType.HOST){
-			aps = apartmentDAO.getAllPostedBy(loggedInUser.getUsername());
-		}
-		else {
-			aps = apartmentDAO.getApartments();
-		}
+
+		ArrayList<ApartmentDTO> aps = new ArrayList<>();
+//		if(loggedInUser == null) {
+//			aps = apartmentDAO.getAllActiveApartments();
+//		}
+//		else if(loggedInUser.getUserType()==UserType.GUEST) {
+//			aps = apartmentDAO.getAllActiveApartments();
+//		}else if(loggedInUser.getUserType()==UserType.HOST){
+//			aps = apartmentDAO.getAllPostedBy(loggedInUser.getUsername());
+//		}
+//		else {
+//			aps = apartmentDAO.getApartments();
+//		}
+		aps = apartmentDAO.getApartments();
 		return Response.status(200).entity(aps).build();
 	}
 	
@@ -67,7 +69,7 @@ public class ApartmentService {
 		ApartmentDAO apartmentDAO = (ApartmentDAO) ctx.getAttribute("apartmentDAO");
 		User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
 		
-		Map<Long, Apartment> aps = new HashMap<Long, Apartment>();
+		ArrayList<ApartmentDTO> aps = new ArrayList<>();
 		if(loggedInUser.getUserType() == UserType.HOST) {
 			aps = apartmentDAO.getAllNonActiveApartmentsPostedBy(loggedInUser.getUsername());
 			return Response.status(200).entity(aps).build();
@@ -85,7 +87,7 @@ public class ApartmentService {
 	public Response addApartment(ApartmentDTO apartmentDTO)  {
 		
 		ApartmentDAO apartmentDAO =(ApartmentDAO) ctx.getAttribute("apartmentDAO");
-		
+		System.out.println("usao");
 		if(apartmentDAO.apartmentExists(apartmentDTO.getId())) {
 			return Response.status(409).build();
 		}
@@ -133,13 +135,13 @@ public class ApartmentService {
 	public Response getAllPostedBy(@PathParam(value = "username") String username, @Context HttpServletRequest request) {
 		ApartmentDAO apDAO = (ApartmentDAO) ctx.getAttribute("apartmentDAO");
 		
-		Map<Long, Apartment> aps = apDAO.getAllPostedBy(username);
+		ArrayList<ApartmentDTO> aps = apDAO.getAllPostedBy(username);
 		
 		if(aps == null) {
 			return Response.status(204).build();
 		}
 		
-		return Response.status(200).entity(new HashMap<Long, Apartment>(aps)).build();
+		return Response.status(200).entity(new ArrayList<ApartmentDTO>(aps)).build();
 	}
 	
 	@DELETE

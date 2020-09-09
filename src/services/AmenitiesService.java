@@ -1,5 +1,6 @@
 package services;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,7 +46,7 @@ public class AmenitiesService {
 	public Response getAmenities(@Context HttpServletRequest request) {
 		AmenitiesDAO amenitiesDAO = (AmenitiesDAO) ctx.getAttribute("amenitiesDAO");
 		
-		Map<Long, Amenities> ams = new HashMap<Long, Amenities>();
+		ArrayList<AmenitiesDTO> ams = new ArrayList<>();
 		ams = amenitiesDAO.getAmenities();
 		
 		return Response.status(200).entity(ams).build();
@@ -58,14 +59,13 @@ public class AmenitiesService {
 		
 		AmenitiesDAO amenitiesDAO =(AmenitiesDAO) ctx.getAttribute("amenitiesDAO");
 		
-		if(amenitiesDAO.amenityExists(amenitiesDTO.getId())) {
-			return Response.status(409).build();
-		}
-		if(loggedInUser.getUserType() != UserType.ADMINISTRATOR) {
-			System.out.println("Only the system administrator can add new amenities.");
-			return Response.status(403).build();
-		}
-		
+//		if(amenitiesDAO.amenityExists(amenitiesDTO.getId())) {
+//			return Response.status(409).build();
+//		}
+//		if(loggedInUser.getUserType() != UserType.ADMINISTRATOR) {
+//			System.out.println("Only the system administrator can add new amenities.");
+//			return Response.status(403).build();
+//		}
 		amenitiesDAO.addAmenity(amenitiesDTO);		
 		return Response.status(200).build();
 	}

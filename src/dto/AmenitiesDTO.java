@@ -13,6 +13,10 @@ public class AmenitiesDTO {
 		this.type = type;
 		this.name = name;
 	}
+	
+	public AmenitiesDTO() {
+		super();
+	}
 
 	public AmenitiesDTO(Amenities amenities) {
 		this.id = amenities.getId();
@@ -21,10 +25,10 @@ public class AmenitiesDTO {
 	}
 	
 	public static Amenities toAmenities(AmenitiesDTO amenitiesDTO) {
-		Amenities amenities = null;
-		amenities.setId(amenitiesDTO.id);
-		amenities.setType(amenitiesDTO.type);
-		amenities.setName(amenitiesDTO.name);
+		Amenities amenities = new Amenities();
+		amenities.setId(amenitiesDTO.getId());
+		amenities.setType(amenitiesDTO.getType());
+		amenities.setName(amenitiesDTO.getName());
 		return amenities;
 	}
 	
