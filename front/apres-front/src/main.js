@@ -18,7 +18,10 @@ import 'vue-material/dist/theme/default.css'
 import SideBar from "./components/SidebarPlugin/SideBar"
 import LoginPage from "./pages/LoginPage"
 
+var VueCookie = require('vue-cookie');
+
 Vue.use(VueRouter);
+Vue.use(VueCookie);
 
 const router = new VueRouter({
   routes: [

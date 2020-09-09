@@ -6,9 +6,9 @@
         </md-button>
         <span class="md-title">Bookomat</span>
         <div class="md-toolbar-section-end">
-          <md-button class="md-dense md-primary" to = "/login">Log in</md-button>
-          <md-button class="md-dense md-raised md-primary" to = "/register">Sign up</md-button>
-          <md-button class="md-dense md-raised md-primary" to = "/login" @click="logout()">Logout</md-button>
+          <md-button v-if="!loggedInUser" class="md-dense md-primary" to = "/login">Log in</md-button>
+          <md-button v-if="!loggedInUser" class="md-dense md-raised md-primary" to = "/register">Sign up</md-button>
+          <md-button v-if="loggedInUser" class="md-dense md-raised md-primary" to = "/login" @click.native="logout">Logout</md-button>
         </div>
         </md-toolbar>
         <md-drawer :md-active.sync="showNavigation" md-swipeable>
@@ -59,12 +59,11 @@ export default {
     },
     methods: {
       logout: function() {
-        alert(JSON.stringify(this.loggedInUser));
-        this.$emit('loggedInUser', null);
+        this.$emit('userLoggedIn', null);
       },
 
       ifLoggedIn: function () {
-        if(this.loggedInUser == null) {
+        if(this.loggedInUser === null) {
           return false;
         } else {
           return true;
