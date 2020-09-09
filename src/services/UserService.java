@@ -1,5 +1,7 @@
 package services;
 
+import java.util.ArrayList;
+
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +36,25 @@ public class UserService {
 		if(ctx.getAttribute("userDAO")== null) {
 			ctx.setAttribute("userDAO", new UserDAO(ctx.getRealPath("")));
 		}
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getUsers(@Context HttpServletRequest request) {
+		UserDAO userDAO = (UserDAO) ctx.getAttribute("userDAO");
+		
+		User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
+		System.out.println(request.getSession().getAttributeNames());
+		
+		if(request.getSession().getAttribute("loggedInUser")!=null) {
+			if(loggedInUser.getUserType() != UserType.ADMINISTRATOR) {
+				return Response.status(403).build();
+			}
+		}
+		
+		ArrayList<UserDTO> users = userDAO.getAllUsersDTO();
+		
+		return Response.status(200).entity(users).build();
 	}
 	
 	@GET
@@ -119,6 +140,7 @@ public class UserService {
 	@POST
 	@Path("/login")
 	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response login(UserCredentials userCredentials, @Context HttpServletRequest request) {
 		UserDAO userDAO = (UserDAO) ctx.getAttribute("userDAO");
 		
@@ -127,6 +149,7 @@ public class UserService {
 		}
 		
 		request.getSession().setAttribute("loggedInUser", userDAO.getUserByUsername(userCredentials.getUsername()));
+		
 		
 		return Response.status(200).entity(userDAO.getUserByUsername(userCredentials.getUsername())).build();
 	}

@@ -17,6 +17,7 @@ import 'vue-material/dist/theme/default.css'
 
 import SideBar from "./components/SidebarPlugin/SideBar"
 import LoginPage from "./pages/LoginPage"
+import UsersTable from "./components/tables/UsersTable"
 
 var VueCookie = require('vue-cookie');
 
@@ -71,6 +72,11 @@ const router = new VueRouter({
           path: "/amenitiesTable",
           name: "AmenitiesTable", 
           component: AmenitiesTable
+        },
+        {
+          path: "/usersTable",
+          name: "UsersTable",
+          component: UsersTable
         }
         ]
     }

@@ -21,6 +21,11 @@ export default {
         userLoggedIn(user) {
             this.loggedInUser = user;
             this.$cookie.set('loggedInUser', JSON.stringify(user));
+            if(user !== null) {
+                if(user.userType==="ADMINISTRATOR") {
+                    this.$router.push('/usersTable');
+                }
+            }
         }
     },
     
