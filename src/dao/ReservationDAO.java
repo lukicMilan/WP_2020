@@ -26,7 +26,7 @@ public class ReservationDAO {
 		this.contextPath = contextPath;
 		
 		@SuppressWarnings("deprecation")
-		Reservation reservation = new Reservation(getFreeId(1), 1, new Date(120, 11, 1), 2, 100, "Welcome to apartment", "guest", ReservationStatus.CREATED);
+		Reservation reservation = new Reservation(getFreeId(1), 1, new Date(120, 11, 1), 2, 100, "Welcome to apartment", "guest", "host", ReservationStatus.CREATED);
 		
 		reservations.put(reservation.getReservationId(), reservation);
 		
@@ -64,7 +64,19 @@ public class ReservationDAO {
 		ArrayList<ReservationDTO> reservationList = new ArrayList<>();
 		
 		for (Map.Entry<Long, Reservation> reservation : this.reservations.entrySet()) {
-			if(reservation.getValue().getGuestUsername() == username) {
+			if(reservation.getValue().getGuestUsername().equals(username)) {
+				reservationList.add(new ReservationDTO(reservation.getValue()));
+			}
+		}
+		
+		return reservationList;
+	}
+
+	public ArrayList<ReservationDTO> getAllFromHost(String username) {
+ArrayList<ReservationDTO> reservationList = new ArrayList<>();
+		
+		for (Map.Entry<Long, Reservation> reservation : this.reservations.entrySet()) {
+			if(reservation.getValue().getHostUsername().equals(username)) {
 				reservationList.add(new ReservationDTO(reservation.getValue()));
 			}
 		}

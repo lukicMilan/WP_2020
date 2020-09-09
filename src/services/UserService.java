@@ -17,10 +17,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-
 import dao.UserDAO;
 import dto.UserCredentials;
 import dto.UserDTO;
@@ -83,8 +79,11 @@ public class UserService {
 		
 		User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
 		
-		if(loggedInUser.getUserType() != UserType.ADMINISTRATOR) {
-			return Response.status(403).build();
+		
+		if(loggedInUser != null) {
+			if(loggedInUser.getUserType() != UserType.ADMINISTRATOR) {
+				return Response.status(403).build();
+			}
 		}
 
 		

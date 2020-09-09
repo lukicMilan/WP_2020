@@ -124,6 +124,20 @@ public class ReservationService {
 		return Response.status(200).entity(reservationDTOList).build();
 	}
 	
+	@GET
+	@Path("/host/{username}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getReservationByHostUsername(@PathParam(value="username") String username) {
+		ReservationDAO reservationDAO = (ReservationDAO) ctx.getAttribute("reservationDAO");
+		
+		//fali validacija da li je ulogovan
+		
+		ArrayList<ReservationDTO> reservationDTOList = reservationDAO.getAllFromHost(username);
+	
+		
+		return Response.status(200).entity(reservationDTOList).build();
+	}
+	
 	@DELETE
 	@Path("/{id}")
 	public Response deleteReservation(@PathParam(value="id") long id, @Context HttpServletRequest request) {
