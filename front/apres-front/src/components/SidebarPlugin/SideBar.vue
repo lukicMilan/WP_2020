@@ -91,7 +91,7 @@ export default {
       loggedAdministrator: function() {
         if(this.loggedInUser===null) {
           return false;
-        } else if(this.loggedInUser.userType === "ADMINISTRATOR") {
+        } else if(this.loggedInUser.userType === "ADMINISTRATOR" || this.loggedInUser.userType === "HOST") {
           return true;
         }
         return false;

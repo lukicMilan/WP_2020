@@ -13,6 +13,7 @@ public class ReservationDTO {
 	float totalPrice;
 	String welcomeNote;
 	String guestUsername;
+	String hostUsername;
 	ReservationStatus status;
 	
 	ReservationDTO() {
@@ -28,11 +29,12 @@ public class ReservationDTO {
 		this.totalPrice = reservation.getTotalPrice();
 		this.welcomeNote = reservation.getWelcomeNote();
 		this.guestUsername = reservation.getGuestUsername();
+		this.hostUsername = reservation.getHostUsername();
 		this.status = reservation.getStatus();
 	}
 
 	public ReservationDTO(long reservationId, long apartmentId, Date date, int nights, float totalPrice,
-			String welcomeNote, String guestUsername, ReservationStatus status) {
+			String welcomeNote, String guestUsername, String hostUsername, ReservationStatus status) {
 		super();
 		this.reservationId = reservationId;
 		this.apartmentId = apartmentId;
@@ -46,7 +48,7 @@ public class ReservationDTO {
 
 	public Reservation getReservationClass() {
 		return new Reservation(this.getReservationId(), this.apartmentId, this.getDate(), this.getNights(),
-				this.getTotalPrice(), this.getWelcomeNote(), this.getGuestUsername(), this.getStatus());
+				this.getTotalPrice(), this.getWelcomeNote(), this.getGuestUsername(), this.hostUsername, this.getStatus());
 	}
 
 	public long getReservationId() {

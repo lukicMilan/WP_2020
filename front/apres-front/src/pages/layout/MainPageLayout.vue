@@ -6,7 +6,7 @@
         <div class="main-panel">
             <!--top-navbar -->
             <!--content-->
-            <router-view  @userLoggedIn="userLoggedIn($event)"></router-view>
+            <router-view :logged-in-user="loggedInUser" @userLoggedIn="userLoggedIn($event)"></router-view>
         </div>
     </div>
 </div>
@@ -36,7 +36,7 @@ export default {
             }
         },
     
-    mounted() {
+    created() {
       this.loggedInUser = JSON.parse(this.$cookie.get('loggedInUser'));
     },
 };

@@ -9,7 +9,6 @@ import java.util.Map;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
 
 import dto.UserDTO;
 import model.Apartment;

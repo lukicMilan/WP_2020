@@ -3,14 +3,15 @@ package model;
 import java.util.Date;
 
 public class Reservation {
-	long reservationId;
-	long apartmentId;
-	Date date;
-	int nights = 1;
-	float totalPrice;
-	String welcomeNote;
-	String guestUsername;
-	ReservationStatus status;
+	private long reservationId;
+	private long apartmentId;
+	private Date date;
+	private int nights = 1;
+	private float totalPrice;
+	private String welcomeNote;
+	private String guestUsername;
+	private String hostUsername;
+	private ReservationStatus status;
 	
 	public Reservation() {
 		super();
@@ -19,7 +20,7 @@ public class Reservation {
 	
 
 	public Reservation(long reservationId, long apartmentId, Date date, int nights, float totalPrice, String welcomeNote,
-			String guestUsername, ReservationStatus status) {
+			String guestUsername, String hostUsername, ReservationStatus status) {
 		super();
 		this.reservationId = reservationId;
 		this.apartmentId = apartmentId;
@@ -28,6 +29,7 @@ public class Reservation {
 		this.totalPrice = totalPrice;
 		this.welcomeNote = welcomeNote;
 		this.guestUsername = guestUsername;
+		this.hostUsername = hostUsername;
 		this.status = status;
 	}
 
@@ -98,11 +100,25 @@ public class Reservation {
 
 
 
+	public String getHostUsername() {
+		return hostUsername;
+	}
+
+
+
+	public void setHostUsername(String hostUsername) {
+		this.hostUsername = hostUsername;
+	}
+
+
+
 	@Override
 	public String toString() {
-		return "Reservation [apartment=" + apartmentId + ", date=" + date + ", nights=" + nights + ", totalPrice="
-				+ totalPrice + ", welcomeNote=" + welcomeNote + ", guest=" + guestUsername + ", status=" + status + "]";
+		return "Reservation [reservationId=" + reservationId + ", apartmentId=" + apartmentId + ", date=" + date
+				+ ", nights=" + nights + ", totalPrice=" + totalPrice + ", welcomeNote=" + welcomeNote
+				+ ", guestUsername=" + guestUsername + ", hostUsername=" + hostUsername + ", status=" + status + "]";
 	}
+
 	
 	
 }

@@ -59,6 +59,9 @@ const searchOnTable = (items, term) => {
 
 export default {
     name: 'UsersTable',
+    props: {
+        loggedInUser: null
+    },
     data: () => ({
         searchedWord: "",
         searched: [],
@@ -66,11 +69,31 @@ export default {
     }),
 
     mounted() {
-        axios.get('http://localhost:8080/PocetniREST/rest/user')
-        .then(data => {
-            this.users = data.data;
-            this.searched = data.data;
-        });
+        if(this.loggedInUser === null) {
+            return;
+        }
+        if(this.loggedInUser.userType === "ADMINISTRATOR") {
+            axios.get('http://localhost:8080/PocetniREST/rest/user')
+            .then(data => {
+                this.users = data.data;
+                this.searched = data.data;
+            });
+            return;
+        }
+        if(this.loggedInUser.userType === "HOST") {
+            axios.get('http://localhost:8080/PocetniREST/rest/reservation/host/' + this.loggedInUser.username)
+            .then(data => {
+                data.data.forEach(element => {
+                    axios.get('http://localhost:8080/PocetniREST/rest/user/' + element.guestUsername)
+                    .then(data1=> {
+                        if(!this.users.includes(data1.data)) {
+                            this.users.push(data1.data);
+                            this.searched.push(data1.data);
+                        }
+                    });
+                });
+            })
+        }
     },
 
     methods: {
