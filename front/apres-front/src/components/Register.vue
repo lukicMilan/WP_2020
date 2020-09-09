@@ -29,10 +29,10 @@
                       <div class="md-layout-item md-small-size-100">
                         <md-field :class="getValidationClass('username')">
                             <label for="username">Username</label>
-                            <md-input name="username" id="username" v-model="form.username" />
+                            <md-input name="username" id="username" v-model="form.username" @change="changeValue()" />
                             <span class="md-error" v-if="!$v.form.username.required">The username is required</span>
+                            <span class="md-error" v-else-if="!$v.form.username.usernameExists">Username already exists</span>
                             <span class="md-error" v-else-if="!$v.form.username.minlength">Invalid username</span>
-                            <span class="md-error" v-else-if="!$v.form.username.notSameAs">Username already exists</span>
                         </md-field>
                       </div>
                       <div class="md-layout-item md-small-size-100">
@@ -81,10 +81,14 @@ import { validationMixin } from 'vuelidate'
     required,
     minLength,
     sameAs,
-    not
+    // not
     // maxLength
   } from 'vuelidate/lib/validators'
   import axios from 'axios'
+
+  function usernameExists () {
+    return !this.wrongUsername
+  }
 export default {
     name: 'Register',
     mixins: [validationMixin],
@@ -99,7 +103,7 @@ export default {
             gender: null,
             password: null
         },
-        usernames: null
+        wrongUsername: false
     }),
     validations: {
       form: {
@@ -114,7 +118,7 @@ export default {
         username: {
             required,
             minLength: minLength(3),
-            notSameAs: not(sameAs('usernames'))
+            usernameExists
         },
         password: {
             required,
@@ -154,6 +158,9 @@ export default {
         this.form.password = null
         this.form.passwordConfirm = null
       },
+      changeValue() {
+        this.wrongUsername = false
+      },
       saveUser: function () {
         axios.post('http://localhost:8080/PocetniREST/rest/user',
                     {
@@ -164,11 +171,14 @@ export default {
                       gender: this.form.gender,
                       userType: "GUEST"
                     })
-                    .then((response) => { console.log(response) })
+                    .then((response) => { 
+                      this.wrongUsername = false
+                      console.log(response) })
                     .catch(error => {
-                      console.log(error) 
+                       console.log(error)
+                      this.wrongUsername = true
                     }) ;
-        this.clearForm()
+
       }
     }
 }
