@@ -38,21 +38,12 @@ const searchOnTable = (items, term) => {
     let searchedItems = [];
     if (term) {
       searchedItems = searchedItems.concat(items.filter(item => (item.username).includes(term)));
-    }
-
-    if (term) {
       searchedItems = searchedItems.concat(items.filter(item => toLower(item.name).includes(toLower(term))));
-    }
-
-    if (term) {
       searchedItems = searchedItems.concat(items.filter(item => toLower(item.surname).includes(toLower(term))));
-    }
-
-    if (term) {
       searchedItems = searchedItems.concat(items.filter(item => toLower(item.userType).includes(toLower(term))));
+      searchedItems = uniqueElementsBy(searchedItems, (a,b) => a.username == b.username);
     }
 
-    searchedItems = uniqueElementsBy(searchedItems, (a,b) => a.username == b.username);
 
     return searchedItems
 }

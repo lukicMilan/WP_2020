@@ -26,6 +26,7 @@ public class AmenitiesDAO {
 		Amenities amenity = new Amenities("Outside", "Hot tub");
 		amenity.setId(1);
 		this.amenities.put(amenity.getId(), amenity);
+		saveAmenities();
 		loadAmenities();
 	}
 	
