@@ -63,7 +63,7 @@
                             <md-field>
                                 <label for="amenities">Amenities</label>
                                 <md-select v-model="selectedAmenities" name="amenities" id="amenities" multiple>
-                                    <md-option v-for= "item in this.allAmenities" :key="item.id" :value="item">{{item.name}}</md-option>
+                                    <md-option v-for= "item in this.allAmenities" :key="item.id" :value="item.id">{{item.name}}</md-option>
                                 </md-select>
                             </md-field>
                         </div>
@@ -123,7 +123,7 @@ export default {
     // components: {DateRangePicker},
     data: () => ({
         form: {
-            type: null,
+            type: String,
             roomNumber: null,
             guestNumber: null,
             location: null,
@@ -165,6 +165,11 @@ export default {
         }
       }
     },
+    computed: {
+        getAmenities() {
+            return this.items.filter(item => this.selectedItems.includes(item.id));
+        }
+    },
     methods: {
         getValidationClass (fieldName) {
         const field = this.$v.form[fieldName]
@@ -197,7 +202,7 @@ export default {
                         price: this.form.price,
                         entryTime: this.form.entryTime,
                         leaveTime: this.form.leaveTime,
-                        amenities: this.selectedAmenities,
+                        amenities: this.getAmenities,
                         active: true,
                         rentDates: [],
                         freeDates: [],
@@ -217,7 +222,7 @@ export default {
                             .catch(error => {
                                 console.log(error) 
                             });
-}
+    }
 }
 </script>
 
