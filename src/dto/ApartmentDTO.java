@@ -6,7 +6,6 @@ import model.Amenities;
 import model.Apartment;
 import model.ApartmentComment;
 import model.ApartmentType;
-import model.Location;
 import model.UserHost;
 
 public class ApartmentDTO {
@@ -14,7 +13,6 @@ public class ApartmentDTO {
 	private String type;
 	private int roomNumber;
 	private int guestNumber;
-	private Location location;
 	private List<String> rentDates;
 	private List<String> freeDates;
 	private String hostUsername;
@@ -25,17 +23,27 @@ public class ApartmentDTO {
 	private int leaveTime;
 	private boolean active;
 	private List<Amenities> amenities;
+	long latitude;
+	long longitude;
+	String street;
+	int number;
+	String city;
+	int zipCode;
 	
-	public ApartmentDTO(long id, String type, int roomNumber, int guestNumber, Location location,
+	public ApartmentDTO(long id, String type, int roomNumber, int guestNumber,
 			List<String> rentDates, List<String> freeDates, String hostUsername, List<ApartmentComment> comments,
 			List<String> imageList, long price, int entryTim, int leaveTime, boolean active,
-			List<Amenities> amenities) {
+			List<Amenities> amenities,long latitude,
+			long longitude,
+			String street,
+			int number,
+			String city,
+			int zipCode) {
 		super();
 		this.id = id;
 		this.type = type;
 		this.roomNumber = roomNumber;
 		this.guestNumber = guestNumber;
-		this.location = location;
 		this.rentDates = rentDates;
 		this.freeDates = freeDates;
 		this.hostUsername = hostUsername;
@@ -46,6 +54,12 @@ public class ApartmentDTO {
 		this.leaveTime = leaveTime;
 		this.active = active;
 		this.amenities = amenities;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.street = street;
+		this.number = number;
+		this.city =city;
+		this.zipCode = zipCode;
 	}
 	
 	public ApartmentDTO() {
@@ -67,6 +81,12 @@ public class ApartmentDTO {
 		this.leaveTime = ap.getLeaveTime();
 		this.active = ap.isActive();
 		this.amenities = ap.getAmenities();
+		this.longitude = ap.getLongitude();
+		this.latitude = ap.getLatitude();
+		this.street = ap.getStreet();
+		this.number = ap.getNumber();
+		this.city = ap.getCity();
+		this.zipCode = ap.getZipCode();
 	}
 	
 	public static Apartment toApartment(ApartmentDTO apartmentDTO) {
@@ -75,7 +95,6 @@ public class ApartmentDTO {
 		ap.setType(ApartmentType.valueOf(apartmentDTO.type));
 		ap.setRoomNumber(apartmentDTO.roomNumber);
 		ap.setGuestNumber(apartmentDTO.guestNumber);
-		ap.setLocation(apartmentDTO.location);
 		//rent dates i free dates????
 		ap.setHostUsername(apartmentDTO.hostUsername);
 		ap.setComments(apartmentDTO.comments);
@@ -85,6 +104,12 @@ public class ApartmentDTO {
 		ap.setLeaveTime(apartmentDTO.leaveTime);
 		ap.setActive(apartmentDTO.active);
 		ap.setAmenities(apartmentDTO.amenities);
+		ap.setLatitude(apartmentDTO.getLatitude());
+		ap.setLongitude(apartmentDTO.getLongitude());
+		ap.setStreet(apartmentDTO.getStreet());
+		ap.setNumber(apartmentDTO.getNumber());
+		ap.setCity(apartmentDTO.getCity());
+		ap.setZipCode(apartmentDTO.getZipCode());
 		return ap;
 	}
 	
@@ -111,12 +136,6 @@ public class ApartmentDTO {
 	}
 	public void setGuestNumber(int guestNumber) {
 		this.guestNumber = guestNumber;
-	}
-	public Location getLocation() {
-		return location;
-	}
-	public void setLocation(Location location) {
-		this.location = location;
 	}
 	public List<String> getRentDates() {
 		return rentDates;
@@ -177,6 +196,54 @@ public class ApartmentDTO {
 	}
 	public void setAmenities(List<Amenities> amenities) {
 		this.amenities = amenities;
+	}
+
+	public long getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(long latitude) {
+		this.latitude = latitude;
+	}
+
+	public long getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(long longitude) {
+		this.longitude = longitude;
+	}
+
+	public String getStreet() {
+		return street;
+	}
+
+	public void setStreet(String street) {
+		this.street = street;
+	}
+
+	public int getNumber() {
+		return number;
+	}
+
+	public void setNumber(int number) {
+		this.number = number;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public int getZipCode() {
+		return zipCode;
+	}
+
+	public void setZipCode(int zipCode) {
+		this.zipCode = zipCode;
 	}
 	
 	

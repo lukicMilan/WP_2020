@@ -29,6 +29,7 @@ const router = new VueRouter({
     {
         path: "/",
         component: MainPageLayout,
+        redirect: "/apartmentTable",
         children: [{
           path: "/hello",
           name: "Hello World",

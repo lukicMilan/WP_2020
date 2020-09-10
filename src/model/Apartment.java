@@ -9,7 +9,6 @@ public class Apartment {
 	ApartmentType type;
 	int roomNumber;
 	int guestNumber;
-	Location location;
 	List<Date> rentDates;
 	List<Date> freeDates;
 	String hostUsername;
@@ -20,19 +19,29 @@ public class Apartment {
 	int leaveTime = 10;
 	boolean active;
 	List<Amenities> amenities;
+	long latitude;
+	long longitude;
+	String street;
+	int number;
+	String city;
+	int zipCode;
 	
 	public Apartment() {
 		super();
 	}
 
-	public Apartment(ApartmentType type, int roomNumber, int guestNumber, Location location, List<Date> rentDates,
+	public Apartment(ApartmentType type, int roomNumber, int guestNumber, List<Date> rentDates,
 			List<Date> freeDates, String hostUsername, List<ApartmentComment> comments, List<String> imageList, long price,
-			int entryTime, int leaveTime, boolean active, List<Amenities> amenities) {
+			int entryTime, int leaveTime, boolean active, List<Amenities> amenities,	long latitude,
+	long longitude,
+	String street,
+	int number,
+	String city,
+	int zipCode) {
 		super();
 		this.type = type;
 		this.roomNumber = roomNumber;
 		this.guestNumber = guestNumber;
-		this.location = location;
 		this.rentDates = rentDates;
 		this.freeDates = freeDates;
 		this.hostUsername = hostUsername;
@@ -43,6 +52,12 @@ public class Apartment {
 		this.leaveTime = leaveTime;
 		this.active = active;
 		this.amenities = amenities;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.street = street;
+		this.number = number;
+		this.city =city;
+		this.zipCode = zipCode;
 	}
 
 	public long getId() {
@@ -75,14 +90,6 @@ public class Apartment {
 
 	public void setGuestNumber(int guestNumber) {
 		this.guestNumber = guestNumber;
-	}
-
-	public Location getLocation() {
-		return location;
-	}
-
-	public void setLocation(Location location) {
-		this.location = location;
 	}
 
 	public List<Date> getRentDates() {
@@ -164,12 +171,66 @@ public class Apartment {
 	public void setAmenities(List<Amenities> amenities) {
 		this.amenities = amenities;
 	}
+	
+	
+
+	public long getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(long latitude) {
+		this.latitude = latitude;
+	}
+
+	public long getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(long longitude) {
+		this.longitude = longitude;
+	}
+
+	public String getStreet() {
+		return street;
+	}
+
+	public void setStreet(String street) {
+		this.street = street;
+	}
+
+	public int getNumber() {
+		return number;
+	}
+
+	public void setNumber(int number) {
+		this.number = number;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public int getZipCode() {
+		return zipCode;
+	}
+
+	public void setZipCode(int zipCode) {
+		this.zipCode = zipCode;
+	}
 
 	@Override
 	public String toString() {
-		return "Apartment [type=" + type + ", roomNumber=" + roomNumber + ", guestNumber=" + guestNumber + ", location="
-				+ location + ", rentDates=" + rentDates + ", freeDates=" + freeDates + ", host=" + hostUsername + ", comments="
-				+ comments + ", imageList=" + imageList + ", price=" + price + ", entryTime=" + entryTime
-				+ ", leaveTime=" + leaveTime + ", active=" + active + ", amenities=" + amenities + "]";
+		return "Apartment [id=" + id + ", type=" + type + ", roomNumber=" + roomNumber + ", guestNumber=" + guestNumber
+				+ ", rentDates=" + rentDates + ", freeDates=" + freeDates + ", hostUsername="
+				+ hostUsername + ", comments=" + comments + ", imageList=" + imageList + ", price=" + price
+				+ ", entryTime=" + entryTime + ", leaveTime=" + leaveTime + ", active=" + active + ", amenities="
+				+ amenities + ", latitude=" + latitude + ", longitude=" + longitude + ", street=" + street + ", number="
+				+ number + ", city=" + city + ", zipCode=" + zipCode + "]";
 	}
+
+	
 }

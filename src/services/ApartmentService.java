@@ -61,7 +61,7 @@ public class ApartmentService {
 		aps = apartmentDAO.getApartments();
 		return Response.status(200).entity(aps).build();
 	}
-	
+
 	@GET
 	@Path("/active")
 	@Produces(MediaType.APPLICATION_JSON)

@@ -1,5 +1,10 @@
 <template>
   <div class = "apartmentTable">
+    <md-dialog :md-active.sync="showDialog">
+      <apartmentDetails :selectedApartment="this.selectedApartment"
+                        :loggedInUser="this.loggedInUser"></apartmentDetails>
+    </md-dialog>
+
     <md-table v-model="searched" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
       <md-table-toolbar>
         <div class="md-toolbar-section-start">
@@ -12,13 +17,18 @@
       </md-table-toolbar>
 
       <md-table-row slot="md-table-row" slot-scope="{ item }">
-        <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{ item.id }}</md-table-cell>
+        <md-table-cell v-if="adminLoggedIn" md-label="ID" md-sort-by="id" md-numeric>{{ item.id }}</md-table-cell>
         <md-table-cell md-label="Type" md-sort-by="type">{{ item.type }}</md-table-cell>
         <md-table-cell md-label="RoomNumber" md-sort-by="roomNumber">{{ item.roomNumber }}</md-table-cell>
         <md-table-cell md-label="GuestNumber" md-sort-by="guestNumber">{{ item.guestNumber }}</md-table-cell>
-        <md-table-cell md-label="EntryTime" md-sort-by="entryTime">{{ item.entryTime }}</md-table-cell>
+        <md-table-cell md-label="Adress" md-sort-by="address">{{ item.street }}</md-table-cell>
+        <md-table-cell md-label="Number" md-sort-by="number">{{ item.number }}</md-table-cell>
+        <md-table-cell md-label="City" md-sort-by="city">{{ item.city }}</md-table-cell>
+
+        <md-table-cell md-label="Details"><md-button class="md-dense md-raised md-secondary" @click="showApartmentDetails(item)">Details</md-button></md-table-cell>
+        <!-- <md-table-cell md-label="EntryTime" md-sort-by="entryTime">{{ item.entryTime }}</md-table-cell>
         <md-table-cell md-label="LeaveTime" md-sort-by="leaveTime">{{ item.leaveTime }}</md-table-cell>
-        <md-table-cell md-label="Amenities" md-sort-by="amenities">{{ item.amenities }}</md-table-cell>
+        <md-table-cell md-label="Amenities" md-sort-by="amenities">{{ item.amenities }}</md-table-cell> -->
       </md-table-row>
     </md-table>
     <md-button v-if="addButton" class="md-dense md-raised md-primary" to="/apartment">Add Apartment</md-button>
@@ -27,6 +37,7 @@
 
 <script>
   import axios from 'axios'
+  import ApartmentDetails from '../dialogContent/ApartmentDetails'
 
   const toLower = text => {
     return text.toString().toLowerCase()
@@ -56,10 +67,15 @@
 
   export default {
     name: 'ApartmentTable',
+    components: {
+      apartmentDetails: ApartmentDetails
+    },
     data: () => ({
       search: null,
       searched: [],
-      apartments: []
+      apartments: [],
+      showDialog: false,
+      selectedApartment: null
     }),
     props: {
       loggedInUser: null,
@@ -67,6 +83,10 @@
     methods: {
       searchOnTable () {
         this.searched = searchOnTable(this.apartments, this.search)
+      },
+      showApartmentDetails(apartment) {
+        this.selectedApartment = apartment;
+        this.showDialog = true;
       }
     },
     mounted () {
@@ -101,14 +121,21 @@
               this.searched = data.data})
             .catch(error => {
                 console.log(error) 
-            });
-      console.log(this.apartments)
+        });
     },
     computed: {
       addButton: function() {
         if(this.loggedInUser===null) {
           return false;
         } else if(this.loggedInUser.userType === "HOST") {
+          return true;
+        }
+        return false;
+      },
+      adminLoggedIn: function() {
+        if(this.loggedInUser===null) {
+          return false;
+        } else if(this.loggedInUser.userType === "ADMINISTRATOR") {
           return true;
         }
         return false;
@@ -120,5 +147,13 @@
 <style lang="scss" scoped>
   .md-field {
     max-width: 300px;
+  }
+  .md-table{
+    max-width: 100%;
+  }
+  .md-dialog .md-dialog-container {
+      max-height: 50%;
+      min-width: 25%;
+      max-width: 50%;
   }
 </style>
