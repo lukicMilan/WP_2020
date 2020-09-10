@@ -70,6 +70,9 @@
                     <md-button>RESERVE</md-button>
                 </div>
             </md-tab>
+            <md-tab md-label="Comments">
+
+            </md-tab>
         </md-tabs>
     </div>
 </template>
@@ -101,7 +104,7 @@ export default {
     },
     mounted: function() {
         let types = [];
-        alert(JSON.stringify(this.loggedInUser));
+        
         if(this.selectedApartment !== null) {
             this.address = this.selectedApartment.number + " " + this.selectedApartment.street + ", " + this.selectedApartment.city
             this.selectedApartment.amenities.forEach(amenity => {
