@@ -75,7 +75,8 @@
       searched: [],
       apartments: [],
       showDialog: false,
-      selectedApartment: null
+      selectedApartment: null,
+      selectedDate: null
     }),
     props: {
       loggedInUser: null,
@@ -152,6 +153,7 @@
     max-width: 100%;
   }
   .md-dialog .md-dialog-container {
+      min-height: 25%;
       max-height: 50%;
       min-width: 25%;
       max-width: 50%;

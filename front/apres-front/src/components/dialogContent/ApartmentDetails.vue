@@ -70,6 +70,9 @@
                     <md-button>RESERVE</md-button>
                 </div>
             </md-tab>
+            <md-tab md-label="Availability">
+                <v-calendar :available-dates='[{start: startRentDate, end: endRentDate}]' is-inline></v-calendar>
+            </md-tab>
             <md-tab md-label="Comments">
 
             </md-tab>
@@ -88,7 +91,10 @@ export default {
             amenityTypes: [],
             active: "ACTIVE",
             nonActive: "NON ACTIVE",
-            address: ""
+            address: "",
+            startRentDate: Date,
+            endRentDate: Date,
+            selectedDate: Date
         }
     },
     computed: {
@@ -100,9 +106,9 @@ export default {
                 return true;
             }
             return false;
-        }
+        },
     },
-    mounted: function() {
+    created: function() {
         let types = [];
         
         if(this.selectedApartment !== null) {
@@ -112,6 +118,8 @@ export default {
                     types.push(amenity.type);
                 }
             });
+            this.startRentDate = new Date(this.selectedApartment.rentDates[0]);
+            this.endRentDate = new Date(this.selectedApartment.rentDates[1]); 
         }
 
         this.amenityTypes = types;
@@ -121,6 +129,7 @@ export default {
 </script>
 <style scoped>
     .ApartmentDetails {
+        min-height: 25%;
         max-height: 50%;
         min-width: 25%;
         min-width: 50%;
