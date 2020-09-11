@@ -1,34 +1,36 @@
 <template>
     <div class = "amenity" >
-        <form novalidate class="md-layout" @submit.prevent="validateAmenity">
-            <md-card class="md-layout-item md-size-50 md-small-size-100">
-                <md-card-header>
-                    <div class="md-title">Amenity</div>
-                </md-card-header>
-                <md-card-content>
-                    <div class="md-layout md-gutter">
-                        <div class="md-layout-item md-small-size-100">
-                            <md-field :class="getValidationClass('type')">
-                                <label for="type">Type</label>
-                                <md-input name="type" id="type" autocomplete="type" v-model="form.type"  />
-                                <span class="md-error" v-if="!$v.form.type.required">The type of amenity is required</span>
-                            </md-field>
-                        </div>
+        <div>
+            <form novalidate class="md-layout" @submit.prevent="validateAmenity">
+                <md-card class="md-layout-item md-size-50 md-small-size-100">
+                    <md-card-header>
+                        <div class="md-title">Amenity</div>
+                    </md-card-header>
+                    <md-card-content>
+                        <div class="md-layout md-gutter">
+                            <div class="md-layout-item md-small-size-100">
+                                <md-field :class="getValidationClass('type')">
+                                    <label for="type">Type</label>
+                                    <md-input name="type" id="type" autocomplete="type" v-model="form.type"  />
+                                    <span class="md-error" v-if="!$v.form.type.required">The type of amenity is required</span>
+                                </md-field>
+                            </div>
 
-                        <div class="md-layout-item md-small-size-100">
-                            <md-field :class="getValidationClass('name')">
-                                <label for="name">Name</label>
-                                <md-input name="name" id="name" autocomplete="name" v-model="form.name" />
-                                <span class="md-error" v-if="!$v.form.name.required">The name is required</span>
-                            </md-field>
+                            <div class="md-layout-item md-small-size-100">
+                                <md-field :class="getValidationClass('name')">
+                                    <label for="name">Name</label>
+                                    <md-input name="name" id="name" autocomplete="name" v-model="form.name" />
+                                    <span class="md-error" v-if="!$v.form.name.required">The name is required</span>
+                                </md-field>
+                            </div>
                         </div>
-                    </div>
-                </md-card-content>
-                <md-card-actions>
-                    <md-button type="submit" class="md-dense md-raised md-primary" >Submit</md-button>
-                </md-card-actions>
-            </md-card>
-        </form> 
+                    </md-card-content>
+                    <md-card-actions>
+                        <md-button type="submit" class="md-dense md-raised md-primary" >Submit</md-button>
+                    </md-card-actions>
+                </md-card>
+            </form> 
+        </div>
     </div>
 </template>
 
@@ -40,13 +42,15 @@ export default {
     name: 'Amenity',
     mixins: [validationMixin],
     props: {
-
+        changeType: String,
+        changeName: String,
+        isEdit: Boolean
     },
     data: () => ({
         form: {
             type: null,
             name: null
-        }
+        },
     }),
     validations: {
         form: {
@@ -75,18 +79,34 @@ export default {
           this.saveAmenity()
         }
       },
+    saveEdit () {
+        axios.put('http://localhost:8080/PocetniREST/rest/amenities',
+                {
+                    type: this.changeType,
+                    name: this.changeName
+                })
+                .then((response) => { console.log(response) })
+                .catch(error => {
+                    console.log(error) 
+            });
+    },
     saveAmenity: function() {
         axios.post('http://localhost:8080/PocetniREST/rest/amenities',
                     {
                         type: this.form.type,
                         name: this.form.name
                     })
-                    .then((response) => { console.log(response) })
+                    .then(data => {
+                        this.$emit('amenityAdded', data.data);
+                    })
                     .catch(error => {
                         console.log(error) 
                     });
       }
     },
+    mounted () {
+        
+    }
 }
 </script>
 

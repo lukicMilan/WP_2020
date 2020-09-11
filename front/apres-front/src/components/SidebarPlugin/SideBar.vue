@@ -22,17 +22,7 @@
             <span class="md-list-item-text">Users Table</span>
             </md-list-item>
 
-            <md-list-item to="/table" >
-            <md-icon>send</md-icon>
-            <span class="md-list-item-text" :items = "this.items" :columns = "this.columns">Table (example)</span>
-            </md-list-item>
-
-            <md-list-item to="amenity">
-            <md-icon>add</md-icon>
-            <span class="md-list-item-text">Add Amenity</span>
-            </md-list-item>
-
-            <md-list-item to="apartment">
+            <md-list-item v-if="loggedHost" to="apartment">
             <md-icon>add</md-icon>
             <span class="md-list-item-text">Add Apartment</span>
             </md-list-item>
@@ -42,7 +32,7 @@
             <span class="md-list-item-text">Show Apartments</span>
             </md-list-item>
 
-            <md-list-item to="amenitiesTable">
+            <md-list-item v-if="administrator" to="amenitiesTable">
             <md-icon>dns</md-icon>
             <span class="md-list-item-text">Show Amenities</span>
             </md-list-item>
@@ -92,6 +82,22 @@ export default {
         if(this.loggedInUser===null) {
           return false;
         } else if(this.loggedInUser.userType === "ADMINISTRATOR" || this.loggedInUser.userType === "HOST") {
+          return true;
+        }
+        return false;
+      },
+      administrator: function() {
+        if(this.loggedInUser===null) {
+          return false;
+        } else if(this.loggedInUser.userType === "ADMINISTRATOR") {
+          return true;
+        }
+        return false;
+      },
+      loggedHost: function() {
+        if(this.loggedInUser===null) {
+          return false;
+        } else if(this.loggedInUser.userType === "HOST") {
           return true;
         }
         return false;

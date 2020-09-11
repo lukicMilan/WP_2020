@@ -19,12 +19,13 @@
                             </md-field>
                         </div>
                         <div class="md-layout-item md-small-size-50">
-                            <md-field :class="getValidationClass('price')">
-                                <label for="price">Price</label>
-                                <md-input type="number" id="price" name="price"  v-model="form.price" />
-                                <span class="md-error" v-if="!$v.form.price.required">The price is required</span>
+                            <md-field>
+                                <label for="amenities">Amenities</label>
+                                <md-select v-model="selectedAmenities" name="amenities" id="amenities" multiple>
+                                    <md-option v-for= "item in this.allAmenities" :key="item.id" :value="item">{{item.name}}</md-option>
+                                </md-select>
                             </md-field>
-                            </div>
+                        </div>
                     </div>
                     <div class="md-layout md-gutter">
                         <div class="md-layout-item md-small-size-50">
@@ -60,30 +61,68 @@
                     </div>
                     <div class="md-layout md-gutter">
                         <div class="md-layout-item md-small-size-50">
-                            <md-field>
-                                <label for="amenities">Amenities</label>
-                                <md-select v-model="selectedAmenities" name="amenities" id="amenities" multiple>
-                                    <md-option v-for= "item in this.allAmenities" :key="item.id" :value="item">{{item.name}}</md-option>
-                                </md-select>
+                            <md-field :class="getValidationClass('price')">
+                                <label for="price">Price</label>
+                                <md-input type="number" id="price" name="price"  v-model="form.price" />
+                                <span class="md-error" v-if="!$v.form.price.required">The price is required</span>
                             </md-field>
                         </div>
-                        
-                        <div class="md-layout-item md-small-size-100">
-                        <md-field :class="getValidationClass('location')">
-                            <label for="location">Adress</label>
-                            <md-input name="location" id="location" v-model="form.location" />
-                            <span class="md-error" v-if="!$v.form.location.required">The location is required</span>
-                            <span class="md-error" v-else-if="!$v.form.location.minlength">Invalid location</span>
-                        </md-field>
-                        </div>
-                        
                         <div class="md-layout-item md-small-size-50">
                             <md-field>
                                 <label>Select images</label>
                                 <md-file v-model="selectedImages" accept="image/*" multiple />
                             </md-field>
                         </div>
-                    </div> 
+                    </div>
+                    <div class="md-layout md-gutter">
+                        <div class="md-layout-item md-small-size-100">
+                        <md-field>
+                            <label for="latitude">Latitude</label>
+                            <md-input type = "number" autocomplete =0  name="latitude" id="latitude" v-model="form.latitude" />
+                        </md-field>
+                        </div>
+                        <div class="md-layout-item md-small-size-100">
+                        <md-field>
+                            <label for="longitude">Longitude</label>
+                            <md-input type = "number"  autocomplete =0 name="longitude" id="longitude" v-model="form.longitude" />
+                        </md-field>
+                        </div>
+                    </div>
+                    <div class="md-layout md-gutter">
+                        <div class="md-layout-item md-small-size-50">
+                            <md-field :class="getValidationClass('city')">
+                                <label for="city">City</label>
+                                <md-input  id="city" name="city"  v-model="form.city" />
+                                <span class="md-error" v-if="!$v.form.city.required">The city is required</span>
+                            </md-field>
+                        </div>
+                        <div class="md-layout-item md-small-size-50">
+                            <div class="md-layout-item md-small-size-100">
+                                <md-field :class="getValidationClass('zipCode')">
+                                    <label for="zipCode">Zip Code</label>
+                                    <md-input type = "number" name="zipCode" id="zipCode" v-model="form.zipCode" />
+                                    <span class="md-error" v-if="!$v.form.zipCode.required">The zip code is required</span>
+                                </md-field>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md-layout md-gutter">
+                        <div class="md-layout-item md-small-size-50">
+                            <md-field :class="getValidationClass('street')">
+                                <label for="street">Street</label>
+                                <md-input  id="street" name="street"  v-model="form.street" />
+                                <span class="md-error" v-if="!$v.form.street.required">The street is required</span>
+                            </md-field>
+                        </div>
+                        <div class="md-layout-item md-small-size-100">
+                            <md-field :class="getValidationClass('number')">
+                                <label for="number">Number</label>
+                                <md-input type = "number" name="number" id="number" v-model="form.number" />
+                                <span class="md-error" v-if="!$v.form.number.required">The zip code is required</span>
+                            </md-field>
+                        </div>
+                    </div>
+                        
 
                         <!-- Ovo je za datepicker, moramo se dogovoriti kako cemo to odraditi -->
                      <!-- </div>
@@ -118,7 +157,7 @@ export default {
     name: 'Apartment',
     mixins: [validationMixin],
     props: {
-
+        loggedInUser: null
     },
     // components: {DateRangePicker},
     data: () => ({
@@ -126,7 +165,16 @@ export default {
             type: null,
             roomNumber: null,
             guestNumber: null,
-            location: null,
+            location: {
+                latitude: 0, 
+                longitude: 0, 
+                adress: { 
+                    street: null,
+                    number:null,
+                    city: null,
+                    zipCode: null
+                }
+            },
             rentDates: null, 
             freeDates: null,
             images: [], 
@@ -156,11 +204,20 @@ export default {
         leaveTime: {
             required
         },
-        location: {
-            required, 
+        price: {
+            required
+        },
+        street: {
+            required,
             minLength: minLength(3)
         },
-        price: {
+        city: {
+            required,
+        },
+        number: {
+            required
+        },
+        zipCode: {
             required
         }
       }
@@ -189,9 +246,14 @@ export default {
                         roomNumber: this.form.roomNumber,
                         guestNumber: this.form.guestNumber,
                         location: {
-                            latitude : 0,
-                            longitude : 0,
-                            address : this.form.address
+                            latitude : this.form.latitude,
+                            longitude : this.form.longitude,
+                            address : {
+                                city: this.form.city,
+                                street: this.form.street,
+                                zipCode: this.form.zipCode,
+                                number: this.form.number
+                            }
                         },
                         imageList: [],
                         price: this.form.price,
@@ -202,7 +264,7 @@ export default {
                         rentDates: [],
                         freeDates: [],
                         comments: [],
-                        hostUsername: "host"
+                        hostUsername: this.loggedInUser.username
 
                     })
                     .catch(error => {
@@ -217,7 +279,7 @@ export default {
                             .catch(error => {
                                 console.log(error) 
                             });
-}
+    }
 }
 </script>
 

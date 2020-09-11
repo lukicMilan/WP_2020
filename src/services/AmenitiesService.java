@@ -99,11 +99,12 @@ public class AmenitiesService {
 		return Response.status(200).build();
 	}
 	
-	@DELETE
+	@POST
+	@Path("/delete")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response deleteAmenity(AmenitiesDTO amenitiesDTO, @Context HttpServletRequest request) {
 		AmenitiesDAO amenitiesDAO = (AmenitiesDAO) ctx.getAttribute("amenitiesDAO");
-		
+		System.out.println("usao");
 		amenitiesDAO.removeAmenity(amenitiesDTO.getId());
 		
 		return Response.status(200).build();

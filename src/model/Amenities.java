@@ -4,11 +4,19 @@ public class Amenities {
 	long id;
 	String type;
 	String name;
+	boolean deleted = false;
 	
 	public Amenities() {
 		super();
 	}
 
+	public Amenities(String type, String name, boolean deleted) {
+		super();
+		this.type = type;
+		this.name = name;
+		this.deleted = deleted;
+	}
+	
 	public Amenities(String type, String name) {
 		super();
 		this.type = type;
@@ -37,6 +45,14 @@ public class Amenities {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
 	}
 
 	@Override
