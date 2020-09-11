@@ -20,10 +20,14 @@ import LoginPage from "./pages/LoginPage"
 import UsersTable from "./components/tables/UsersTable"
 import AccessDenied from "./pages/AccessDenied"
 
+import VCalendar from 'v-calendar';
+
 var VueCookie = require('vue-cookie');
 
 Vue.use(VueRouter);
 Vue.use(VueCookie);
+Vue.use(VCalendar);
+
 
 const router = new VueRouter({
   routes: [

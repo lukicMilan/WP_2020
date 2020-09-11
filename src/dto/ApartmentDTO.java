@@ -1,12 +1,13 @@
 package dto;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import model.Amenities;
 import model.Apartment;
 import model.ApartmentComment;
 import model.ApartmentType;
-import model.UserHost;
 
 public class ApartmentDTO {
 	private long id;
@@ -66,12 +67,25 @@ public class ApartmentDTO {
 		super();
 	}
 
+	@SuppressWarnings("deprecation")
 	public ApartmentDTO(Apartment ap) {
+		List<Date> dates = ap.getRentDates();
+		List<String> datesString = new ArrayList<String>();
+		for (Date date : dates) {
+			int day = date.getDate();
+			int month = date.getMonth()+1;
+			int year = date.getYear()+1900;
+			String dateString = Integer.toString(year) + "/";
+			dateString += Integer.toString(month) + "/";
+			dateString += Integer.toString(day);
+			
+			datesString.add(dateString);
+		}
 		this.id = ap.getId();
 		this.type = ap.getType().toString();
 		this.roomNumber = ap.getRoomNumber();
 		this.guestNumber = ap.getGuestNumber();
-//		this.rentDates = ap.getRentDates();
+ 		this.rentDates = datesString;
 //		this.freeDates = ap.getFreeDates();
 		this.hostUsername = ap.getHostUsername();
 		this.comments = ap.getComments();

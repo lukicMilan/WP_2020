@@ -24,6 +24,8 @@ export default {
             if(user !== null) {
                 if(user.userType==="ADMINISTRATOR") {
                     this.$router.push('/usersTable');
+                } else if(user.userType==="GUEST") {
+                    this.$router.push('/apartmentTable');
                 }
             }
         }
