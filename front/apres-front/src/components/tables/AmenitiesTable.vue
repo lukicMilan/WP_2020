@@ -72,7 +72,7 @@
       editName: null
     }),
     props: {
-      
+
     },
     components: {
         Amenity
@@ -105,9 +105,11 @@
       },
       isEditFunction(item) {
         this.isEdit = true
+        
+        console.log(item.type, item.name, this.isEdit)
         this.editType = item.type
         this.editName = item.name
-        this.showDialogFunction()
+        this.showDialog = true
       }
     },
     created () {

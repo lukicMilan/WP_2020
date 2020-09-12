@@ -3,9 +3,16 @@
         <div>
             <form novalidate class="md-layout" @submit.prevent="validateAmenity">
                 <md-card class="md-layout-item md-size-50 md-small-size-100">
-                    <md-card-header>
-                        <div class="md-title">Amenity</div>
-                    </md-card-header>
+                    <div v-if = "isEdit == false">
+                        <md-card-header>
+                            <div class="md-title">Amenity</div>
+                        </md-card-header>
+                    </div>
+                    <div v-else>
+                        <md-card-header>
+                            <div class="md-title">Edit amenity</div>
+                        </md-card-header>
+                    </div>
                     <md-card-content>
                         <div class="md-layout md-gutter">
                             <div class="md-layout-item md-small-size-100">
@@ -26,7 +33,12 @@
                         </div>
                     </md-card-content>
                     <md-card-actions>
-                        <md-button type="submit" class="md-dense md-raised md-primary" >Submit</md-button>
+                        <div v-if="this.isEdit == false">
+                            <md-button type="submit" class="md-dense md-raised md-primary" >Submit</md-button>
+                        </div>
+                        <div v-else>
+                            <md-button @click="saveEdit()" class="md-dense md-raised md-primary" >Submit</md-button>
+                        </div>
                     </md-card-actions>
                 </md-card>
             </form> 
@@ -51,6 +63,7 @@ export default {
             type: null,
             name: null
         },
+        edit: false
     }),
     validations: {
         form: {
@@ -82,8 +95,8 @@ export default {
     saveEdit () {
         axios.put('http://localhost:8080/PocetniREST/rest/amenities',
                 {
-                    type: this.changeType,
-                    name: this.changeName
+                    type: this.form.type,
+                    name: this.form.name
                 })
                 .then((response) => { console.log(response) })
                 .catch(error => {
@@ -105,7 +118,10 @@ export default {
       }
     },
     mounted () {
-        
+        this.form.type = this.changeType;
+        this.form.name = this.changeName;
+        this.edit = this.isEdit;
+        console.log(this.isEdit)
     }
 }
 </script>

@@ -87,7 +87,7 @@ public class AmenitiesService {
 	
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response editApartment(AmenitiesDTO amenitiesDTO, @Context HttpServletRequest request) {
+	public Response editAmenity(AmenitiesDTO amenitiesDTO, @Context HttpServletRequest request) {
 		User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
 		AmenitiesDAO amDAO = (AmenitiesDAO) ctx.getAttribute("amenitiesDAO");
 		
