@@ -1,9 +1,9 @@
 <template>
     <div>
-        <div v-if="!selectedApartment">
+        <div v-if="!allowed">
             <access-denied> </access-denied>
         </div>
-        <div v-if="selectedApartment">
+        <div v-if="allowed">
             <md-steppers>
                 <md-step id="first" md-label="Select dates">
                     <v-date-picker v-model="selectedDates" 
@@ -146,6 +146,13 @@ export default {
                 }
             }
             return "";
+        },
+        allowed() {
+            if(this.selectedApartment !== null && this.loggedInUser.userType==="GUEST") {
+                return true;
+            } else {
+                return false;
+            }
         }
     },
     methods: {
