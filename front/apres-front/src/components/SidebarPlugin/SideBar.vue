@@ -13,10 +13,15 @@
         </md-toolbar>
         <md-drawer :md-active.sync="showNavigation" md-swipeable>
         <md-toolbar class="md-transparent" md-elevation="0">
-            <span class="md-title">My App name</span>
+            <span class="md-title">Menu</span>
         </md-toolbar>
 
         <md-list>
+            <md-list-item to="apartmentTable">
+            <md-icon>analytics</md-icon>
+            <span class="md-list-item-text">Apartments</span>
+            </md-list-item>
+
             <md-list-item v-if="loggedAdministrator" to="/usersTable">
             <md-icon>group</md-icon>
             <span class="md-list-item-text">Users Table</span>

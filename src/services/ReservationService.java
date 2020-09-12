@@ -48,18 +48,19 @@ public class ReservationService {
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response createNewReservation(ReservationDTO reservationDTO, @Context HttpServletRequest request) {
 		ReservationDAO reservationDAO = (ReservationDAO) ctx.getAttribute("reservationDAO");
 		User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
 		
-		if(request.getSession().getAttribute("loggedInUser") != null) {
-			return Response.status(403).build();
-		}
-		
-		if(loggedInUser.getUserType() != UserType.GUEST) {
-			System.out.println("Only guests can make reservations.");
-			return Response.status(403).build();
-		}
+//		if(request.getSession().getAttribute("loggedInUser") != null) {
+//			return Response.status(403).build();
+//		}
+//		
+//		if(loggedInUser.getUserType() != UserType.GUEST) {
+//			System.out.println("Only guests can make reservations.");
+//			return Response.status(403).build();
+//		}
 		
 		reservationDAO.addReservation(reservationDTO);
 		

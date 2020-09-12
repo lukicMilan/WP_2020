@@ -61,6 +61,30 @@ public class ApartmentService {
 		aps = apartmentDAO.getApartments();
 		return Response.status(200).entity(aps).build();
 	}
+
+	@GET
+	@Path("/active")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getActiveApartments(@Context HttpServletRequest request) {
+		ApartmentDAO apartmentDAO = (ApartmentDAO) ctx.getAttribute("apartmentDAO");
+		User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
+		
+		ArrayList<ApartmentDTO> aps = new ArrayList<>();
+//		if(loggedInUser.getUserType() == UserType.HOST) {
+//			aps = apartmentDAO.getAllNonActiveApartmentsPostedBy(loggedInUser.getUsername());
+//			return Response.status(200).entity(aps).build();
+//		} else if (loggedInUser.getUserType() == UserType.ADMINISTRATOR){
+//			aps = apartmentDAO.getAllNonActiveApartments();
+//			return Response.status(200).entity(aps).build();
+//		}else {
+//			System.out.println("Only hosts and admins can access apartments that are not active.");
+//			return Response.status(403).build();
+//		}
+		
+		aps = apartmentDAO.getAllActiveApartments();
+		
+		return Response.status(200).entity(aps).build();
+	}
 	
 	@GET
 	@Path("/nonActive")

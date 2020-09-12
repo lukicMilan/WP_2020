@@ -19,7 +19,6 @@ import model.Amenities;
 import model.Apartment;
 import model.ApartmentComment;
 import model.ApartmentType;
-import model.Location;
 
 
 public class ApartmentDAO {
@@ -28,8 +27,9 @@ public class ApartmentDAO {
 	
 	public ApartmentDAO(String contextPath) {
 		this.contextPath = contextPath;
-		Location location = new Location();
 		List<Date> rentDates = new ArrayList<Date>();
+		rentDates.add(new Date(120, 8, 10));
+		rentDates.add(new Date(120, 11, 10));
 		List<Date> freeDates = new ArrayList<Date>();
 		List<ApartmentComment> apartmentComments = new ArrayList<ApartmentComment>();
 		List<String> imageList = new ArrayList<String>();
@@ -38,8 +38,7 @@ public class ApartmentDAO {
 		//treba jos id dodati na amenity
 		amenities.add(amenity);
 		
-		Apartment ap = new Apartment(ApartmentType.FULL, 1, 5, location, rentDates, freeDates, 
-				"host", apartmentComments, imageList, (long) 50 , 14, 10, true, amenities);
+		Apartment ap = new Apartment(ApartmentType.FULL, 1, 5,  rentDates, freeDates, "host", apartmentComments, imageList, (long) 50 , 14, 10, true, amenities,  50,50,"Ulica",1, "Grad", 10000);
 		ap.setId(this.apartments.size()+1);
 		this.apartments.put(ap.getId(), ap);
 		saveApartments();
