@@ -6,7 +6,15 @@ public class AmenitiesDTO {
 	long id;
 	String type;
 	String name;
+	boolean deleted = false;
 	
+	public AmenitiesDTO(long id, String type, String name, boolean deleted) {
+		super();
+		this.id = id;
+		this.type = type;
+		this.name = name;
+		this.deleted = deleted;
+	}
 	public AmenitiesDTO(long id, String type, String name) {
 		super();
 		this.id = id;
@@ -49,6 +57,14 @@ public class AmenitiesDTO {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
 	}
 	
 	

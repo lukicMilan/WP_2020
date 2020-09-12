@@ -35,7 +35,9 @@ public class AmenitiesDAO {
 		
 		loadAmenities();
 		for (Map.Entry<Long, Amenities> a : this.amenities.entrySet()) {
-			ams.add(new AmenitiesDTO(a.getValue()));
+			if(!a.getValue().isDeleted()) {
+				ams.add(new AmenitiesDTO(a.getValue()));
+			}
 		}
 		
 		return ams;
@@ -58,11 +60,7 @@ public class AmenitiesDAO {
 	}
 	
 	public boolean removeAmenity(long id) {
-		if(!amenities.containsKey(id)) {
-			return false;
-		}
-		
-		amenities.remove(id);
+		this.amenities.get(id).setDeleted(true);
 		saveAmenities();
 		
 		return true;
