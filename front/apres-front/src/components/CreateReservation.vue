@@ -5,9 +5,9 @@
         </div>
         <div v-if="allowed">
             <md-steppers>
-                <md-step id="first" md-label="Select dates">
+                <md-step id="first" md-label="Select dates" :md-error="dateError">
                     <v-date-picker v-model="selectedDates" 
-                    :available-dates='availableDates'  
+                    :disabled-dates='disabledDates'  
                     :columns="$screens({ default: 1, lg: 2 })"
                     mode="range"
                     :select-attribute="selectDragAttribute"
@@ -61,6 +61,10 @@
                 </md-step>
             </md-steppers>
         </div>
+        <md-snackbar :md-position="'center'" :md-duration="errorSnackbarDuration" :md-active.sync="showErrorSnackbar" md-persistent>
+            <span>{{errorSnackbarText}}</span>
+            <md-button class="md-primary" @click="showErrorSnackbar = false">Ok</md-button>
+        </md-snackbar>
     </div>
 </template>
 
@@ -99,8 +103,11 @@ export default {
             },
             messageForHost: "",
 
-            availableDates: [],
-
+            disabledDates: [],
+            dateError: null,
+            errorSnackbarDuration: 4000,
+            showErrorSnackbar: false,
+            errorSnackbarText: "",
         }
     },
     mounted: function() {
@@ -116,8 +123,16 @@ export default {
                         activeReservations.push(element);
                     }
                 });
-                alert(JSON.stringify(activeReservations));
                 
+                this.disabledDates.push({start: null, end: this.startRentDate});
+                this.disabledDates.push({start:this.endRentDate, end:null});
+
+                activeReservations.forEach(element => {
+                    let rentDate = new Date(element.date);
+
+                    this.disabledDates.push({start: rentDate, span:element.nights});
+                    
+                });
             });
         }
     },
@@ -175,6 +190,12 @@ export default {
             this.$router.push('/apartmentTable');
         },
         confirmReservation() {
+            if(this.getFormatedStartDate === "" || this.getFormatedStartDate === this.getFormatedEndDate) {
+                this.dateError = "Invalid date input";
+                this.errorSnackbarText = "Invalid date input";
+                this.showErrorSnackbar = true;
+                return;
+            }
             this.reservationDTO.apartmentId = this.selectedApartment.id;
             this.reservationDTO.date = this.getFormatedStartDate;
             this.reservationDTO.nights = this.nightNumber;
@@ -182,8 +203,15 @@ export default {
             this.reservationDTO.welcomeNote = this.messageForHost;
             this.reservationDTO.guestUsername = this.loggedInUser.username;
             this.reservationDTO.hostUsername = this.selectedApartment.hostUsername;
-            alert(JSON.stringify(this.reservationDTO));
-            http.post('reservation', JSON.stringify(this.reservationDTO));
+            http.post('reservation', JSON.stringify(this.reservationDTO))
+            .then(() => {
+                this.$emit('globalMessage', 'Reservation created!');
+                this.$router.push('/reservationTable');
+            })
+            .catch(() => {
+                this.errorSnackbarText = "Reservation NOT created!";
+                this.showErrorSnackbar = true;
+            });
         },
     }
 }

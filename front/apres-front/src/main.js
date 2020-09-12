@@ -20,6 +20,7 @@ import LoginPage from "./pages/LoginPage"
 import UsersTable from "./components/tables/UsersTable"
 import AccessDenied from "./pages/AccessDenied"
 import CreateReservation from "./components/CreateReservation"
+import ReservationTable from "./components/tables/ReservationTable"
 
 import VCalendar from 'v-calendar';
 
@@ -40,6 +41,11 @@ const router = new VueRouter({
           path: "/hello",
           name: "Hello World",
           component: HelloWorld
+        },
+        {
+          path: "/reservationTable",
+          name: "Reservation Table",
+          component: ReservationTable
         },
         {
           path: "/reservation",

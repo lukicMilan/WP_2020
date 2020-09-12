@@ -9,8 +9,13 @@
             <router-view :logged-in-user="loggedInUser" :selected-apartment="selectedApartment"
              @userLoggedIn="userLoggedIn($event)" 
              @activateReservation="activateReservation($event)"
-             @reservationCompleted="reservationCompleted($event)"></router-view>
+             @reservationCompleted="reservationCompleted($event)"
+             @globalMessage="showGlobalMessage($event)"></router-view>
         </div>
+        <md-snackbar :md-position="'center'" :md-duration="snackbarDuration" :md-active.sync="showSnackbar" md-persistent>
+            <span>{{snackbarText}}</span>
+            <md-button class="md-primary" @click="showSnackbar = false">Ok</md-button>
+        </md-snackbar>
     </div>
 </div>
 </template>
@@ -39,6 +44,10 @@ export default {
         reservationCompleted() {
             this.selectedApartment = null;
             //TODO reservation preview
+        },
+        showGlobalMessage(message) {
+            this.snackbarText = message;
+            this.showSnackbar = true;
         }
     },
     
@@ -46,7 +55,10 @@ export default {
         function() {
             return {
                 loggedInUser: null,
-                selectedApartment: null
+                selectedApartment: null,
+                snackbarDuration: 4000,
+                showSnackbar: false,
+                snackbarText: "",
             }
         },
     
