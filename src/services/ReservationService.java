@@ -43,6 +43,8 @@ public class ReservationService {
 	public Response getAllReservations() {
 		ReservationDAO reservationDAO = (ReservationDAO) ctx.getAttribute("reservationDAO");
 		
+		//fali validacija ko sme sta da uzme kao i svuda, ne zaboraviti
+		
 		return Response.status(200).entity(reservationDAO.getAll()).build();
 	}
 	
