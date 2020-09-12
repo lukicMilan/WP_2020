@@ -7,7 +7,7 @@
             <md-steppers>
                 <md-step id="first" md-label="Select dates">
                     <v-date-picker v-model="selectedDates" 
-                    :available-dates='[availableDates]'  
+                    :available-dates='availableDates'  
                     :columns="$screens({ default: 1, lg: 2 })"
                     mode="range"
                     :select-attribute="selectDragAttribute"
@@ -98,14 +98,15 @@ export default {
                 status: "CREATED"
             },
             messageForHost: "",
+
             availableDates: [],
+
         }
     },
     mounted: function() {
         if(this.selectedApartment !== null) {
             this.startRentDate = new Date(this.selectedApartment.rentDates[0]);
             this.endRentDate = new Date(this.selectedApartment.rentDates[1]); 
-            
             http.get('reservation/apartment/' + this.selectedApartment.id)
             .then(data => {
                 let reservations = data.data;

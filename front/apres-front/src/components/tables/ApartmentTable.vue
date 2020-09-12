@@ -2,8 +2,13 @@
   <div class = "apartmentTable">
     <md-dialog :md-active.sync="showDialog">
       <apartmentDetails :selectedApartment="this.selectedApartment"
-                        :loggedInUser="this.loggedInUser"></apartmentDetails>
+                        :loggedInUser="this.loggedInUser"
+                         @activateReservation="activateReservation($event)"></apartmentDetails>
     </md-dialog>
+
+    <div>
+      <create-reservation v-if="reservationActive" :selected-apartment="this.selectedApartment"></create-reservation>
+    </div>
 
     <md-table v-model="searched" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
       <md-table-toolbar>
@@ -32,12 +37,14 @@
       </md-table-row>
     </md-table>
     <md-button v-if="addButton" class="md-dense md-raised md-primary" to="/apartment">Add Apartment</md-button>
+    
   </div>
 </template>
 
 <script>
   import axios from 'axios'
   import ApartmentDetails from '../dialogContent/ApartmentDetails'
+  import CreateReservation from '../CreateReservation'
 
   const toLower = text => {
     return text.toString().toLowerCase()
@@ -68,14 +75,17 @@
   export default {
     name: 'ApartmentTable',
     components: {
-      apartmentDetails: ApartmentDetails
+      apartmentDetails: ApartmentDetails,
+      createReservation: CreateReservation
     },
     data: () => ({
       search: null,
       searched: [],
       apartments: [],
       showDialog: false,
-      selectedApartment: null
+      selectedApartment: null,
+      selectedDate: null,
+      reservationActive: false,
     }),
     props: {
       loggedInUser: null,
@@ -87,6 +97,14 @@
       showApartmentDetails(apartment) {
         this.selectedApartment = apartment;
         this.showDialog = true;
+      },
+      activateReservation() {
+        this.showDialog=false;
+        this.reservationActive = true;
+        this.$emit('activateReservation', this.selectedApartment);
+      },
+      deactiveReservation() {
+        this.reservationActive = false;
       }
     },
     mounted () {
@@ -122,6 +140,7 @@
             .catch(error => {
                 console.log(error) 
         });
+      this.reservationActive = false;
     },
     computed: {
       addButton: function() {
@@ -152,6 +171,7 @@
     max-width: 100%;
   }
   .md-dialog .md-dialog-container {
+      min-height: 25%;
       max-height: 50%;
       min-width: 25%;
       max-width: 50%;

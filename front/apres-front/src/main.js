@@ -19,11 +19,16 @@ import SideBar from "./components/SidebarPlugin/SideBar"
 import LoginPage from "./pages/LoginPage"
 import UsersTable from "./components/tables/UsersTable"
 import AccessDenied from "./pages/AccessDenied"
+import CreateReservation from "./components/CreateReservation"
+
+import VCalendar from 'v-calendar';
 
 var VueCookie = require('vue-cookie');
 
 Vue.use(VueRouter);
 Vue.use(VueCookie);
+Vue.use(VCalendar);
+
 
 const router = new VueRouter({
   routes: [
@@ -35,6 +40,11 @@ const router = new VueRouter({
           path: "/hello",
           name: "Hello World",
           component: HelloWorld
+        },
+        {
+          path: "/reservation",
+          name: "Reservation",
+          component: CreateReservation,
         },
         {
           path: "/home",
@@ -84,7 +94,7 @@ const router = new VueRouter({
           path: "/accessDenied",
           name: "AccessDenied",
           component: AccessDenied
-        }
+        },
         ]
     }
 ]

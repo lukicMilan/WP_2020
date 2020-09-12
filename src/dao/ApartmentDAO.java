@@ -28,6 +28,8 @@ public class ApartmentDAO {
 	public ApartmentDAO(String contextPath) {
 		this.contextPath = contextPath;
 		List<Date> rentDates = new ArrayList<Date>();
+		rentDates.add(new Date(120, 8, 10));
+		rentDates.add(new Date(120, 11, 10));
 		List<Date> freeDates = new ArrayList<Date>();
 		List<ApartmentComment> apartmentComments = new ArrayList<ApartmentComment>();
 		List<String> imageList = new ArrayList<String>();
