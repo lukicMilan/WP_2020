@@ -45,7 +45,7 @@
                     </md-input>
                 </md-field>
                     
-                <div v-if="canReserve">
+                <div v-if="canReserve" @click="createReservation">
                     <md-button>RESERVE</md-button>
                 </div>
             </md-tab>
@@ -66,12 +66,20 @@
                         </div>
                     </div>
                 </md-list>
-                <div v-if="canReserve">
+                <div v-if="canReserve" @click="createReservation">
+                    <md-button>RESERVE</md-button>
+                </div>
+            </md-tab>
+            <md-tab md-label="Availability">
+                <v-calendar :available-dates='[{start: startRentDate, end: endRentDate}]' is-inline></v-calendar>
+                <div v-if="canReserve" @click="createReservation">
                     <md-button>RESERVE</md-button>
                 </div>
             </md-tab>
             <md-tab md-label="Comments">
-
+                <div v-if="canReserve" @click="createReservation">
+                    <md-button>RESERVE</md-button>
+                </div>   
             </md-tab>
         </md-tabs>
     </div>
@@ -88,7 +96,10 @@ export default {
             amenityTypes: [],
             active: "ACTIVE",
             nonActive: "NON ACTIVE",
-            address: ""
+            address: "",
+            startRentDate: Date,
+            endRentDate: Date,
+            selectedDate: Date
         }
     },
     computed: {
@@ -100,9 +111,9 @@ export default {
                 return true;
             }
             return false;
-        }
+        },
     },
-    mounted: function() {
+    created: function() {
         let types = [];
         
         if(this.selectedApartment !== null) {
@@ -112,15 +123,22 @@ export default {
                     types.push(amenity.type);
                 }
             });
+            this.startRentDate = new Date(this.selectedApartment.rentDates[0]);
+            this.endRentDate = new Date(this.selectedApartment.rentDates[1]); 
         }
 
         this.amenityTypes = types;
+    },
+    methods: {
+        createReservation: function() {
+            this.$emit('activateReservation', this.selectedApartment);
+        }
     }
-    
 }
 </script>
 <style scoped>
     .ApartmentDetails {
+        min-height: 25%;
         max-height: 50%;
         min-width: 25%;
         min-width: 50%;
