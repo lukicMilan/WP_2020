@@ -8,7 +8,7 @@ import model.ReservationStatus;
 public class ReservationDTO {
 	long reservationId;
 	long apartmentId;
-	Date date;
+	String date;
 	int nights = 1;
 	float totalPrice;
 	String welcomeNote;
@@ -24,7 +24,7 @@ public class ReservationDTO {
 		super();
 		this.reservationId = reservation.getReservationId();
 		this.apartmentId = reservation.getApartmentId();
-		this.date = reservation.getDate();
+		this.date = reservation.getDate().toString();
 		this.nights = reservation.getNights();
 		this.totalPrice = reservation.getTotalPrice();
 		this.welcomeNote = reservation.getWelcomeNote();
@@ -33,7 +33,7 @@ public class ReservationDTO {
 		this.status = reservation.getStatus();
 	}
 
-	public ReservationDTO(long reservationId, long apartmentId, Date date, int nights, float totalPrice,
+	public ReservationDTO(long reservationId, long apartmentId, String date, int nights, float totalPrice,
 			String welcomeNote, String guestUsername, String hostUsername, ReservationStatus status) {
 		super();
 		this.reservationId = reservationId;
@@ -47,7 +47,7 @@ public class ReservationDTO {
 	}
 
 	public Reservation getReservationClass() {
-		return new Reservation(this.getReservationId(), this.apartmentId, this.getDate(), this.getNights(),
+		return new Reservation(this.getReservationId(), this.apartmentId, new Date(this.getDate()), this.getNights(),
 				this.getTotalPrice(), this.getWelcomeNote(), this.getGuestUsername(), this.hostUsername, this.getStatus());
 	}
 
@@ -67,11 +67,11 @@ public class ReservationDTO {
 		this.apartmentId = apartmentId;
 	}
 
-	public Date getDate() {
+	public String getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 
@@ -114,15 +114,25 @@ public class ReservationDTO {
 	public void setStatus(ReservationStatus status) {
 		this.status = status;
 	}
+	
 
 
+	public String getHostUsername() {
+		return hostUsername;
+	}
+
+	public void setHostUsername(String hostUsername) {
+		this.hostUsername = hostUsername;
+	}
 
 	@Override
 	public String toString() {
 		return "ReservationDTO [reservationId=" + reservationId + ", apartmentId=" + apartmentId + ", date=" + date
 				+ ", nights=" + nights + ", totalPrice=" + totalPrice + ", welcomeNote=" + welcomeNote
-				+ ", guestUsername=" + guestUsername + ", status=" + status + "]";
+				+ ", guestUsername=" + guestUsername + ", hostUsername=" + hostUsername + ", status=" + status + "]";
 	}
+	
+	
 	
 	
 }

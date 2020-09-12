@@ -66,7 +66,8 @@
 
 <script>
 import AccessDeniedVue from '../pages/AccessDenied.vue';
-import format from 'date-fns/format'
+import format from 'date-fns/format';
+import http from '../http-common';
 
 export default {
     components: {
@@ -152,7 +153,15 @@ export default {
             this.$router.push('/apartmentTable');
         },
         confirmReservation() {
-            alert("MOGAO BIH NESTO I ZA SUTRA DA OSTAVIM");
+            this.reservationDTO.apartmentId = this.selectedApartment.id;
+            this.reservationDTO.date = this.getFormatedStartDate;
+            this.reservationDTO.nights = this.nightNumber;
+            this.reservationDTO.totalPrice = this.totalPrice;
+            this.reservationDTO.welcomeNote = this.messageForHost;
+            this.reservationDTO.guestUsername = this.loggedInUser.username;
+            this.reservationDTO.hostUsername = this.selectedApartment.hostUsername;
+            alert(JSON.stringify(this.reservationDTO));
+            http.post('reservation', JSON.stringify(this.reservationDTO));
         },
     }
 }
