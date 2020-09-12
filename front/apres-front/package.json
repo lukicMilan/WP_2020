@@ -10,6 +10,7 @@
   "dependencies": {
     "axios": "^0.20.0",
     "core-js": "^3.6.5",
+    "date-fns": "^2.16.1",
     "v-calendar": "^1.0.8",
     "vue": "^2.6.11",
     "vue-cookie": "^1.1.4",

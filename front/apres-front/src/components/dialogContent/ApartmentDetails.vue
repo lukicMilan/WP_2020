@@ -45,7 +45,7 @@
                     </md-input>
                 </md-field>
                     
-                <div v-if="canReserve">
+                <div v-if="canReserve" @click="createReservation">
                     <md-button>RESERVE</md-button>
                 </div>
             </md-tab>
@@ -66,15 +66,20 @@
                         </div>
                     </div>
                 </md-list>
-                <div v-if="canReserve">
+                <div v-if="canReserve" @click="createReservation">
                     <md-button>RESERVE</md-button>
                 </div>
             </md-tab>
             <md-tab md-label="Availability">
                 <v-calendar :available-dates='[{start: startRentDate, end: endRentDate}]' is-inline></v-calendar>
+                <div v-if="canReserve" @click="createReservation">
+                    <md-button>RESERVE</md-button>
+                </div>
             </md-tab>
             <md-tab md-label="Comments">
-
+                <div v-if="canReserve" @click="createReservation">
+                    <md-button>RESERVE</md-button>
+                </div>   
             </md-tab>
         </md-tabs>
     </div>
@@ -123,8 +128,12 @@ export default {
         }
 
         this.amenityTypes = types;
+    },
+    methods: {
+        createReservation: function() {
+            this.$emit('activateReservation', this.selectedApartment);
+        }
     }
-    
 }
 </script>
 <style scoped>
