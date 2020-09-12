@@ -1,6 +1,8 @@
 package dto;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import model.Reservation;
 import model.ReservationStatus;
@@ -22,9 +24,20 @@ public class ReservationDTO {
 	
 	public ReservationDTO(Reservation reservation) {
 		super();
+		Date date = reservation.getDate();
+		
+		int day = date.getDate();
+		int month = date.getMonth()+1;
+		int year = date.getYear()+1900;
+		
+		String dateString = Integer.toString(year) + "/";
+		dateString += Integer.toString(month) + "/";
+		dateString += Integer.toString(day);
+		
+		
 		this.reservationId = reservation.getReservationId();
 		this.apartmentId = reservation.getApartmentId();
-		this.date = reservation.getDate().toString();
+		this.date = dateString;
 		this.nights = reservation.getNights();
 		this.totalPrice = reservation.getTotalPrice();
 		this.welcomeNote = reservation.getWelcomeNote();
@@ -46,7 +59,7 @@ public class ReservationDTO {
 		this.status = status;
 	}
 
-	public Reservation getReservationClass() {
+	public Reservation toReservation() {
 		return new Reservation(this.getReservationId(), this.apartmentId, new Date(this.getDate()), this.getNights(),
 				this.getTotalPrice(), this.getWelcomeNote(), this.getGuestUsername(), this.hostUsername, this.getStatus());
 	}

@@ -100,7 +100,7 @@ ArrayList<ReservationDTO> reservationList = new ArrayList<>();
 	public boolean addReservation(ReservationDTO reservationDTO) {
 		reservationDTO.setDate((reservationDTO.getDate().replace("-0", "/")).replace("-", "/"));
 		System.out.println(reservationDTO.toString());
-		Reservation reservation = reservationDTO.getReservationClass();
+		Reservation reservation = reservationDTO.toReservation();
 		reservation.setReservationId(this.reservations.size()+1);
 		
 		reservations.put(reservation.getReservationId(), reservation);

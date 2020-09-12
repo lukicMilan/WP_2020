@@ -7,7 +7,7 @@
             <md-steppers>
                 <md-step id="first" md-label="Select dates">
                     <v-date-picker v-model="selectedDates" 
-                    :available-dates='availableDates'  
+                    :disabled-dates='disabledDates'  
                     :columns="$screens({ default: 1, lg: 2 })"
                     mode="range"
                     :select-attribute="selectDragAttribute"
@@ -99,7 +99,7 @@ export default {
             },
             messageForHost: "",
 
-            availableDates: [],
+            disabledDates: [],
 
         }
     },
@@ -116,8 +116,18 @@ export default {
                         activeReservations.push(element);
                     }
                 });
-                alert(JSON.stringify(activeReservations));
                 
+                this.disabledDates.push({start: null, end: this.startRentDate});
+                this.disabledDates.push({start:this.endRentDate, end:null});
+
+                activeReservations.forEach(element => {
+                    let rentDate = new Date(element.date);
+
+                    this.disabledDates.push({start: rentDate, span:element.nights});
+                    
+                });
+
+                alert(JSON.stringify(this.disabledDates));
             });
         }
     },
@@ -182,7 +192,6 @@ export default {
             this.reservationDTO.welcomeNote = this.messageForHost;
             this.reservationDTO.guestUsername = this.loggedInUser.username;
             this.reservationDTO.hostUsername = this.selectedApartment.hostUsername;
-            alert(JSON.stringify(this.reservationDTO));
             http.post('reservation', JSON.stringify(this.reservationDTO));
         },
     }
