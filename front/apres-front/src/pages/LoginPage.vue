@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import http from '../http-common';
 
 export default {
     name: 'Login',
@@ -44,11 +44,14 @@ export default {
     },
     methods: {
         login: function() {
-            axios.post('http://localhost:8080/PocetniREST/rest/user/login', 
+            http.post('user/login', 
                 this.form
             )
             .then(data => {
                 this.$emit('userLoggedIn', data.data);
+            })
+            .catch(() => {
+                this.$emit('globalMessage', 'Invalid credentials, please try again.');
             });
         },
         // getValidationClass (fieldName) {
