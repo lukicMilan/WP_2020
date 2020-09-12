@@ -94,7 +94,7 @@ const router = new VueRouter({
           path: "/accessDenied",
           name: "AccessDenied",
           component: AccessDenied
-        }
+        },
         ]
     }
 ]
