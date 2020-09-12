@@ -5,7 +5,7 @@
         </div>
         <div v-if="allowed">
             <md-steppers>
-                <md-step id="first" md-label="Select dates">
+                <md-step id="first" md-label="Select dates" :md-error="dateError">
                     <v-date-picker v-model="selectedDates" 
                     :disabled-dates='disabledDates'  
                     :columns="$screens({ default: 1, lg: 2 })"
@@ -61,6 +61,10 @@
                 </md-step>
             </md-steppers>
         </div>
+        <md-snackbar :md-position="'center'" :md-duration="errorSnackbarDuration" :md-active.sync="showErrorSnackbar" md-persistent>
+            <span>{{errorSnackbarText}}</span>
+            <md-button class="md-primary" @click="showErrorSnackbar = false">Ok</md-button>
+        </md-snackbar>
     </div>
 </template>
 
@@ -100,7 +104,10 @@ export default {
             messageForHost: "",
 
             disabledDates: [],
-
+            dateError: null,
+            errorSnackbarDuration: 4000,
+            showErrorSnackbar: false,
+            errorSnackbarText: "",
         }
     },
     mounted: function() {
@@ -126,8 +133,6 @@ export default {
                     this.disabledDates.push({start: rentDate, span:element.nights});
                     
                 });
-
-                alert(JSON.stringify(this.disabledDates));
             });
         }
     },
@@ -185,6 +190,12 @@ export default {
             this.$router.push('/apartmentTable');
         },
         confirmReservation() {
+            if(this.getFormatedStartDate === "" || this.getFormatedStartDate === this.getFormatedEndDate) {
+                this.dateError = "Invalid date input";
+                this.errorSnackbarText = "Invalid date input";
+                this.showErrorSnackbar = true;
+                return;
+            }
             this.reservationDTO.apartmentId = this.selectedApartment.id;
             this.reservationDTO.date = this.getFormatedStartDate;
             this.reservationDTO.nights = this.nightNumber;
@@ -192,7 +203,15 @@ export default {
             this.reservationDTO.welcomeNote = this.messageForHost;
             this.reservationDTO.guestUsername = this.loggedInUser.username;
             this.reservationDTO.hostUsername = this.selectedApartment.hostUsername;
-            http.post('reservation', JSON.stringify(this.reservationDTO));
+            http.post('reservation', JSON.stringify(this.reservationDTO))
+            .then(() => {
+                this.$emit('globalMessage', 'Reservation created!');
+                this.$router.push('/reservationTable');
+            })
+            .catch(() => {
+                this.errorSnackbarText = "Reservation NOT created!";
+                this.showErrorSnackbar = true;
+            });
         },
     }
 }
