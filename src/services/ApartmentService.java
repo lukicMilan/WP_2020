@@ -165,7 +165,7 @@ public class ApartmentService {
 			return Response.status(204).build();
 		}
 		
-		return Response.status(200).entity(new ArrayList<ApartmentDTO>(aps)).build();
+		return Response.status(200).entity(aps).build();
 	}
 	
 	@DELETE

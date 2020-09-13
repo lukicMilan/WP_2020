@@ -122,17 +122,6 @@
                             </md-field>
                         </div>
                     </div>
-                        
-
-                        <!-- Ovo je za datepicker, moramo se dogovoriti kako cemo to odraditi -->
-                     <!-- </div>
-                    <div class="md-layout md-gutter">
-                        <div class="md-layout-item md-small-size-50">
-                            <date-range-picker >
-                            </date-range-picker>
-                        </div>
-                    </div> -->
-
                 </md-card-content>
                 <md-card-actions>
                     <md-button type="submit" class="md-dense md-raised md-primary">Submit</md-button>
@@ -152,7 +141,7 @@ import { validationMixin } from 'vuelidate'
   } from 'vuelidate/lib/validators'
 //   import DateRangePicker from 'vue2-daterange-picker'
 //   import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
-import axios from 'axios'
+import http from '../http-common'
 export default {
     name: 'Apartment',
     mixins: [validationMixin],
@@ -240,21 +229,18 @@ export default {
         }
       },
       saveApartment: function() {
-        axios.post('http://localhost:8080/PocetniREST/rest/apartment',
+        console.log(this.selectedAmenities)
+        http.post('apartment',
                     {
                         type: this.form.type,
                         roomNumber: this.form.roomNumber,
                         guestNumber: this.form.guestNumber,
-                        location: {
-                            latitude : this.form.latitude,
-                            longitude : this.form.longitude,
-                            address : {
-                                city: this.form.city,
-                                street: this.form.street,
-                                zipCode: this.form.zipCode,
-                                number: this.form.number
-                            }
-                        },
+                        latitude : this.form.latitude,
+                        longitude : this.form.longitude,
+                        city: this.form.city,
+                        street: this.form.street,
+                        zipCode: this.form.zipCode,
+                        number: this.form.number,
                         imageList: [],
                         price: this.form.price,
                         entryTime: this.form.entryTime,
@@ -273,7 +259,7 @@ export default {
       },
     },
     created() {  
-        axios.get('http://localhost:8080/PocetniREST/rest/amenities')
+        http.get('amenities')
                             .then(data => { 
                             this.allAmenities = data.data})
                             .catch(error => {

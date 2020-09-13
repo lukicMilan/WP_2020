@@ -49,13 +49,14 @@
 <script>
 import { required } from 'vuelidate/lib/validators'
 import { validationMixin } from 'vuelidate'
-import axios from 'axios'
+import http from '../http-common'
 export default {
     name: 'Amenity',
     mixins: [validationMixin],
     props: {
         changeType: String,
         changeName: String,
+        changeId: Number,
         isEdit: Boolean
     },
     data: () => ({
@@ -93,18 +94,20 @@ export default {
         }
       },
     saveEdit () {
-        axios.put('http://localhost:8080/PocetniREST/rest/amenities',
-                {
-                    type: this.form.type,
-                    name: this.form.name
+        http.put('amenities', {
+                        id: this.changeId,
+                        type: this.form.type,
+                        name: this.form.name
+        })
+                .then(data => {
+                    console.log(data.data)
                 })
-                .then((response) => { console.log(response) })
                 .catch(error => {
                     console.log(error) 
             });
     },
     saveAmenity: function() {
-        axios.post('http://localhost:8080/PocetniREST/rest/amenities',
+        http.post('amenities',
                     {
                         type: this.form.type,
                         name: this.form.name
@@ -120,8 +123,8 @@ export default {
     mounted () {
         this.form.type = this.changeType;
         this.form.name = this.changeName;
+        this.form.id = this.changeId;
         this.edit = this.isEdit;
-        console.log(this.isEdit)
     }
 }
 </script>
