@@ -30,7 +30,7 @@
 </template>
 
 <script>
-  import axios from 'axios'
+  import http from '../../http-common'
   import Amenity from "../Amenity.vue"
 
   const toLower = text => {
@@ -92,7 +92,7 @@
         this.showDialog = true
       },
       removeAmenity(item) {
-        axios.post('http://localhost:8080/PocetniREST/rest/amenities/delete', {
+        http.post('amenities/delete', {
                   id: item.id,
                   type: item.type,
                   name: item.name
@@ -113,7 +113,7 @@
       }
     },
     created () {
-      axios.get('http://localhost:8080/PocetniREST/rest/amenities')
+      http.get('amenities')
                             .then(data => { 
                               this.amenities = data.data
                               this.searched = data.data})
