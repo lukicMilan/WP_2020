@@ -60,6 +60,7 @@ public class AmenitiesDAO {
 	}
 	
 	public boolean removeAmenity(long id) {
+		loadAmenities();
 		this.amenities.get(id).setDeleted(true);
 		saveAmenities();
 		

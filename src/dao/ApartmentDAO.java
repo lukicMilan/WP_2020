@@ -64,7 +64,7 @@ public class ApartmentDAO {
 		Map<Long, Apartment> aps = new HashMap<Long, Apartment>();
 		
 		for(Map.Entry<Long, Apartment> entry : this.apartments.entrySet()) {
-			if(entry.getValue().getHostUsername() == username) {
+			if(entry.getValue().getHostUsername().equals(username)) {
 				aps.put(entry.getKey(), entry.getValue());
 			}
 		}

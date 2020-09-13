@@ -42,7 +42,7 @@
 </template>
 
 <script>
-  import axios from 'axios'
+  import http from '../../http-common'
   import ApartmentDetails from '../dialogContent/ApartmentDetails'
   import CreateReservation from '../CreateReservation'
 
@@ -109,7 +109,7 @@
     },
     mounted () {
       if(this.loggedInUser === null) {
-        axios.get('http://localhost:8080/PocetniREST/rest/apartment/active')
+        http.get('apartment/active')
           .then(data => {
             this.apartments = data.data;
             this.searched = data.data;
@@ -117,7 +117,7 @@
         return;
       } 
       if (this.loggedInUser.userType === "GUEST") {
-        axios.get('http://localhost:8080/PocetniREST/rest/apartment/active')
+        http.get('apartment/active')
           .then(data => {
             this.apartments = data.data;
             this.searched = data.data;
@@ -125,7 +125,7 @@
         return;
       }
       if (this.loggedInUser.userType === "HOST") {
-        axios.get('http://localhost:8080/PocetniREST/rest/apartment/'+this.loggedInUser.username)
+        http.get('apartment/user/'+this.loggedInUser.username)
           .then(data => {
             this.apartments = data.data;
             this.searched = data.data;
@@ -133,7 +133,7 @@
         return;
       }
       if(this.loggedInUser.userType === "ADMINISTRATOR")
-       axios.get('http://localhost:8080/PocetniREST/rest/apartment')
+       http.get('apartment')
             .then(data => { 
               this.apartments = data.data
               this.searched = data.data})

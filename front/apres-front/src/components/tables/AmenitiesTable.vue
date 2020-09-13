@@ -2,7 +2,7 @@
   <div class = "amenitiesTable">
 
     <md-dialog :md-active.sync="showDialog">
-        <Amenity :changeType="this.editType" :changeName="this.editName" :isEdit="this.isEdit" />
+        <Amenity :changeId="this.editId" :changeName="this.editName" :changeType="this.editType" :isEdit="this.isEdit" />
     </md-dialog>
 
     <md-table v-model="searched" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
@@ -30,7 +30,7 @@
 </template>
 
 <script>
-  import axios from 'axios'
+  import http from '../../http-common'
   import Amenity from "../Amenity.vue"
 
   const toLower = text => {
@@ -69,7 +69,8 @@
       searchedWord: "",
       isEdit: false,
       editType: null,
-      editName: null
+      editName: null,
+      editId: null
     }),
     props: {
 
@@ -89,39 +90,39 @@
         this.isEdit = false
         this.editType = ""
         this.editName = ""
+        this.editId = null
         this.showDialog = true
       },
       removeAmenity(item) {
-        axios.post('http://localhost:8080/PocetniREST/rest/amenities/delete', {
-                  id: item.id,
-                  type: item.type,
-                  name: item.name
-        })
-                    .then(data => console.log(data.data))
-                    .catch(error => {
-                      console.log(error)
-                    })
+        http.delete('amenities', { params : {
+                                  id: item.id,
+                                  type: item.type,
+                                  name: item.name,
+                                  deleted: true
+        }
+        }).then(data => console.log(data.data))
+                                      .catch(error => console.log(error))
         this.amenities.slice(item.id, 1)
       },
       isEditFunction(item) {
         this.isEdit = true
-        
-        console.log(item.type, item.name, this.isEdit)
         this.editType = item.type
         this.editName = item.name
+        this.editId = item.id
         this.showDialog = true
       }
     },
     created () {
-      axios.get('http://localhost:8080/PocetniREST/rest/amenities')
-                            .then(data => { 
-                              this.amenities = data.data
-                              this.searched = data.data})
+      http.get('amenities').then(data => {
+                                 this.amenities = data.data
+                                 this.searched = data.data
+      })
                             .catch(error => {
-                                console.log(error) 
-                            });
-      },
+                                 console.log(error)
+                            })
     }
+
+  }
 </script>
 
 <style lang="scss" scoped>
