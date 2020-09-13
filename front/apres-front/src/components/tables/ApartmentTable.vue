@@ -125,7 +125,7 @@
         return;
       }
       if (this.loggedInUser.userType === "HOST") {
-        http.get('apartment/'+this.loggedInUser.username)
+        http.get('apartment/user/'+this.loggedInUser.username)
           .then(data => {
             this.apartments = data.data;
             this.searched = data.data;

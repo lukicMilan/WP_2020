@@ -49,6 +49,9 @@ export default {
             )
             .then(data => {
                 this.$emit('userLoggedIn', data.data);
+            })
+            .catch(() => {
+                this.$emit('globalMessage', 'Invalid credentials, please try again.');
             });
         },
         // getValidationClass (fieldName) {

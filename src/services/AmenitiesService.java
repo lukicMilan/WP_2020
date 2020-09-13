@@ -2,6 +2,7 @@ package services;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -20,6 +21,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import dao.AmenitiesDAO;
+import dao.ApartmentDAO;
 import dto.AmenitiesDTO;
 import dto.ApartmentDTO;
 import model.Amenities;
@@ -90,23 +92,35 @@ public class AmenitiesService {
 	public Response editAmenity(AmenitiesDTO amenitiesDTO, @Context HttpServletRequest request) {
 		User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
 		AmenitiesDAO amDAO = (AmenitiesDAO) ctx.getAttribute("amenitiesDAO");
-		
-		if(loggedInUser.getUserType() != UserType.ADMINISTRATOR) {
-			System.out.println("Only the system administrator can make changes to amenities.");
-			return Response.status(403).build();
-		}
+//		
+//		if(loggedInUser.getUserType() != UserType.ADMINISTRATOR) {
+//			System.out.println("Only the system administrator can make changes to amenities.");
+//			return Response.status(403).build();
+//		}
+		System.out.println("udje u edit");
 		amDAO.editAmeniy(amenitiesDTO);
 		return Response.status(200).build();
 	}
 	
-	@POST
-	@Path("/delete")
+	@DELETE
+	@Path("/{amenitiesDTO}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response deleteAmenity(AmenitiesDTO amenitiesDTO, @Context HttpServletRequest request) {
+	public Response deleteAmenity(@PathParam(value = "amenitiesDTO") AmenitiesDTO amenitiesDTO) {
 		AmenitiesDAO amenitiesDAO = (AmenitiesDAO) ctx.getAttribute("amenitiesDAO");
-		System.out.println("usao");
-		amenitiesDAO.removeAmenity(amenitiesDTO.getId());
+		ApartmentDAO apartmentDAO = (ApartmentDAO) ctx.getAttribute("apartmentDAO");
+		System.out.println("usao u delete");
+		System.out.println(amenitiesDTO.getId());
+		List<ApartmentDTO> apartments = new ArrayList<>();
+		apartments = apartmentDAO.getApartments();
 		
+		for (int i = 0; i < apartments.size(); i++) {
+			if(apartments.get(i).getAmenities().contains(amenitiesDTO)) {
+				apartments.get(i).getAmenities().remove(amenitiesDTO);
+			}
+		}
+		apartmentDAO.saveApartments();
+		amenitiesDAO.removeAmenity(amenitiesDTO.getId());
+		amenitiesDAO.saveAmenities();
 		return Response.status(200).build();
 	}
 
