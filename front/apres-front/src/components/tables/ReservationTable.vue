@@ -25,7 +25,9 @@
                 <md-table-cell v-if="!loggedInHost" md-label="Host" md-sort-by="hostUsername">{{item.hostUsername}}</md-table-cell>
                 <md-table-cell v-if="!loggedInGuest" md-label="Guest" md-sort-by="guestUsername">{{item.guestUsername}}</md-table-cell>
                 <md-table-cell md-label="Status" md-sort-by="status">{{item.status}}</md-table-cell>
-                <md-table-cell md-label="Actions">comming soon!</md-table-cell>
+                <md-table-cell md-label="Actions">
+                    <md-button v-if="loggedInGuest&&!reservationCenceled(item)" @click="cancelReservation(item)" class="md-raised md-accent">Cancel</md-button>
+                </md-table-cell>
             </md-table-row>
         </md-table>
         </div>
@@ -80,11 +82,14 @@ export default {
             reservations: [],
             searched: [],
             searchedWord: "",
+            // loggedInHost: false,
+            // loggedInGuest: false,
         }
     },
     mounted: function () {
         if(this.loggedInUser === null) {
             this.$emit('globalMessage', 'You have to be loged in to access this page.');
+            
             return;
         } 
         if(this.loggedInUser.userType === "ADMINISTRATOR") {
@@ -96,6 +101,8 @@ export default {
                 .catch(() => {
                     this.$emit('globalMessage', 'Error!');
                 });
+            // this.loggedInHost = false;
+            // this.loggedInGuest = false;
             return;
         }
         if(this.loggedInUser.userType === "HOST") {
@@ -107,6 +114,8 @@ export default {
                 .catch(() => {
                     this.$emit('globalMessage', 'Error!');
                 });
+            // this.loggedInHost = true;
+            // this.loggedInGuest = false;
             return;
         }
         if(this.loggedInUser.userType === "GUEST") {
@@ -118,24 +127,45 @@ export default {
                 .catch(() => {
                     this.$emit('globalMessage', 'Error!');
                 });
+            // this.loggedInHost = false;
+            // this.loggedInGuest = true;
             return;
         }
     },
     methods: {
+        reservationCenceled(reservation) {
+            if(reservation.status==="CANCELED") {
+                return true;
+            } 
+            return false;
+        },
         searchOnTable() {
             if(this.searchedWord == "") {
                 this.searched = this.reservations;
             } else {
                 this.searched = searchOnTable(this.reservations, this.searchedWord);
             }
-        }
+        },
+        cancelReservation(reservation) {
+            reservation.status="CANCELED";
+            http.put('reservation/status', { 
+                reservationId: reservation.reservationId,
+                reservationStatus: reservation.status
+            })
+            .then(()=> {
+                this.$emit('globalMessage', 'Reservation canceled.');
+            })
+            .catch(() => {
+                this.$emit('globalMessage', 'An error has occured!');
+            });
+        },
     },
     computed: {
         loggedInHost() {
             if(this.loggedInUser === null) {
                 return false;
             } 
-            if(this.loggedInUser ==="HOST") {
+            if(this.loggedInUser.userType ==="HOST") {
                 return true;
             }
             return false;
@@ -144,7 +174,7 @@ export default {
             if(this.loggedInUser === null) {
                 return false;
             } 
-            if(this.loggedInUser ==="GUEST") {
+            if(this.loggedInUser.userType ==="GUEST") {
                 return true;
             }
             return false;
