@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import http from '../http-common'
+import http from '../http-common';
 
 export default {
     name: 'Login',
@@ -49,6 +49,9 @@ export default {
             )
             .then(data => {
                 this.$emit('userLoggedIn', data.data);
+            })
+            .catch(() => {
+                this.$emit('globalMessage', 'Invalid credentials, please try again.');
             });
         },
         // getValidationClass (fieldName) {

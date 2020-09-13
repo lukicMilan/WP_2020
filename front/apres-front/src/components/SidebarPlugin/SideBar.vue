@@ -22,9 +22,14 @@
             <span class="md-list-item-text">Apartments</span>
             </md-list-item>
 
+            <md-list-item v-if="loggedInUser" to="/reservationTable">
+            <md-icon>library-books</md-icon>
+            <span class="md-list-item-text">Reservations</span>
+            </md-list-item>
+
             <md-list-item v-if="loggedAdministrator" to="/usersTable">
             <md-icon>group</md-icon>
-            <span class="md-list-item-text">Users Table</span>
+            <span class="md-list-item-text">Users</span>
             </md-list-item>
 
             <md-list-item v-if="loggedHost" to="apartment">
@@ -32,14 +37,9 @@
             <span class="md-list-item-text">Add Apartment</span>
             </md-list-item>
 
-            <md-list-item to="apartmentTable">
-            <md-icon>analytics</md-icon>
-            <span class="md-list-item-text">Show Apartments</span>
-            </md-list-item>
-
             <md-list-item v-if="administrator" to="amenitiesTable">
             <md-icon>dns</md-icon>
-            <span class="md-list-item-text">Show Amenities</span>
+            <span class="md-list-item-text">Amenities</span>
             </md-list-item>
         </md-list>
         </md-drawer>
