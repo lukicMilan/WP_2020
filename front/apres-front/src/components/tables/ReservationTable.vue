@@ -26,7 +26,13 @@
                 <md-table-cell v-if="!loggedInGuest" md-label="Guest" md-sort-by="guestUsername">{{item.guestUsername}}</md-table-cell>
                 <md-table-cell md-label="Status" md-sort-by="status">{{item.status}}</md-table-cell>
                 <md-table-cell md-label="Actions">
-                    <md-button v-if="loggedInGuest&&!reservationCenceled(item)" @click="cancelReservation(item)" class="md-raised md-accent">Cancel</md-button>
+                    <md-button v-if="loggedInGuest&&reservationCancelingEnabled(item)" @click="cancelReservation(item)" class="md-raised md-accent">Cancel</md-button>
+                    <span>
+                        <md-button v-if="loggedInHost&&reservationAcceptingEnabled(item)" @click="acceptReservation(item)" class="md-raised md-primary">Accept</md-button>
+                    </span>
+                    <span>
+                        <md-button v-if="loggedInHost&&reservationDenieingEnabled(item)" @click="denyReservation(item)" class="md-raised md-accent">Deny</md-button>
+                    </span>
                 </md-table-cell>
             </md-table-row>
         </md-table>
@@ -133,6 +139,24 @@ export default {
         }
     },
     methods: {
+        reservationDenieingEnabled(reservation) {
+            if(reservation.status==="CREATED") {
+                return true;
+            }
+            return false;
+        },
+        reservationAcceptingEnabled(reservation) {
+            if(reservation.status==="CREATED") {
+                return true;
+            }
+            return false;
+        },
+        reservationCancelingEnabled(reservation) {
+            if(reservation.status==="CREATED"||reservation.status==="ACCEPTED") {
+                return true;
+            }
+            return false
+        },
         reservationCenceled(reservation) {
             if(reservation.status==="CANCELED") {
                 return true;
@@ -159,6 +183,32 @@ export default {
                 this.$emit('globalMessage', 'An error has occured!');
             });
         },
+        acceptReservation(reservation) {
+            reservation.status="ACCEPTED";
+            http.put('reservation/status', { 
+                reservationId: reservation.reservationId,
+                reservationStatus: reservation.status
+            })
+            .then(()=> {
+                this.$emit('globalMessage', 'Reservation accepted.');
+            })
+            .catch(() => {
+                this.$emit('globalMessage', 'An error has occured!');
+            });
+        },
+        denyReservation(reservation) {
+            reservation.status="DENIED";
+            http.put('reservation/status', { 
+                reservationId: reservation.reservationId,
+                reservationStatus: reservation.status
+            })
+            .then(()=> {
+                this.$emit('globalMessage', 'Reservation denied.');
+            })
+            .catch(() => {
+                this.$emit('globalMessage', 'An error has occured!');
+            });
+        }
     },
     computed: {
         loggedInHost() {
