@@ -66,6 +66,7 @@ export default {
         },
         openGallery(params) {
             this.media = params.media;
+            this.$refs.lightBox.showImage(params.index);
         }
     },
     
