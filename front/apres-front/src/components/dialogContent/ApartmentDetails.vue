@@ -45,8 +45,10 @@
                     </md-input>
                 </md-field>
                     
-                <div v-if="canReserve" @click="createReservation">
-                    <md-button>RESERVE</md-button>
+                <div v-if="canReserve">
+                    <span>
+                    <md-button  @click="createReservation" class="md-raised md-primary">RESERVE</md-button>
+                    </span>
                 </div>
             </md-tab>
             <md-tab md-label="Amenities">
@@ -66,19 +68,48 @@
                         </div>
                     </div>
                 </md-list>
-                <div v-if="canReserve" @click="createReservation">
-                    <md-button>RESERVE</md-button>
+                <div v-if="canReserve">
+                    <span>
+                    <md-button  @click="createReservation" class="md-raised md-primary">RESERVE</md-button>
+                    </span>
                 </div>
+            </md-tab>
+            <md-tab md-label="Images">
+                
+
+                    <ul
+                    style="margin: 0; padding: 0">
+                        <li
+                            v-for="(image, index) in media"
+                            :key="index"
+                            style="display: inline-block; margin: 0 5px 5px 0"
+                        >
+                            <img
+                            :src="image.thumb"
+                            style="height: 100px; cursor: pointer"
+                            @click="openGallery(index)"
+                            >
+                        </li>
+                    </ul>
+                <div v-if="canReserve">
+                    <span>
+                        <md-button @click="createReservation">RESERVE</md-button>
+                    </span>
+                </div>   
             </md-tab>
             <md-tab md-label="Availability">
                 <v-calendar :available-dates='[{start: startRentDate, end: endRentDate}]' is-inline></v-calendar>
-                <div v-if="canReserve" @click="createReservation">
-                    <md-button>RESERVE</md-button>
+                <div v-if="canReserve" >
+                    <span>
+                    <md-button @click="createReservation">RESERVE</md-button>
+                    </span>
                 </div>
             </md-tab>
             <md-tab md-label="Comments">
-                <div v-if="canReserve" @click="createReservation">
-                    <md-button>RESERVE</md-button>
+                <div v-if="canReserve">
+                    <span>
+                    <md-button @click="createReservation">RESERVE</md-button>
+                    </span>
                 </div>   
             </md-tab>
         </md-tabs>
@@ -86,7 +117,11 @@
 </template>
 
 <script>
+
 export default {
+    components: {
+        
+    },
     props: {
         selectedApartment: null,
         loggedInUser: null
@@ -97,9 +132,10 @@ export default {
             active: "ACTIVE",
             nonActive: "NON ACTIVE",
             address: "",
-            startRentDate: Date,
+            startRentDate: Date,    
             endRentDate: Date,
-            selectedDate: Date
+            selectedDate: Date,
+            media: [],
         }
     },
     computed: {
@@ -113,7 +149,7 @@ export default {
             return false;
         },
     },
-    created: function() {
+    mounted: function() {
         let types = [];
         
         if(this.selectedApartment !== null) {
@@ -125,11 +161,23 @@ export default {
             });
             this.startRentDate = new Date(this.selectedApartment.rentDates[0]);
             this.endRentDate = new Date(this.selectedApartment.rentDates[1]); 
+
+            this.selectedApartment.imageList.forEach(element => {
+                this.media.push({
+                    thumb: 'apartment/' + this.selectedApartment.id + '/image/' + element,
+                    src: 'apartment/' + this.selectedApartment.id + '/image/' + element
+                });
+            });
         }
 
         this.amenityTypes = types;
     },
     methods: {
+        openGallery(index) {
+            //this.$refs.lightBox.showImage(index);
+            this.$emit('openGallery', {media:this.media, index:index});
+            
+        },
         createReservation: function() {
             this.$emit('activateReservation', this.selectedApartment);
         }

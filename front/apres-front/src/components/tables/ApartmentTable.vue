@@ -3,7 +3,8 @@
     <md-dialog :md-active.sync="showDialog">
       <apartmentDetails :selectedApartment="this.selectedApartment"
                         :loggedInUser="this.loggedInUser"
-                         @activateReservation="activateReservation($event)"></apartmentDetails>
+                         @activateReservation="activateReservation($event)"
+                         @openGallery="openGallery($event)"></apartmentDetails>
     </md-dialog>
 
     <div>
@@ -105,6 +106,9 @@
       },
       deactiveReservation() {
         this.reservationActive = false;
+      },
+      openGallery(data) {
+        this.$emit('openGallery', data)
       }
     },
     mounted () {

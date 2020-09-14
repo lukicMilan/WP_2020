@@ -1,5 +1,6 @@
 package services;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,9 +19,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 import dao.ApartmentDAO;
 import dto.ApartmentDTO;
+import dto.ImagePathDTO;
 import model.Apartment;
 import model.User;
 import model.UserType;
@@ -182,6 +185,24 @@ public class ApartmentService {
 			System.out.println("Only the apartment host and the administrator can remove an apartment.");
 			return Response.status(403).build();
 		}
+	}
+	
+
+
+	@GET
+	@Path("/{apartmentId}/image/{imageId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces({"image/png", "image/jpg", "image/gif"})
+	public Response uploadImage(@PathParam(value="apartmentId")long aparmtentId, @PathParam(value="imageId") long imageId, @Context HttpServletRequest request) {
+		ApartmentDAO apartmentDAO = (ApartmentDAO) ctx.getAttribute("apartmentDAO");
+		
+		Apartment apartment = apartmentDAO.getApartmentById(aparmtentId);
+		
+		File file = new File("C:\\Users\\msila\\Desktop\\ApartmentImages\\" + imageId + ".jpg");
+		 
+        ResponseBuilder responseBuilder = Response.ok((Object) file);
+        responseBuilder.header("Content-Disposition", "attachment; filename=\"" + imageId +"\"");
+        return responseBuilder.build();
 	}
 	
 }

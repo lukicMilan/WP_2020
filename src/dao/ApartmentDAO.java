@@ -33,6 +33,8 @@ public class ApartmentDAO {
 		List<Date> freeDates = new ArrayList<Date>();
 		List<ApartmentComment> apartmentComments = new ArrayList<ApartmentComment>();
 		List<String> imageList = new ArrayList<String>();
+		imageList.add("1");
+		imageList.add("2");
 		List<Amenities> amenities = new ArrayList<Amenities>();
 		Amenities amenity = new Amenities("Inside", "Room service");
 		//treba jos id dodati na amenity
