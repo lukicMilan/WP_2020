@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.osgi.framework.AdminPermission;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -51,12 +53,12 @@ public class AmenitiesDAO {
 		return amenities.containsKey(id);
 	}
 	
-	public boolean addAmenity(AmenitiesDTO amenitiesDTO) {
+	public AmenitiesDTO addAmenity(AmenitiesDTO amenitiesDTO) {
 		amenitiesDTO.setId(this.amenities.size()+1);
 		amenities.put(amenitiesDTO.getId(), AmenitiesDTO.toAmenities(amenitiesDTO));
 		saveAmenities();
 		
-		return true;
+		return amenitiesDTO;
 	}
 	
 	public boolean removeAmenity(long id) {

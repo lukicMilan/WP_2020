@@ -6,6 +6,14 @@
         </md-button>
         <span class="md-title">Bookomat</span>
         <div class="md-toolbar-section-end">
+          <div @click="openEditUser" >
+            <md-avatar v-if="loggedInUser" class="md-avatar-icon md-default">
+              <md-ripple @click="openEditUser">
+                <md-icon>perm_identity</md-icon>
+              </md-ripple>
+            <md-tooltip md-direction="bottom">Edit my profile</md-tooltip>
+            </md-avatar>
+          </div>
           <md-button v-if="!loggedInUser" class="md-dense md-primary" to = "/login">Log in</md-button>
           <md-button v-if="!loggedInUser" class="md-dense md-raised md-primary" to = "/register">Sign up</md-button>
           <md-button v-if="loggedInUser" class="md-dense md-raised md-primary" to = "/login" @click.native="logout">Logout</md-button>
@@ -43,14 +51,26 @@
             </md-list-item>
         </md-list>
         </md-drawer>
+
+        <div v-if=this.showDialog>
+          <md-dialog :md-active.sync="showDialog" class="md-dialog-content md-theme-default">
+            <Register @userRegistered = "userAdded($event)"
+                      @userEdited = "userEdited($event)"
+                      :isEdit = "this.showDialog" :loggedInUser = "this.loggedInUser" />
+         </md-dialog>
+        </div>
     </div>
 </template>
 
 <script>
+import Register from '../Register'
 export default {
     name: "side-bar",
     props: {
       loggedInUser: null,
+    },
+    components: {
+      Register
     },
     methods: {
       logout: function() {
@@ -63,24 +83,20 @@ export default {
         } else {
           return true;
         }
+      },
+      openEditUser() {
+        this.showDialog = true
+        console.log(this.showDialog)
+      },
+      userEdited(user) {
+        this.showDialog = false
+        console.log(user)
       }
     },
     data: () => ({
       showNavigation: false,
       showSidepanel: false,
-      items: [{
-            'id':'1',
-            'title': 'hello',
-            'description': 'ok ok',
-            'created_date': '2018-09-09'
-        },
-        {
-            'id':'2',
-            'title': 'hello 2',
-            'description': 'ok ok 2',
-            'created_date': '2018-10-09'
-        }],
-        columns: ['id', 'title', 'description', 'created_date']
+      showDialog: false,
     }),
     computed: {
       loggedAdministrator: function() {
@@ -107,7 +123,8 @@ export default {
         }
         return false;
       }
-    }
+    },
+     
 }
 </script>
 

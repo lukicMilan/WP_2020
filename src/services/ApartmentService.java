@@ -2,6 +2,7 @@ package services;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -19,8 +20,11 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import dao.AmenitiesDAO;
 import dao.ApartmentDAO;
+import dto.AmenitiesDTO;
 import dto.ApartmentDTO;
+import model.Amenities;
 import model.Apartment;
 import model.User;
 import model.UserType;
@@ -86,6 +90,34 @@ public class ApartmentService {
 		return Response.status(200).entity(aps).build();
 	}
 	
+	@PUT
+	@Path("/deletedAmenity/{id}")
+	public Response deletedAmenity(@PathParam(value = "id") long id, @Context HttpServletRequest request) {
+//		AmenitiesDAO amenitiesDAO = (AmenitiesDAO) ctx.getAttribute("amenitiesDAO");
+		ApartmentDAO apartmentDAO = (ApartmentDAO) ctx.getAttribute("apartmentDAO");
+//		AmenitiesDTO amenitiesDTO = new AmenitiesDTO(amenitiesDAO.getAmenitiesById(id));
+//		
+//		List<Amenities> ams = new ArrayList<>();
+//
+//		System.out.println("brisem ameniti" + amenitiesDTO.getId() );
+//		
+//		List<ApartmentDTO> apartments = new ArrayList<>();
+//		apartments = apartmentDAO.getApartments();
+//		
+//		for (int i = 0; i < apartments.size(); i++) {
+//			ApartmentDTO apDTO = apartments.get(i);
+//			if(apDTO.getAmenities().stream().filter(a-> a.getId()==amenitiesDTO.getId()).findFirst().isPresent()) {
+//				System.out.println("iz apartmana" + apartments.get(i).getId());
+//				ams = apDTO.getAmenities();
+//				ams.remove(AmenitiesDTO.toAmenities(amenitiesDTO));
+//				apDTO.setAmenities(ams);
+//				apartmentDAO.editApartment(apDTO);
+//			}
+//		}
+		apartmentDAO.deleteAmenity(id);
+		return Response.status(200).build();
+	}
+	
 	@GET
 	@Path("/nonActive")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -126,14 +158,16 @@ public class ApartmentService {
 		User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
 		ApartmentDAO apartmentDAO =(ApartmentDAO) ctx.getAttribute("apartmentDAO");
 		
-		if(loggedInUser.getUsername() != apartmentDTO.getHostUsername() || 
-				loggedInUser.getUserType() == UserType.ADMINISTRATOR) {
-			apartmentDAO.editApartment(apartmentDTO);
-			return Response.status(200).build();
-		}else {
-			System.out.println("Only the apartment host and the administrator can make changes.");
-			return Response.status(403).build();
-		}
+//		if(loggedInUser.getUsername() != apartmentDTO.getHostUsername() || 
+//				loggedInUser.getUserType() == UserType.ADMINISTRATOR) {
+//			apartmentDAO.editApartment(apartmentDTO);
+//			return Response.status(200).build();
+//		}else {
+//			System.out.println("Only the apartment host and the administrator can make changes.");
+//			return Response.status(403).build();
+//		}
+		apartmentDAO.editApartment(apartmentDTO);
+		return Response.status(200).build();
 		
 	}
 	

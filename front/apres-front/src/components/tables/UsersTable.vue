@@ -72,7 +72,7 @@ export default {
             return;
         }
         if(this.loggedInUser.userType === "HOST") {
-            http.get('host/' + this.loggedInUser.username)
+            http.get('reservation/host/' + this.loggedInUser.username)
             .then(data => {
                 data.data.forEach(element => {
                     http.get('user/' + element.guestUsername)

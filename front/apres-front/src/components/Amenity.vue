@@ -100,7 +100,7 @@ export default {
                         name: this.form.name
         })
                 .then(data => {
-                    console.log(data.data)
+                     this.$emit('amenityEdited', data.data)
                 })
                 .catch(error => {
                     console.log(error) 
@@ -113,7 +113,7 @@ export default {
                         name: this.form.name
                     })
                     .then(data => {
-                        this.$emit('amenityAdded', data.data);
+                        this.$emit('amenityAdded', data.data)
                     })
                     .catch(error => {
                         console.log(error) 

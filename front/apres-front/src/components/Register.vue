@@ -68,7 +68,12 @@
 
                 </md-card-content>
                 <md-card-actions>
-                 <md-button type="submit" class="md-dense md-raised md-primary">Submit</md-button>
+                  <div v-if="!this.isEdit">
+                    <md-button type="submit" class="md-dense md-raised md-primary">Submit</md-button>
+                  </div>
+                  <div v-else>
+                    <md-button class="md-dense md-raised md-primary" @click="saveEdit">Submit</md-button>
+                  </div>
               </md-card-actions>
             </md-card>
         </form>
@@ -84,7 +89,7 @@ import { validationMixin } from 'vuelidate'
     // not
     // maxLength
   } from 'vuelidate/lib/validators'
-  import axios from 'axios'
+  import http from '../http-common'
 
   function usernameExists () {
     return !this.wrongUsername
@@ -93,7 +98,8 @@ export default {
     name: 'Register',
     mixins: [validationMixin],
     props: {
-        
+        loggedInUser: Object,
+        isEdit: Boolean
     },
     data: () => ({
         form: {
@@ -101,7 +107,8 @@ export default {
             surname: null, 
             username: null,
             gender: null,
-            password: null
+            password: null,
+            userType: null
         },
         wrongUsername: false
     }),
@@ -151,18 +158,18 @@ export default {
     },
      clearForm () {
         this.$v.$reset()
-        this.form.name = null
-        this.form.surname = null
-        this.form.username = null
+        this.form.name = ""
+        this.form.surname = ""
+        this.form.username = ""
         this.form.gender = null
-        this.form.password = null
-        this.form.passwordConfirm = null
+        this.form.password = ""
+        this.form.passwordConfirm = ""
       },
       changeValue() {
         this.wrongUsername = false
       },
       saveUser: function () {
-        axios.post('http://localhost:8080/PocetniREST/rest/user',
+        http.post('user',
                     {
                       username: this.form.username,
                       password: this.form.password,
@@ -179,7 +186,57 @@ export default {
                       this.wrongUsername = true
                     }) ;
 
+      },
+      saveEdit() {
+        if(this.form.password === null) {
+          http.put('user',
+                    {
+                      username: this.form.username,
+                      password: this.loggedInUser.password,
+                      name: this.form.name,
+                      surname: this.form.surname,
+                      gender: this.form.gender,
+                      userType: this.form.userType,
+                    })
+                    .then(() => { 
+                      this.wrongUsername = false
+                      this.$emit('userEdited', this.form) })
+                    .catch(() => {
+                      this.$emit('globalMessage', 'Username already exists!')
+                      this.wrongUsername = true
+                    }) ;
       }
+        else {
+          http.put('user',
+                    {
+                      username: this.form.username,
+                      password: this.form.password,
+                      name: this.form.name,
+                      surname: this.form.surname,
+                      gender: this.form.gender,
+                      userType: this.form.userType
+                    })
+                    .then(() => { 
+                      this.wrongUsername = false
+                      this.$emit('userEdited', this.form) })
+                    .catch(() => {
+                      this.$emit('globalMessage', 'Username already exists!')
+                      this.wrongUsername = true
+                    }) ;
+      }
+      }
+    },
+    mounted() {
+      if(this.isEdit){
+        this.form.name = this.loggedInUser.name,
+        this.form.surname = this.loggedInUser.surname,
+        this.form.gender = this.loggedInUser.gender,
+        this.form.username = this.loggedInUser.username,
+        this.form.userType = this.loggedInUser.userType
+    } else {
+      this.clearForm()
+    }
+
     }
 }
 </script>
