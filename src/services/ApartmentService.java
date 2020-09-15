@@ -1,13 +1,22 @@
 package services;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -119,8 +128,7 @@ public class ApartmentService {
 			return Response.status(409).build();
 		}
 		
-		apartmentDAO.addApartment(apartmentDTO);		
-		return Response.status(200).build();
+		return Response.status(200).entity(apartmentDAO.addApartment(apartmentDTO)).build();
 	}
 	
 	@PUT
@@ -193,7 +201,7 @@ public class ApartmentService {
 	@Path("/{apartmentId}/image/{imageId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces({"image/png", "image/jpg", "image/gif"})
-	public Response uploadImage(@PathParam(value="apartmentId")long aparmtentId, @PathParam(value="imageId") long imageId, @Context HttpServletRequest request) {
+	public Response getImage(@PathParam(value="apartmentId")long aparmtentId, @PathParam(value="imageId") long imageId, @Context HttpServletRequest request) {
 		ApartmentDAO apartmentDAO = (ApartmentDAO) ctx.getAttribute("apartmentDAO");
 		
 		Apartment apartment = apartmentDAO.getApartmentById(aparmtentId);
@@ -205,6 +213,55 @@ public class ApartmentService {
         return responseBuilder.build();
 	}
 	
+	@POST
+	@Path("/{apartmentId}/image")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	public Response uploadImage(@PathParam(value="apartmentId")long apartmentId, @Context HttpServletRequest request, HttpServletResponse response) throws IllegalStateException, IOException, ServletException {
+		ApartmentDAO apartmentDAO = (ApartmentDAO) ctx.getAttribute("apartmentDAO");
+		
+		Apartment apartment = apartmentDAO.getApartmentById(apartmentId);
+		final String path = "C:\\Users\\msila\\Desktop\\ApartmentImages\\";
+	    final Part filePart = request.getPart("file");
+	    final String fileName = apartmentDAO.getImageIndex() + ".jpg";
+		
+	    OutputStream out = null;
+	    InputStream filecontent = null;
+	    final PrintWriter writer = response.getWriter();
+	    
+	    try {
+	    	out = new FileOutputStream(new File(path + File.separator
+	                + fileName));
+	        filecontent = filePart.getInputStream();
+
+	        int read = 0;
+	        final byte[] bytes = new byte[1024];
+
+	        while ((read = filecontent.read(bytes)) != -1) {
+	            out.write(bytes, 0, read);
+	        }
+	        writer.println("New file " + fileName + " created at " + path);
+	        
+		} catch (Exception e) {
+			writer.println("You either did not specify a file to upload or are "
+	                + "trying to upload a file to a protected or nonexistent "
+	                + "location.");
+	        writer.println("<br/> ERROR: " + e.getMessage());
+
+
+		} finally {
+	        if (out != null) {
+	            out.close();
+	        }
+	        if (filecontent != null) {
+	            filecontent.close();
+	        }
+	        if (writer != null) {
+	            writer.close();
+	        }
+	    }
+	    
+		return Response.status(200).build();
+	}
 }
 
 

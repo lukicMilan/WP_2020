@@ -70,7 +70,7 @@
                         <div class="md-layout-item md-small-size-50">
                             <md-field>
                                 <label>Select images</label>
-                                <md-file v-model="selectedImages" accept="image/*" multiple />
+                                <md-file ref="file" v-model="selectedImages" type="file" accept="image/jpg" @change="fileChanged" multiple />
                             </md-field>
                         </div>
                     </div>
@@ -125,6 +125,7 @@
                 </md-card-content>
                 <md-card-actions>
                     <md-button type="submit" class="md-dense md-raised md-primary">Submit</md-button>
+                    <md-button class="md-dense md-raised md-primary" @click="uploadImages">Upload images</md-button>
               </md-card-actions>
             </md-card>
         </form>
@@ -212,59 +213,79 @@ export default {
       }
     },
     methods: {
-        getValidationClass (fieldName) {
-        const field = this.$v.form[fieldName]
-
-        if (field) {
-          return {
-            'md-invalid': field.$invalid && field.$dirty
-          }
-        }
-      },
-      validateApartment () {
-        this.$v.$touch()
-
-        if (!this.$v.$invalid) {
-          this.saveApartment()
-        }
-      },
-      saveApartment: function() {
-        console.log(this.selectedAmenities)
-        http.post('apartment',
-                    {
-                        type: this.form.type,
-                        roomNumber: this.form.roomNumber,
-                        guestNumber: this.form.guestNumber,
-                        latitude : this.form.latitude,
-                        longitude : this.form.longitude,
-                        city: this.form.city,
-                        street: this.form.street,
-                        zipCode: this.form.zipCode,
-                        number: this.form.number,
-                        imageList: [],
-                        price: this.form.price,
-                        entryTime: this.form.entryTime,
-                        leaveTime: this.form.leaveTime,
-                        amenities: this.selectedAmenities,
-                        active: true,
-                        rentDates: [],
-                        freeDates: [],
-                        comments: [],
-                        hostUsername: this.loggedInUser.username
-
+        fileChanged(event) {
+            this.selectedImages = event.target.files;
+            event.target.files.forEach(element => {
+                const formData = new FormData();
+                formData.append('image', element, element.name);
+                //http.post('apartment/'+data.data.id+'/image', formData)
+                http.post('apartment/'+'1'+'/image', formData)
+                    .data(() => {
+                        console.log("USPEH USPEH");
                     })
-                    .catch(error => {
-                        console.log(error) 
+                    .catch(() => {
+                        console.log("NESTO NE STIMA");
                     });
-      },
+            });
+        },
+        getValidationClass (fieldName) {
+            const field = this.$v.form[fieldName]
+
+            if (field) {
+                return {
+                    'md-invalid': field.$invalid && field.$dirty
+                }
+            }
+        },
+        validateApartment () {
+            this.$v.$touch()
+
+            if (!this.$v.$invalid) {
+                this.saveApartment()
+            }
+        },
+        saveApartment: function() {
+            http.post('apartment',
+                {
+                    type: this.form.type,
+                    roomNumber: this.form.roomNumber,
+                    guestNumber: this.form.guestNumber,
+                    latitude : this.form.latitude,
+                    longitude : this.form.longitude,
+                    city: this.form.city,
+                    street: this.form.street,
+                    zipCode: this.form.zipCode,
+                    number: this.form.number,
+                    imageList: [],
+                    price: this.form.price,
+                    entryTime: this.form.entryTime,
+                    leaveTime: this.form.leaveTime,
+                    amenities: this.selectedAmenities,
+                    active: true,
+                    rentDates: [],
+                    freeDates: [],
+                    comments: [],
+                    hostUsername: this.loggedInUser.username
+
+                })
+                .then(()=> {
+                    //nek bivstvuje
+                })
+                .catch(error => {
+                    console.log(error) 
+                });
+        },
+        uploadImages() {
+            
+        }
     },
     created() {  
         http.get('amenities')
-                            .then(data => { 
-                            this.allAmenities = data.data})
-                            .catch(error => {
-                                console.log(error) 
-                            });
+            .then(data => { 
+            this.allAmenities = data.data})
+            .catch(error => {
+                console.log(error) 
+            });
     }
 }
 </script>
