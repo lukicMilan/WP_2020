@@ -21,6 +21,7 @@ import UsersTable from "./components/tables/UsersTable"
 import AccessDenied from "./pages/AccessDenied"
 import CreateReservation from "./components/CreateReservation"
 import ReservationTable from "./components/tables/ReservationTable"
+import ApartmentComment from "./components/ApartmentComment"
 
 import VCalendar from 'v-calendar';
 
@@ -29,6 +30,9 @@ var VueCookie = require('vue-cookie');
 Vue.use(VueRouter);
 Vue.use(VueCookie);
 Vue.use(VCalendar);
+
+import { VueStars } from "vue-stars"
+Vue.component("vue-stars", VueStars)
 
 
 const router = new VueRouter({
@@ -101,6 +105,11 @@ const router = new VueRouter({
           name: "AccessDenied",
           component: AccessDenied
         },
+        {
+          path: "/apartmentComment",
+          name: ApartmentComment,
+          component: ApartmentComment
+        }
         ]
     }
 ]

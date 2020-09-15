@@ -3,6 +3,9 @@
         <div v-if="!loggedInUser">
             <access-denied> </access-denied>
         </div>
+        <md-dialog :md-active.sync="comment">
+          <ApartmentComment :loggedInUser = "loggedInUser" :apartmentId = "this.apartmentId" />
+        </md-dialog>
         <div v-if="loggedInUser">
             <md-table v-model="searched" md-sort="id" md-sort-order="asc" md-card>
             <md-table-toolbar>
@@ -33,6 +36,9 @@
                     <span>
                         <md-button v-if="loggedInHost&&reservationDenieingEnabled(item)" @click="denyReservation(item)" class="md-raised md-accent">Deny</md-button>
                     </span>
+                </md-table-cell >
+                <md-table-cell v-if="loggedInGuest" md-label = "Comment">
+                    <md-button class="md-raised" @click = "openCommentDialog(item)">Comment</md-button>
                 </md-table-cell>
             </md-table-row>
         </md-table>
@@ -43,6 +49,7 @@
 <script>
 import AccessDenied from '../../pages/AccessDenied.vue';
 import http from '../../http-common'
+import ApartmentComment from '../ApartmentComment'
 
 const toLower = text => {
     return text.toString().toLowerCase()
@@ -82,6 +89,7 @@ export default {
     },
     components: {
         accessDenied: AccessDenied,
+        ApartmentComment
     },
     data: function () {
         return {
@@ -90,6 +98,8 @@ export default {
             searchedWord: "",
             // loggedInHost: false,
             // loggedInGuest: false,
+            comment: false,
+            apartmentId: Number
         }
     },
     mounted: function () {
@@ -208,6 +218,10 @@ export default {
             .catch(() => {
                 this.$emit('globalMessage', 'An error has occured!');
             });
+        },
+        openCommentDialog(reservation) {
+            this.apartmentId = reservation.apartmentId
+            this.comment = true
         }
     },
     computed: {

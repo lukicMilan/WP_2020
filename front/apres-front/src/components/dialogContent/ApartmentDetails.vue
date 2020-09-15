@@ -77,6 +77,33 @@
                 </div>
             </md-tab>
             <md-tab md-label="Comments">
+
+                <div v-if = "hasComments">
+                    <div v-for="comment in this.comments" :key= comment.id>
+                        <md-card>
+                            <md-card-header>
+                                <h3>{{comment.username}}</h3>
+                            </md-card-header>
+
+                            <md-card-content>
+                                {{comment.comment}}
+                                <br>
+                                <br>
+                                <label>Rating: </label>
+                                <vue-stars
+                                    :max="5"
+                                    :value= "comment.stars"
+                                    :readonly="true"
+                                    />
+                            </md-card-content>
+
+                            <!-- <md-card-actions>
+                                <md-button>Action</md-button>
+                                <md-button>Action</md-button>
+                            </md-card-actions> -->
+                        </md-card>                    
+                    </div>
+                </div>
                 <div v-if="canReserve" @click="createReservation">
                     <md-button>RESERVE</md-button>
                 </div>   
@@ -86,10 +113,14 @@
 </template>
 
 <script>
+import http from '../../http-common'
 export default {
     props: {
         selectedApartment: null,
         loggedInUser: null
+    },
+    components: {
+        
     },
     data: function() {
         return {
@@ -99,7 +130,8 @@ export default {
             address: "",
             startRentDate: Date,
             endRentDate: Date,
-            selectedDate: Date
+            selectedDate: Date,
+            comments: []
         }
     },
     computed: {
@@ -112,6 +144,13 @@ export default {
             }
             return false;
         },
+        hasComments: function() {
+            if(this.comments === null) {
+                return false;
+            } else {
+                return true;
+            }
+        }
     },
     created: function() {
         let types = [];
@@ -126,8 +165,13 @@ export default {
             this.startRentDate = new Date(this.selectedApartment.rentDates[0]);
             this.endRentDate = new Date(this.selectedApartment.rentDates[1]); 
         }
-
         this.amenityTypes = types;
+
+        http.get('apartmentComment/apartment/'+this.selectedApartment.id)
+            .then(data => {
+                this.comments = data.data
+            })
+            .catch(error => {console.log(error)})
     },
     methods: {
         createReservation: function() {
