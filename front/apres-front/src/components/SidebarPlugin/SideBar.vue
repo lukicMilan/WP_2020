@@ -88,10 +88,10 @@ export default {
         this.showDialog = true
         console.log(this.showDialog)
       },
-       userEdited(user) {
+      userEdited(user) {
         this.showDialog = false
         console.log(user)
-    }
+      }
     },
     data: () => ({
       showNavigation: false,

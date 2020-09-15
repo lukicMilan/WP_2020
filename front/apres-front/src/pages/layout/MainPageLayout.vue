@@ -10,7 +10,8 @@
              @userLoggedIn="userLoggedIn($event)" 
              @activateReservation="activateReservation($event)"
              @reservationCompleted="reservationCompleted($event)"
-             @globalMessage="showGlobalMessage($event)"></router-view>
+             @globalMessage="showGlobalMessage($event)"
+             @userEdited = "userEdited($event)"></router-view>
         </div>
         <md-snackbar :md-position="'center'" :md-duration="snackbarDuration" :md-active.sync="showSnackbar" md-persistent>
             <span>{{snackbarText}}</span>
@@ -48,7 +49,12 @@ export default {
         showGlobalMessage(message) {
             this.snackbarText = message;
             this.showSnackbar = true;
-        }
+        },
+        userEdited(user) {
+        this.userLoggedIn(user)
+        this.$router.push('/apartment')
+        
+    }
     },
     
     data: 

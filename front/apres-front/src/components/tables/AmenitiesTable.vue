@@ -24,6 +24,9 @@
         <md-table-cell md-label="Actions" >
           <md-button class="md-dense md-raised md-default" @click=" isEditFunction(item)">Edit</md-button>
           <md-button class="md-dense md-raised md-accent" @click = "removeAmenity(item)">Delete</md-button>
+          <div v-if = "item.username === this.loggedInUser.username && item.active == true">
+            <md-button class="md-dense md-raised md-accent" @click = "deactivateApartment(item)">Deactivate</md-button>
+          </div>
         </md-table-cell>
       </md-table-row>
     </md-table>
@@ -109,6 +112,38 @@
                                  console.log(error)
                             })
         
+      },
+      deactivateApartment(item) {
+        http.put('apartment',
+                    {
+                        id: item.id,
+                        type: item.type,
+                        roomNumber: item.roomNumber,
+                        guestNumber: item.guestNumber,
+                        latitude : item.latitude,
+                        longitude : item.longitude,
+                        city: item.city,
+                        street: item.street,
+                        zipCode: item.zipCode,
+                        number: item.number,
+                        imageList: [],
+                        price: item.price,
+                        entryTime: item.entryTime,
+                        leaveTime: item.leaveTime,
+                        amenities: item.selectedAmenities,
+                        active: false,
+                        rentDates: [],
+                        freeDates: [],
+                        comments: [],
+                        hostUsername: this.loggedInUser.username
+
+                    })
+                    .then(data => { 
+                        this.$emit('apartmentEdited', data.data)
+                    })
+                    .catch(error => {
+                        console.log(error) 
+                    });
       },
       isEditFunction(item) {
         this.isEdit = true

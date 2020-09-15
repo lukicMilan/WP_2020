@@ -107,7 +107,8 @@ export default {
             surname: null, 
             username: null,
             gender: null,
-            password: null
+            password: null,
+            userType: null
         },
         wrongUsername: false
     }),
@@ -195,13 +196,13 @@ export default {
                       name: this.form.name,
                       surname: this.form.surname,
                       gender: this.form.gender,
-                      userType: this.loggedInUser.userType
+                      userType: this.form.userType,
                     })
-                    .then((data) => { 
+                    .then(() => { 
                       this.wrongUsername = false
-                      this.$emit('userEdited', data.data) })
-                    .catch(error => {
-                       console.log(error)
+                      this.$emit('userEdited', this.form) })
+                    .catch(() => {
+                      this.$emit('globalMessage', 'Username already exists!')
                       this.wrongUsername = true
                     }) ;
       }
@@ -213,13 +214,13 @@ export default {
                       name: this.form.name,
                       surname: this.form.surname,
                       gender: this.form.gender,
-                      userType: this.loggedInUser.userType
+                      userType: this.form.userType
                     })
-                    .then((response) => { 
+                    .then(() => { 
                       this.wrongUsername = false
-                      console.log(response) })
-                    .catch(error => {
-                       console.log(error)
+                      this.$emit('userEdited', this.form) })
+                    .catch(() => {
+                      this.$emit('globalMessage', 'Username already exists!')
                       this.wrongUsername = true
                     }) ;
       }
@@ -231,7 +232,7 @@ export default {
         this.form.surname = this.loggedInUser.surname,
         this.form.gender = this.loggedInUser.gender,
         this.form.username = this.loggedInUser.username,
-        this.userType = this.loggedInUser.userType
+        this.form.userType = this.loggedInUser.userType
     } else {
       this.clearForm()
     }
