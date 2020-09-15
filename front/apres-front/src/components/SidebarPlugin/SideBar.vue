@@ -85,8 +85,7 @@ export default {
         }
       },
       openEditUser() {
-        this.showDialog = true
-        console.log(this.showDialog)
+        this.$router.push("/register");
       },
       userEdited(user) {
         this.showDialog = false
