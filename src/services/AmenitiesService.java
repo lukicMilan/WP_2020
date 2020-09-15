@@ -1,9 +1,7 @@
 package services;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
@@ -24,9 +22,9 @@ import dao.AmenitiesDAO;
 import dao.ApartmentDAO;
 import dto.AmenitiesDTO;
 import dto.ApartmentDTO;
+import dto.DeleteAmenitiesDTO;
 import model.Amenities;
 import model.User;
-import model.UserType;
 
 @Path("/amenities")
 public class AmenitiesService {
@@ -68,8 +66,8 @@ public class AmenitiesService {
 //			System.out.println("Only the system administrator can add new amenities.");
 //			return Response.status(403).build();
 //		}
-		amenitiesDAO.addAmenity(amenitiesDTO);		
-		return Response.status(200).build();
+		AmenitiesDTO amsDTO = amenitiesDAO.addAmenity(amenitiesDTO);		
+		return Response.status(200).entity(amsDTO).build();
 	}
 	
 	@GET
@@ -103,23 +101,10 @@ public class AmenitiesService {
 	}
 	
 	@DELETE
-	@Path("/{amenitiesDTO}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response deleteAmenity(@PathParam(value = "amenitiesDTO") AmenitiesDTO amenitiesDTO) {
+	@Path("{id}")
+	public Response deleteAmenity(@PathParam(value = "id") long id, @Context HttpServletRequest request) {
 		AmenitiesDAO amenitiesDAO = (AmenitiesDAO) ctx.getAttribute("amenitiesDAO");
-		ApartmentDAO apartmentDAO = (ApartmentDAO) ctx.getAttribute("apartmentDAO");
-		System.out.println("usao u delete");
-		System.out.println(amenitiesDTO.getId());
-		List<ApartmentDTO> apartments = new ArrayList<>();
-		apartments = apartmentDAO.getApartments();
-		
-		for (int i = 0; i < apartments.size(); i++) {
-			if(apartments.get(i).getAmenities().contains(amenitiesDTO)) {
-				apartments.get(i).getAmenities().remove(amenitiesDTO);
-			}
-		}
-		apartmentDAO.saveApartments();
-		amenitiesDAO.removeAmenity(amenitiesDTO.getId());
+		amenitiesDAO.removeAmenity(id);
 		amenitiesDAO.saveAmenities();
 		return Response.status(200).build();
 	}

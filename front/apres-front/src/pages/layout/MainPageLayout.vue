@@ -34,7 +34,7 @@ export default {
                     this.$router.push('/usersTable');
                 } else if(user.userType==="GUEST") {
                     this.$router.push('/apartmentTable');
-                }
+                } 
             }
         }, 
         activateReservation(selectedApartment) {

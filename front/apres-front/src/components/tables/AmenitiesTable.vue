@@ -1,8 +1,10 @@
 <template>
   <div class = "amenitiesTable">
-
+   
     <md-dialog :md-active.sync="showDialog">
-        <Amenity :changeId="this.editId" :changeName="this.editName" :changeType="this.editType" :isEdit="this.isEdit" />
+          <Amenity @amenityAdded = "amenityCreated($event)"
+                   @amenityEdited = "amenityEdited($event)"
+                   :changeId="this.editId" :changeName="this.editName" :changeType="this.editType" :isEdit="this.isEdit" />
     </md-dialog>
 
     <md-table v-model="searched" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
@@ -94,15 +96,19 @@
         this.showDialog = true
       },
       removeAmenity(item) {
-        http.delete('amenities', { params : {
-                                  id: item.id,
-                                  type: item.type,
-                                  name: item.name,
-                                  deleted: true
-        }
-        }).then(data => console.log(data.data))
-                                      .catch(error => console.log(error))
-        this.amenities.slice(item.id, 1)
+        http.delete('amenities/'+item.id)
+          .then(http.put('apartment/deletedAmenity/'+item.id)
+                .then(data => console.log(data.data))
+                .catch(error => console.log(error)))
+          .catch(error => console.log(error))
+        http.get('amenities').then(data => {
+                                 this.amenities = data.data
+                                 this.searched = data.data
+      })
+                            .catch(error => {
+                                 console.log(error)
+                            })
+        
       },
       isEditFunction(item) {
         this.isEdit = true
@@ -110,6 +116,22 @@
         this.editName = item.name
         this.editId = item.id
         this.showDialog = true
+      },
+      amenityCreated(amenity) {
+        this.showDialog = false
+        this.amenities.push(amenity)
+      },
+      amenityEdited() {
+        this.isEdit = false
+        this.showDialog = false
+        http.get('amenities').then(data => {
+                                 this.amenities = data.data
+                                 this.searched = data.data
+      })
+                            .catch(error => {
+                                 console.log(error)
+                            })
+        
       }
     },
     created () {

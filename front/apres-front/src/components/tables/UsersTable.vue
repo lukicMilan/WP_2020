@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import http from '../../http-common'
 
 const toLower = text => {
     return text.toString().toLowerCase()
@@ -64,7 +64,7 @@ export default {
             return;
         }
         if(this.loggedInUser.userType === "ADMINISTRATOR") {
-            axios.get('http://localhost:8080/PocetniREST/rest/user')
+            http.get('user')
             .then(data => {
                 this.users = data.data;
                 this.searched = data.data;
@@ -72,10 +72,10 @@ export default {
             return;
         }
         if(this.loggedInUser.userType === "HOST") {
-            axios.get('http://localhost:8080/PocetniREST/rest/reservation/host/' + this.loggedInUser.username)
+            http.get('reservation/host/' + this.loggedInUser.username)
             .then(data => {
                 data.data.forEach(element => {
-                    axios.get('http://localhost:8080/PocetniREST/rest/user/' + element.guestUsername)
+                    http.get('user/' + element.guestUsername)
                     .then(data1=> {
                         if(!this.users.includes(data1.data)) {
                             this.users.push(data1.data);
