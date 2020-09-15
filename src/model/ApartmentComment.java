@@ -19,6 +19,15 @@ public class ApartmentComment {
 		this.stars = stars;
 	}
 	
+	public ApartmentComment(long id, String username, long apartment, String comment, long stars) {
+		super();
+		this.id = id;
+		this.username = username;
+		this.apartment = apartment;
+		this.comment = comment;
+		this.stars = stars;
+	}
+
 	public long getId() {
 		return id;
 	}

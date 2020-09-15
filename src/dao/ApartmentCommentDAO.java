@@ -23,8 +23,9 @@ public class ApartmentCommentDAO {
 	public ApartmentCommentDAO(String contextPath) {
 		this.contextPath = contextPath;
 		ApartmentComment ac = new ApartmentComment("guest", 1, "Odlicna usluga.", 4);
-		ac.setId(getFreeId(1));
+		ac.setId(this.comments.size()+1);
 		this.comments.put(ac.getId(), ac);
+		
 		saveApartmentComments();
 	}
 	
@@ -39,8 +40,17 @@ public class ApartmentCommentDAO {
 		return ac;
 	}
 	
+	public List<ApartmentComment> getComments() {
+		loadApartmentComments();
+		List<ApartmentComment> ac = new ArrayList<ApartmentComment>();
+		for(Map.Entry<Long, ApartmentComment> comment : this.comments.entrySet()) {
+			ac.add(comment.getValue());
+		}
+		return ac;
+	}
+	
 	public boolean addApartmentComment(ApartmentComment ac) {
-		ac.setId(getFreeId(1));
+		ac.setId(this.comments.size()+1);
 		comments.put(ac.getId(), ac);
 		saveApartmentComments();
 		
@@ -102,18 +112,6 @@ public class ApartmentCommentDAO {
 			e.printStackTrace();
 		} 
 			
-	}
-	
-	private long getFreeId(long id) {
-		loadApartmentComments();
-		
-		for (Map.Entry<Long, ApartmentComment> comment : this.comments.entrySet()) {
-			if(comment.getValue().getId() == id) {
-				return getFreeId(id++);
-			}
-		}
-		
-		return id;
 	}
 
 }
