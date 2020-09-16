@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 import dto.AmenitiesDTO;
 import dto.ApartmentDTO;
+import dto.ImagePathDTO;
 import model.Amenities;
 import model.Apartment;
 import model.ApartmentComment;
@@ -33,6 +34,8 @@ public class ApartmentDAO {
 		List<Date> freeDates = new ArrayList<Date>();
 		List<ApartmentComment> apartmentComments = new ArrayList<ApartmentComment>();
 		List<String> imageList = new ArrayList<String>();
+		imageList.add("1");
+		imageList.add("2");
 		List<Amenities> amenities = new ArrayList<Amenities>();
 		Amenities amenity = new Amenities("Inside", "Room service");
 		//treba jos id dodati na amenity
@@ -157,12 +160,13 @@ public class ApartmentDAO {
 		return true;
 	}
 	
-	public boolean addApartment(ApartmentDTO apartmentDTO) {
+	public Apartment addApartment(ApartmentDTO apartmentDTO) {
 		apartmentDTO.setId(this.apartments.size()+1);
+		
 		apartments.put(apartmentDTO.getId(), ApartmentDTO.toApartment(apartmentDTO));
 		saveApartments();
 		
-		return true;
+		return ApartmentDTO.toApartment(apartmentDTO);
 	}
 	
 	public boolean removeApartment(long id) {
@@ -245,5 +249,32 @@ public class ApartmentDAO {
 			e.printStackTrace();
 		} 
 			
+	}
+
+	//TODO potrebna validacija kao i svuda drugde
+	public boolean uploadImage(ImagePathDTO imagePathDTO) {
+		File file = new File("C:\\Users\\msila\\Desktop\\ApartmentImages");
+		int imageIndex = file.listFiles().length+1;
+		
+		Apartment apartment = getApartmentById(imagePathDTO.getApartmentId());
+		
+		List<String> newList = apartment.getImageList();
+		newList.add(Integer.toString(imageIndex));
+		apartment.setImageList(newList);
+		
+		apartments.put(apartment.getId(), apartment);
+		saveApartments();
+		
+		file = new File(imagePathDTO.getPath());
+		file.renameTo(new File("C:\\Users\\msila\\Desktop\\ApartmentImages\\"+imageIndex+".jpg"));
+		
+		
+		return true;
+	}
+	
+	public String getImageIndex() {
+		File file = new File("C:\\Users\\msila\\Desktop\\ApartmentImages");
+		int imageIndex = file.listFiles().length+1;
+		return Integer.toString(imageIndex);
 	}
 }

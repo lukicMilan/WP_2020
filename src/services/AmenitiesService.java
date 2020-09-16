@@ -100,6 +100,29 @@ public class AmenitiesService {
 		return Response.status(200).build();
 	}
 	
+
+//	@DELETE
+//	@Path("/{amenitiesDTO}")
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	public Response deleteAmenity(@PathParam(value = "amenitiesDTO") AmenitiesDTO amenitiesDTO) {
+//		AmenitiesDAO amenitiesDAO = (AmenitiesDAO) ctx.getAttribute("amenitiesDAO");
+//		ApartmentDAO apartmentDAO = (ApartmentDAO) ctx.getAttribute("apartmentDAO");
+//		System.out.println("usao u delete");
+//		System.out.println(amenitiesDTO.getId());
+//		List<ApartmentDTO> apartments = new ArrayList<>();
+//		apartments = apartmentDAO.getApartments();
+//		
+//		for (int i = 0; i < apartments.size(); i++) {
+//			if(apartments.get(i).getAmenities().contains(amenitiesDTO)) {
+//				apartments.get(i).getAmenities().remove(amenitiesDTO);
+//			}
+//		}
+//		apartmentDAO.saveApartments();
+//		amenitiesDAO.removeAmenity(amenitiesDTO.getId());
+//		amenitiesDAO.saveAmenities();
+//		return Response.status(200).build();
+//	}
+
 	@DELETE
 	@Path("{id}")
 	public Response deleteAmenity(@PathParam(value = "id") long id, @Context HttpServletRequest request) {

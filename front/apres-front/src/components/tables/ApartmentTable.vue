@@ -3,7 +3,8 @@
     <md-dialog class="md-dialog-content md-theme-default" :md-active.sync="showDialog">
       <apartmentDetails :selectedApartment="this.selectedApartment"
                         :loggedInUser="this.loggedInUser"
-                         @activateReservation="activateReservation($event)"></apartmentDetails>
+                         @activateReservation="activateReservation($event)"
+                         @openGallery="openGallery($event)"></apartmentDetails>
     </md-dialog>
 
     <md-dialog  class="md-dialog-content md-theme-default" :md-active.sync="isEdit" >
@@ -120,6 +121,9 @@
       deactiveReservation() {
         this.reservationActive = false;
       },
+      openGallery(data) {
+        this.$emit('openGallery', data)
+      },
       isEditFunction(item) {
         this.isEdit = true;
         this.apartment = item;
@@ -143,7 +147,6 @@
                             .catch(error => {
                                  console.log(error)
                             })
-        
       }
     },
     mounted () {

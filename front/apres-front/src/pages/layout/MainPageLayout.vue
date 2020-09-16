@@ -11,18 +11,33 @@
              @activateReservation="activateReservation($event)"
              @reservationCompleted="reservationCompleted($event)"
              @globalMessage="showGlobalMessage($event)"
+             @openGallery="openGallery($event)">
              @userEdited = "userEdited($event)"></router-view>
         </div>
         <md-snackbar :md-position="'center'" :md-duration="snackbarDuration" :md-active.sync="showSnackbar" md-persistent>
             <span>{{snackbarText}}</span>
             <md-button class="md-primary" @click="showSnackbar = false">Ok</md-button>
         </md-snackbar>
+
+         
+        <LightBox
+            ref="lightBox"
+            :media="media"
+            :show-light-box="false"
+            :show-caption="false"
+        />   
     </div>
 </div>
 </template>
 
 <script>
+import LightBox from "vue-it-bigger"
+import('vue-it-bigger/dist/vue-it-bigger.min.css') 
+
 export default {
+    components: {
+        LightBox
+    },
     props: {
 
     },
@@ -50,11 +65,15 @@ export default {
             this.snackbarText = message;
             this.showSnackbar = true;
         },
+        openGallery(params) {
+            this.media = params.media;
+            this.$refs.lightBox.showImage(params.index);
+        },
         userEdited(user) {
         this.userLoggedIn(user)
         this.$router.push('/apartment')
         
-    }
+        }
     },
     
     data: 
@@ -65,6 +84,7 @@ export default {
                 snackbarDuration: 4000,
                 showSnackbar: false,
                 snackbarText: "",
+                media: [],
             }
         },
     
