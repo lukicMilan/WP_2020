@@ -3,6 +3,7 @@
         <form novalidate class="md-layout">
             <md-card class="md-layout-item md-size-100 md-small-size-100">
                 <md-card-content>
+                    <!-- APARTMENT  -->
                     <div class="md-layout md-gutter">
                         <div class="md-layout-item md-small-size-100">
                             <md-field >
@@ -68,21 +69,63 @@
                         </div>
                     </div>
 
+                    <!-- USER -->
+                    <div class="md-layout md-gutter">
+                        <div class="md-layout-item">
+                            <md-field>
+                            <label for="userType">User Type</label>
+                                <md-select name="userType" id="userType" v-model="this.user.userType" md-dense >
+                                    <md-option value="ADMINISTRATOR">Administrator</md-option>
+                                    <md-option value="HOST">Host</md-option>
+                                    <md-option value="GUEST">Guest</md-option>
+                                </md-select>
+                            </md-field>
+                        </div>
+                        <div class="md-layout-item">
+                            <md-field>
+                            <label for="gender">Gender</label>
+                                <md-select name="gender" id="gender" v-model="this.user.gender" md-dense >
+                                    <md-option value="MALE">Male</md-option>
+                                    <md-option value="FEMALE">Female</md-option>
+                                    <md-option value="OTHER">Other</md-option>
+                                </md-select>
+                            </md-field>
+                        </div>
+                    </div>
+
+                    <!-- RESERVATION -->
+                    <div class="md-layout md-gutter">
+                        <div class="md-layout-item">
+                            <md-field>
+                            <label for="reservationStatus">Reservation Status</label>
+                                <md-select name="reservationStatus" id="reservationStatus" v-model="this.reservation.reservationStatus" md-dense >
+                                    <md-option value="CREATED">Created</md-option>
+                                    <md-option value="DENIED">Denied</md-option>
+                                    <md-option value="CANCELED">Canceled</md-option>
+                                    <md-option value="ACCEPTED">Accepted</md-option>
+                                    <md-option value="PASSED">Passed</md-option>
+                                </md-select>
+                            </md-field>
+                        </div>
+                    </div>
+
                 </md-card-content>
+                
+                <md-chip v-if="this.guestNumberFilter" class="md-primary" md-deletable>{{this.apartment.guestNumber}} <md-tooltip md-direction="top">Guest Number</md-tooltip></md-chip>
+                <md-chip v-if="this.cityFilter" class="md-primary" md-deletable>{{this.apartment.city}} <md-tooltip md-direction="top">City</md-tooltip></md-chip>
+                <md-chip v-if="this.countryFilter" class="md-primary" md-deletable>{{this.apartment.country}} <md-tooltip md-direction="top">Country</md-tooltip></md-chip>
+                <md-chip v-if="this.roomNumberFilter" class="md-primary" md-deletable>{{this.apartment.fromRoomNumber}} - {{this.apartment.toRoomNumber}} <md-tooltip md-direction="top">Room Number</md-tooltip></md-chip>
+                <md-chip v-if="this.priceFilter" class="md-primary" md-deletable>{{this.apartment.fromPrice}} - {{this.apartment.toPrice}} <md-tooltip md-direction="top">Price range</md-tooltip></md-chip>
+                <md-chip v-if="this.typeFilter" class="md-primary" md-deletable>{{this.apartment.apartmentType}} <md-tooltip md-direction="top">Apartment Type</md-tooltip></md-chip>
+                <md-chip v-if="this.statusFilter" class="md-primary" md-deletable>{{this.apartment.apartmentStatus}} <md-tooltip md-direction="top">Apartment Status</md-tooltip></md-chip>
+                <md-chip v-if="this.userTypeFilter" class="md-primary" md-deletable>{{this.user.userType}} <md-tooltip md-direction="top">User Type</md-tooltip></md-chip>
+                <md-chip v-if="this.genderFilter" class="md-primary" md-deletable>{{this.user.gender}} <md-tooltip md-direction="top">Gender</md-tooltip></md-chip>
+                <md-chip v-if="this.reservationsStatusFilter" class="md-primary" md-deletable>{{this.reservation.reservationStatus}} <md-tooltip md-direction="top">Reservation Status</md-tooltip></md-chip>
+
+                <md-button  class="md-dense md-raised md-primary" @click="filter()" >Filter</md-button>
             </md-card>
         </form>
 
-        <md-chip v-if="this.guestNumberFilter" class="md-primary" md-deletable>{{this.apartment.guestNumber}} <md-tooltip md-direction="top">Guest Number</md-tooltip></md-chip>
-        <md-chip v-if="this.cityFilter" class="md-primary" md-deletable>{{this.apartment.city}} <md-tooltip md-direction="top">City</md-tooltip></md-chip>
-        <md-chip v-if="this.countryFilter" class="md-primary" md-deletable>{{this.apartment.country}} <md-tooltip md-direction="top">Country</md-tooltip></md-chip>
-        <md-chip v-if="this.roomNumberFilter" class="md-primary" md-deletable>{{this.apartment.fromRoomNumber}} - {{this.apartment.toRoomNumber}} <md-tooltip md-direction="top">Room Number</md-tooltip></md-chip>
-        <md-chip v-if="this.priceFilter" class="md-primary" md-deletable>{{this.apartment.fromPrice}} - {{this.apartment.toPrice}} <md-tooltip md-direction="top">Price range</md-tooltip></md-chip>
-        <md-chip v-if="this.typeFilter" class="md-primary" md-deletable>{{this.apartment.apartmentType}} <md-tooltip md-direction="top">Apartment Type</md-tooltip></md-chip>
-        <md-chip v-if="this.apartmentStatus" class="md-primary" md-deletable>{{this.apartment.apartmentStatus}} <md-tooltip md-direction="top">Apartment Status</md-tooltip></md-chip>
-
-
-
-        <md-button  class="md-dense md-raised md-primary" @click="filter()" >Filter</md-button>
     </div>
 </template>
 
@@ -117,7 +160,10 @@ export default {
         roomNumberFilter: false,
         priceFilter: false,
         typeFilter: false,
-        statusFilter: false
+        statusFilter: false,
+        userTypeFilter: false,
+        genderFilter: false,
+        reservationsStatusFilter: false
     }),
     props: {
         
@@ -167,6 +213,24 @@ export default {
                 this.statusFilter = false
             } else {
                 this.statusFilter = true
+            }
+
+            if(this.user.userType === null || this.user.userType === "") {
+                this.userTypeFilter = false
+            } else {
+                this.userTypeFilter = true
+            }
+
+             if(this.user.gender === null || this.user.gender === "") {
+                this.genderFilter = false
+            } else {
+                this.genderFilter = true
+            }
+
+             if(this.reservation.reservationStatus === null || this.reservation.reservationStatus === "") {
+                this.reservationsStatusFilter = false
+            } else {
+                this.reservationsStatusFilter = true
             }
         }
     }
