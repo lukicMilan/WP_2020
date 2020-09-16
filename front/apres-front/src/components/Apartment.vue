@@ -124,8 +124,12 @@
                     </div>
                 </md-card-content>
                 <md-card-actions>
-                    <md-button type="submit" class="md-dense md-raised md-primary">Submit</md-button>
-                    <md-button class="md-dense md-raised md-primary" @click="uploadImages">Upload images</md-button>
+                    <div v-if = "this.isEdit">
+                        <md-button class="md-dense md-raised md-primary" @click = "saveEdit()">Submit</md-button>
+                    </div>
+                    <div v-else>
+                        <md-button type="submit" class="md-dense md-raised md-primary">Submit</md-button>
+                    </div>
               </md-card-actions>
             </md-card>
         </form>
@@ -147,7 +151,9 @@ export default {
     name: 'Apartment',
     mixins: [validationMixin],
     props: {
-        loggedInUser: null
+        loggedInUser: null,
+        id: Number,
+        isEdit: Boolean
     },
     // components: {DateRangePicker},
     data: () => ({
@@ -179,6 +185,7 @@ export default {
         selectedImages: [],
         allAmenities: [],
         file: null,
+        apartment: null
     }),
     validations: {
       form: {
@@ -290,8 +297,9 @@ export default {
                     hostUsername: this.loggedInUser.username
 
                 })
-                .then(()=> {
-                    //nek bivstvuje
+                .then(data => {
+                    this.$emit('apartmentAdded', data.data)
+                    this.$router.push('apartmentTable')
                 })
                 .catch(error => {
                     console.log(error) 
@@ -299,15 +307,70 @@ export default {
         },
         uploadImages() {
             
+        },
+        saveEdit()  {
+            http.put('apartment',
+                    {
+                        id: this.id,
+                        type: this.form.type,
+                        roomNumber: this.form.roomNumber,
+                        guestNumber: this.form.guestNumber,
+                        latitude : this.form.latitude,
+                        longitude : this.form.longitude,
+                        city: this.form.city,
+                        street: this.form.street,
+                        zipCode: this.form.zipCode,
+                        number: this.form.number,
+                        imageList: [],
+                        price: this.form.price,
+                        entryTime: this.form.entryTime,
+                        leaveTime: this.form.leaveTime,
+                        amenities: this.selectedAmenities,
+                        active: true,
+                        rentDates: [],
+                        freeDates: [],
+                        comments: [],
+                        hostUsername: this.loggedInUser.username
+
+                    })
+                    .then(data => { 
+                        this.$emit('apartmentEdited', data.data)
+                    })
+                    .catch(error => {
+                        console.log(error) 
+                    });
         }
     },
     created() {  
+        console.log(this.id)
+        http.get('apartment/' + this.id)
+            .then(data => {
+                console.log(data.data)
+                        this.form.type = data.data.type;
+                        this.form.roomNumber = data.data.roomNumber;
+                        this.form.guestNumber = data.data.guestNumber;
+                        this.form.latitude = data.data.latitude;
+                        this.form.longitude = data.data.longitude;
+                        this.form.city = data.data.city;
+                        this.form.street = data.data.street;
+                        this.form.zipCode = data.data.zipCode;
+                        this.form.number = data.data.number;
+                        this.form.imageList = data.data.imageList;
+                        this.form.price = data.data.price;
+                        this.form.entryTime = data.data.entryTime;
+                        this.form.leaveTime = data.data.leaveTime;
+                        this.form.selectedAmenities = data.data.amenities;
+            })
+            .catch(error => {console.log(error)});
         http.get('amenities')
             .then(data => { 
             this.allAmenities = data.data})
             .catch(error => {
                 console.log(error) 
             });
+        },
+    mounted() {
+        
     }
 }
 </script>

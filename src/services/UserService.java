@@ -110,17 +110,18 @@ public class UserService {
 	public Response changeUserInfo(UserDTO userDTO, @Context HttpServletRequest request) {
 		UserDAO userDAO = (UserDAO) ctx.getAttribute("userDAO");
 		
-		User oldUserInfo = (User) request.getSession().getAttribute("loggedInUser");
-		
-		if(oldUserInfo == null){
-			return Response.status(401).build();
-		}
-		
-		if(userDAO.usernameExists(userDTO.getUsername())) {
-			return Response.status(409).build();
-		}
-		
-		if(oldUserInfo.getUsername() != userDTO.getUsername()) {
+		User oldUserInfo = (User) userDAO.getUserByUsername(userDTO.getUsername());
+//		User oldUserInfo = (User) request.getSession().getAttribute("loggedInUser");
+//		
+//		if(oldUserInfo == null){
+//			return Response.status(401).build();
+//		}
+//		
+//		if(userDAO.usernameExists(userDTO.getUsername())) {
+//			return Response.status(409).build();
+//		}
+//		
+		if(!oldUserInfo.getUsername().equals(userDTO.getUsername())) {
 			userDAO.changeUsername(oldUserInfo.getUsername(), userDTO.getUsername());
 		}
 		

@@ -1,8 +1,10 @@
 <template>
   <div class = "amenitiesTable">
-
+   
     <md-dialog :md-active.sync="showDialog">
-        <Amenity :changeId="this.editId" :changeName="this.editName" :changeType="this.editType" :isEdit="this.isEdit" />
+          <Amenity @amenityAdded = "amenityCreated($event)"
+                   @amenityEdited = "amenityEdited($event)"
+                   :changeId="this.editId" :changeName="this.editName" :changeType="this.editType" :isEdit="this.isEdit" />
     </md-dialog>
 
     <md-table v-model="searched" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
@@ -22,6 +24,9 @@
         <md-table-cell md-label="Actions" >
           <md-button class="md-dense md-raised md-default" @click=" isEditFunction(item)">Edit</md-button>
           <md-button class="md-dense md-raised md-accent" @click = "removeAmenity(item)">Delete</md-button>
+          <div v-if = "item.username === this.loggedInUser.username && item.active == true">
+            <md-button class="md-dense md-raised md-accent" @click = "deactivateApartment(item)">Deactivate</md-button>
+          </div>
         </md-table-cell>
       </md-table-row>
     </md-table>
@@ -94,16 +99,51 @@
         this.showDialog = true
       },
       removeAmenity(item) {
+        http.delete('amenities/'+item.id)
+          .then(http.put('apartment/deletedAmenity/'+item.id)
+                .then(data => console.log(data.data))
+                .catch(error => console.log(error)))
+          .catch(error => console.log(error))
+        http.get('amenities').then(data => {
+                                 this.amenities = data.data
+                                 this.searched = data.data
+      })
+                            .catch(error => {
+                                 console.log(error)
+                            })
+        
+      },
+      deactivateApartment(item) {
+        http.put('apartment',
+                    {
+                        id: item.id,
+                        type: item.type,
+                        roomNumber: item.roomNumber,
+                        guestNumber: item.guestNumber,
+                        latitude : item.latitude,
+                        longitude : item.longitude,
+                        city: item.city,
+                        street: item.street,
+                        zipCode: item.zipCode,
+                        number: item.number,
+                        imageList: [],
+                        price: item.price,
+                        entryTime: item.entryTime,
+                        leaveTime: item.leaveTime,
+                        amenities: item.selectedAmenities,
+                        active: false,
+                        rentDates: [],
+                        freeDates: [],
+                        comments: [],
+                        hostUsername: this.loggedInUser.username
 
-        http.delete('amenities', { params : {
-                                  id: item.id,
-                                  type: item.type,
-                                  name: item.name,
-                                  deleted: true
-        }
-        }).then(data => console.log(data.data))
-                                      .catch(error => console.log(error))
-        this.amenities.slice(item.id, 1)
+                    })
+                    .then(data => { 
+                        this.$emit('apartmentEdited', data.data)
+                    })
+                    .catch(error => {
+                        console.log(error) 
+                    });
       },
       isEditFunction(item) {
         this.isEdit = true
@@ -111,6 +151,22 @@
         this.editName = item.name
         this.editId = item.id
         this.showDialog = true
+      },
+      amenityCreated(amenity) {
+        this.showDialog = false
+        this.amenities.push(amenity)
+      },
+      amenityEdited() {
+        this.isEdit = false
+        this.showDialog = false
+        http.get('amenities').then(data => {
+                                 this.amenities = data.data
+                                 this.searched = data.data
+      })
+                            .catch(error => {
+                                 console.log(error)
+                            })
+        
       }
     },
     created () {

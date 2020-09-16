@@ -1,11 +1,20 @@
 <template>
   <div class = "apartmentTable">
-    <md-dialog :md-active.sync="showDialog">
+    <md-dialog class="md-dialog-content md-theme-default" :md-active.sync="showDialog">
       <apartmentDetails :selectedApartment="this.selectedApartment"
                         :loggedInUser="this.loggedInUser"
                          @activateReservation="activateReservation($event)"
                          @openGallery="openGallery($event)"></apartmentDetails>
     </md-dialog>
+
+    <md-dialog  class="md-dialog-content md-theme-default" :md-active.sync="isEdit" >
+      <div v-if = this.isEdit>
+        <Apartment @apartmentAdded = "apartmentCreated($event)"
+                   @apartmentEdited = "apartmentEdited($event)"
+        :id = "this.apartment.id" :isEdit = "this.isEdit" />
+      </div>
+    </md-dialog>
+    
 
     <div>
       <create-reservation v-if="reservationActive" :selected-apartment="this.selectedApartment"></create-reservation>
@@ -32,6 +41,7 @@
         <md-table-cell md-label="City" md-sort-by="city">{{ item.city }}</md-table-cell>
 
         <md-table-cell md-label="Details"><md-button class="md-dense md-raised md-secondary" @click="showApartmentDetails(item)">Details</md-button></md-table-cell>
+        <md-table-cell md-label="Edit"><md-button class="md-dense md-raised md-default" @click="isEditFunction(item)">Edit</md-button></md-table-cell>
         <!-- <md-table-cell md-label="EntryTime" md-sort-by="entryTime">{{ item.entryTime }}</md-table-cell>
         <md-table-cell md-label="LeaveTime" md-sort-by="leaveTime">{{ item.leaveTime }}</md-table-cell>
         <md-table-cell md-label="Amenities" md-sort-by="amenities">{{ item.amenities }}</md-table-cell> -->
@@ -46,6 +56,7 @@
   import http from '../../http-common'
   import ApartmentDetails from '../dialogContent/ApartmentDetails'
   import CreateReservation from '../CreateReservation'
+  import Apartment from '../Apartment'
 
   const toLower = text => {
     return text.toString().toLowerCase()
@@ -77,7 +88,8 @@
     name: 'ApartmentTable',
     components: {
       apartmentDetails: ApartmentDetails,
-      createReservation: CreateReservation
+      createReservation: CreateReservation,
+      Apartment
     },
     data: () => ({
       search: null,
@@ -87,6 +99,8 @@
       selectedApartment: null,
       selectedDate: null,
       reservationActive: false,
+      isEdit: false,
+      apartment: null
     }),
     props: {
       loggedInUser: null,
@@ -109,6 +123,30 @@
       },
       openGallery(data) {
         this.$emit('openGallery', data)
+      },
+      isEditFunction(item) {
+        this.isEdit = true;
+        this.apartment = item;
+      },
+      apartmentCreated() {
+        http.get('apartment').then(data => {
+                                 this.apartment = data.data
+                                 this.searched = data.data
+      })
+                            .catch(error => {
+                                 console.log(error)
+                            })
+        
+      },
+      apartmentEdited() {
+        this.isEdit = false
+         http.get('apartment').then(data => {
+                                 this.apartments = data.data
+                                 this.searched = data.data
+      })
+                            .catch(error => {
+                                 console.log(error)
+                            })
       }
     },
     mounted () {

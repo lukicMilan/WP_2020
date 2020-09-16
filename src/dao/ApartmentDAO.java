@@ -151,6 +151,7 @@ public class ApartmentDAO {
 	}
 	
 	public boolean editApartment(ApartmentDTO apartmentDTO) {
+		loadApartments();
 		if(!apartments.containsKey(apartmentDTO.getId())) {
 			return false;
 		}
@@ -181,6 +182,31 @@ public class ApartmentDAO {
 	
 	public boolean apartmentExists(long id) {
 		return apartments.containsKey(id);
+	}
+	
+	public boolean deleteAmenity(long id) {
+		for(Map.Entry<Long, Apartment> entry : this.apartments.entrySet()) {
+			Apartment ap = entry.getValue();
+			List<Amenities> newList = ap.getAmenities();
+
+			int index = -1;
+			for (Amenities am : newList) {
+				if(am.getId() == id) {
+					index = newList.indexOf(am);
+					break;
+				}
+			}
+			if(index != -1) {
+				newList.remove(index);
+			}
+			
+			ap.setAmenities(newList);
+			apartments.put(ap.getId(), ap);
+		}
+		
+		saveApartments();
+		
+		return true;
 	}
 	
 	public void saveApartments() {

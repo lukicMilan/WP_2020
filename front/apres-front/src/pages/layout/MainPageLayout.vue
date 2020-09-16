@@ -11,7 +11,8 @@
              @activateReservation="activateReservation($event)"
              @reservationCompleted="reservationCompleted($event)"
              @globalMessage="showGlobalMessage($event)"
-             @openGallery="openGallery($event)"></router-view>
+             @openGallery="openGallery($event)">
+             @userEdited = "userEdited($event)"></router-view>
         </div>
         <md-snackbar :md-position="'center'" :md-duration="snackbarDuration" :md-active.sync="showSnackbar" md-persistent>
             <span>{{snackbarText}}</span>
@@ -49,7 +50,7 @@ export default {
                     this.$router.push('/usersTable');
                 } else if(user.userType==="GUEST") {
                     this.$router.push('/apartmentTable');
-                }
+                } 
             }
         }, 
         activateReservation(selectedApartment) {
@@ -67,6 +68,11 @@ export default {
         openGallery(params) {
             this.media = params.media;
             this.$refs.lightBox.showImage(params.index);
+        },
+        userEdited(user) {
+        this.userLoggedIn(user)
+        this.$router.push('/apartment')
+        
         }
     },
     
