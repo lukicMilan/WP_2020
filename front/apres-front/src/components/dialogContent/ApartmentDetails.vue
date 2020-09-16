@@ -75,8 +75,6 @@
                 </div>
             </md-tab>
             <md-tab md-label="Images">
-                
-
                     <ul
                     style="margin: 0; padding: 0">
                         <li
@@ -85,7 +83,7 @@
                             style="display: inline-block; margin: 0 5px 5px 0"
                         >
                             <img
-                            :src="image.thumb"
+                            :src="image"
                             style="height: 100px; cursor: pointer"
                             @click="openGallery(index)"
                             >
@@ -161,12 +159,8 @@ export default {
             });
             this.startRentDate = new Date(this.selectedApartment.rentDates[0]);
             this.endRentDate = new Date(this.selectedApartment.rentDates[1]); 
-
             this.selectedApartment.imageList.forEach(element => {
-                this.media.push({
-                    thumb: 'apartment/' + this.selectedApartment.id + '/image/' + element,
-                    src: 'apartment/' + this.selectedApartment.id + '/image/' + element
-                });
+                this.media.push(element);
             });
         }
 

@@ -167,15 +167,18 @@ export default {
             },
             rentDates: null, 
             freeDates: null,
-            images: [], 
+            imageList: [], 
             price: null,
             entryTime: 14,
             leaveTime: 10, 
-            amenities: []
+            amenities: [],
+            loaded: Number,
+            updatingImages: false,
         },
         selectedAmenities: [],
         selectedImages: [],
-        allAmenities: []
+        allAmenities: [],
+        file: null,
     }),
     validations: {
       form: {
@@ -213,20 +216,39 @@ export default {
       }
     },
     methods: {
+        imageLoaded(image) {
+            this.form.imageList.push(image);
+            console.log(this.form.imageList);
+        },
+        getBase64(file, callback) {
+            var reader = new FileReader();
+            reader.addEventListener('load', function () {
+                callback(reader.result);
+            }, false);
+            reader.readAsDataURL(file);
+        },
         fileChanged(event) {
+            this.form.imageList = [];
+            
             this.selectedImages = event.target.files;
-            event.target.files.forEach(element => {
-                const formData = new FormData();
-                formData.append('image', element, element.name);
-                //http.post('apartment/'+data.data.id+'/image', formData)
-                http.post('apartment/'+'1'+'/image', formData)
-                    .data(() => {
-                        console.log("USPEH USPEH");
-                    })
-                    .catch(() => {
-                        console.log("NESTO NE STIMA");
-                    });
+            
+            this.selectedImages.forEach(element => {
+                this.getBase64(element, this.imageLoaded);
             });
+            
+
+            // event.target.files.forEach(element => {
+            //     const formData = new FormData();
+            //     formData.append('image', element, element.name);
+            //     //http.post('apartment/'+data.data.id+'/image', formData)
+            //     http.post('apartment/'+'1'+'/image', formData)
+            //         .data(() => {
+            //             console.log("USPEH USPEH");
+            //         })
+            //         .catch(() => {
+            //             console.log("NESTO NE STIMA");
+            //         });
+            // });
         },
         getValidationClass (fieldName) {
             const field = this.$v.form[fieldName]
@@ -256,7 +278,7 @@ export default {
                     street: this.form.street,
                     zipCode: this.form.zipCode,
                     number: this.form.number,
-                    imageList: [],
+                    imageList: this.form.imageList,
                     price: this.form.price,
                     entryTime: this.form.entryTime,
                     leaveTime: this.form.leaveTime,
