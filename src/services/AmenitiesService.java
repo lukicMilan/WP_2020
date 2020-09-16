@@ -58,7 +58,7 @@ public class AmenitiesService {
 		User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
 		
 		AmenitiesDAO amenitiesDAO =(AmenitiesDAO) ctx.getAttribute("amenitiesDAO");
-		
+	
 //		if(amenitiesDAO.amenityExists(amenitiesDTO.getId())) {
 //			return Response.status(409).build();
 //		}

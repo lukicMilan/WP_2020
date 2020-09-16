@@ -17,7 +17,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import dao.AmenitiesDAO;
 import dao.ApartmentCommentDAO;
+import dto.AmenitiesDTO;
 import model.ApartmentComment;
 
 @Path("/apartmentComment")
@@ -36,6 +38,17 @@ public class ApartmentCommentService {
 	}
 	
 	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getApartmentComments(@Context HttpServletRequest request) {
+		ApartmentCommentDAO apartmentCommentDAO = (ApartmentCommentDAO) ctx.getAttribute("apartmentCommentDAO");
+		
+		List<ApartmentComment> comments = new ArrayList<>();
+		comments = apartmentCommentDAO.getComments();
+		
+		return Response.status(200).entity(comments).build();
+	}
+	
+	@GET
 	@Path("/apartment/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllCommentsForApartment(@PathParam(value = "id") long id, @Context HttpServletRequest request) {
@@ -43,7 +56,7 @@ public class ApartmentCommentService {
 		List<ApartmentComment> acs = new ArrayList<ApartmentComment>();
 		acs = acDAO.getAllCommentsForApartment(id);
 		
-		return Response.status(200).entity(new ArrayList(acs)).build();
+		return Response.status(200).entity(acs).build();
 	}
 	
 	@POST

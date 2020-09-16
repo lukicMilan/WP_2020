@@ -19,6 +19,7 @@
     "vue-mj-daterangepicker": "^0.1.11",
     "vue-password": "^3.0.0",
     "vue-router": "^3.4.3",
+    "vue-stars": "^1.2.2",
     "vue2-daterange-picker": "^0.5.1",
     "vuelidate": "^0.7.5"
   },

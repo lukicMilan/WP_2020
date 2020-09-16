@@ -104,10 +104,35 @@
                 </div>
             </md-tab>
             <md-tab md-label="Comments">
-                <div v-if="canReserve">
-                    <span>
-                    <md-button @click="createReservation">RESERVE</md-button>
-                    </span>
+
+                <div v-if = "hasComments">
+                    <div v-for="comment in this.comments" :key= comment.id>
+                        <md-card>
+                            <md-card-header>
+                                <h3>{{comment.username}}</h3>
+                            </md-card-header>
+
+                            <md-card-content>
+                                {{comment.comment}}
+                                <br>
+                                <br>
+                                <label>Rating: </label>
+                                <vue-stars
+                                    :max="5"
+                                    :value= "comment.stars"
+                                    :readonly="true"
+                                    />
+                            </md-card-content>
+
+                            <!-- <md-card-actions>
+                                <md-button>Action</md-button>
+                                <md-button>Action</md-button>
+                            </md-card-actions> -->
+                        </md-card>                    
+                    </div>
+                </div>
+                <div v-if="canReserve" @click="createReservation">
+                    <md-button>RESERVE</md-button>
                 </div>   
             </md-tab>
         </md-tabs>
@@ -116,6 +141,7 @@
 
 <script>
 
+import http from '../../http-common'
 export default {
     components: {
         
@@ -123,6 +149,9 @@ export default {
     props: {
         selectedApartment: null,
         loggedInUser: null
+    },
+    components: {
+        
     },
     data: function() {
         return {
@@ -134,6 +163,7 @@ export default {
             endRentDate: Date,
             selectedDate: Date,
             media: [],
+            comments: []
         }
     },
     computed: {
@@ -146,6 +176,13 @@ export default {
             }
             return false;
         },
+        hasComments: function() {
+            if(this.comments === null) {
+                return false;
+            } else {
+                return true;
+            }
+        }
     },
     mounted: function() {
         let types = [];
@@ -163,8 +200,13 @@ export default {
                 this.media.push(element);
             });
         }
-
         this.amenityTypes = types;
+
+        http.get('apartmentComment/apartment/'+this.selectedApartment.id)
+            .then(data => {
+                this.comments = data.data
+            })
+            .catch(error => {console.log(error)})
     },
     methods: {
         openGallery(index) {
