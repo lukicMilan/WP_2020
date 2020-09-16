@@ -100,7 +100,7 @@ public class AmenitiesService {
 		return Response.status(200).build();
 	}
 	
-<<<<<<< HEAD
+
 //	@DELETE
 //	@Path("/{amenitiesDTO}")
 //	@Consumes(MediaType.APPLICATION_JSON)
@@ -122,7 +122,7 @@ public class AmenitiesService {
 //		amenitiesDAO.saveAmenities();
 //		return Response.status(200).build();
 //	}
-=======
+
 	@DELETE
 	@Path("{id}")
 	public Response deleteAmenity(@PathParam(value = "id") long id, @Context HttpServletRequest request) {
@@ -131,6 +131,5 @@ public class AmenitiesService {
 		amenitiesDAO.saveAmenities();
 		return Response.status(200).build();
 	}
->>>>>>> develop
 
 }

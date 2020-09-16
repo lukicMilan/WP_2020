@@ -35,11 +35,8 @@ import dao.AmenitiesDAO;
 import dao.ApartmentDAO;
 import dto.AmenitiesDTO;
 import dto.ApartmentDTO;
-<<<<<<< HEAD
 import dto.ImagePathDTO;
-=======
 import model.Amenities;
->>>>>>> develop
 import model.Apartment;
 import model.User;
 import model.UserType;
