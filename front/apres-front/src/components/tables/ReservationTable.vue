@@ -61,37 +61,37 @@ import http from '../../http-common'
 import ApartmentComment from '../ApartmentComment'
 import FilterComponent from '../FilterComponent'
 
-// const toLower = text => {
-//     return text.toString().toLowerCase()
-// }
+const toLower = text => {
+    return text.toString().toLowerCase()
+}
 
-// const uniqueElementsBy = (arr, fn) =>
-//   arr.reduce((acc, v) => {
-//     if (!acc.some(x => fn(v, x))) acc.push(v);
-//     return acc;
-// }, []);
+const uniqueElementsBy = (arr, fn) =>
+  arr.reduce((acc, v) => {
+    if (!acc.some(x => fn(v, x))) acc.push(v);
+    return acc;
+}, []);
 
-// const searchOnTable = (items, term) => {
-//     let searchedItems = [];
-//     if (term) {
-//     //   searchedItems = searchedItems.concat(items.filter(item => (item.reservationId).includes(term)));
-//     //   searchedItems = searchedItems.concat(items.filter(item => (item.apartmentId).includes(term)));
-//     //   searchedItems = searchedItems.concat(items.filter(item => (item.date).includes(term)));
-//     //   searchedItems = searchedItems.concat(items.filter(item => (item.nights).includes(term)));
-//     //   searchedItems = searchedItems.concat(items.filter(item => (item.totalPrice).includes(term)));
-//     //   if(!loggedInHost) {
-//     //     searchedItems = searchedItems.concat(items.filter(item => toLower(item.hostUserame).includes(toLower(term))));
-//     //   }
-//     //   if(!loggedInGuest) {
-//     //     searchedItems = searchedItems.concat(items.filter(item => toLower(item.guestUsername).includes(toLower(term))));
-//     //   }
-//       searchedItems = searchedItems.concat(items.filter(item => toLower(item.status).includes(toLower(term))));
-//       searchedItems = uniqueElementsBy(searchedItems, (a,b) => a.id == b.id);
-//     }
+const searchOnTable = (items, term) => {
+    let searchedItems = [];
+    if (term) {
+    //   searchedItems = searchedItems.concat(items.filter(item => (item.reservationId).includes(term)));
+    //   searchedItems = searchedItems.concat(items.filter(item => (item.apartmentId).includes(term)));
+    //   searchedItems = searchedItems.concat(items.filter(item => (item.date).includes(term)));
+    //   searchedItems = searchedItems.concat(items.filter(item => (item.nights).includes(term)));
+    //   searchedItems = searchedItems.concat(items.filter(item => (item.totalPrice).includes(term)));
+    //   if(!loggedInHost) {
+    //     searchedItems = searchedItems.concat(items.filter(item => toLower(item.hostUserame).includes(toLower(term))));
+    //   }
+    //   if(!loggedInGuest) {
+    //     searchedItems = searchedItems.concat(items.filter(item => toLower(item.guestUsername).includes(toLower(term))));
+    //   }
+      searchedItems = searchedItems.concat(items.filter(item => toLower(item.status).includes(toLower(term))));
+      searchedItems = uniqueElementsBy(searchedItems, (a,b) => a.id == b.id);
+    }
 
 
-//     return searchedItems
-// }
+    return searchedItems
+}
 
 export default {
     props: {
@@ -186,13 +186,13 @@ export default {
             } 
             return false;
         },
-        // searchOnTable() {
-        //     if(this.searchedWord == "") {
-        //         this.searched = this.reservations;
-        //     } else {
-        //         this.searched = searchOnTable(this.reservations, this.searchedWord);
-        //     }
-        // },
+        searchOnTable() {
+            if(this.searchedWord == "") {
+                this.searched = this.reservations;
+            } else {
+                this.searched = searchOnTable(this.reservations, this.searchedWord);
+            }
+        },
         cancelReservation(reservation) {
             reservation.status="CANCELED";
             http.put('reservation/status', { 

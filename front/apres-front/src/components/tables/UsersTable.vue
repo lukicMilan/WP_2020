@@ -29,6 +29,9 @@
                 </md-table-row>
             </md-table>
         </div>
+        <div >
+            <md-button class="md-dense md-raised md-primary" @click="addHost()" >Add host</md-button>
+        </div>
     </div>
 </template>
 
@@ -36,29 +39,29 @@
 import http from '../../http-common'
 import FilterComponent from '../FilterComponent.vue'
 
-// const toLower = text => {
-//     return text.toString().toLowerCase()
-// }
+const toLower = text => {
+    return text.toString().toLowerCase()
+}
 
-// const uniqueElementsBy = (arr, fn) =>
-//   arr.reduce((acc, v) => {
-//     if (!acc.some(x => fn(v, x))) acc.push(v);
-//     return acc;
-// }, []);
+const uniqueElementsBy = (arr, fn) =>
+  arr.reduce((acc, v) => {
+    if (!acc.some(x => fn(v, x))) acc.push(v);
+    return acc;
+}, []);
 
-// const searchOnTable = (items, term) => {
-//     let searchedItems = [];
-//     if (term) {
-//       searchedItems = searchedItems.concat(items.filter(item => (item.username).includes(term)));
-//       searchedItems = searchedItems.concat(items.filter(item => toLower(item.name).includes(toLower(term))));
-//       searchedItems = searchedItems.concat(items.filter(item => toLower(item.surname).includes(toLower(term))));
-//       searchedItems = searchedItems.concat(items.filter(item => toLower(item.userType).includes(toLower(term))));
-//       searchedItems = uniqueElementsBy(searchedItems, (a,b) => a.username == b.username);
-//     }
+const searchOnTable = (items, term) => {
+    let searchedItems = [];
+    if (term) {
+      searchedItems = searchedItems.concat(items.filter(item => (item.username).includes(term)));
+      searchedItems = searchedItems.concat(items.filter(item => toLower(item.name).includes(toLower(term))));
+      searchedItems = searchedItems.concat(items.filter(item => toLower(item.surname).includes(toLower(term))));
+      searchedItems = searchedItems.concat(items.filter(item => toLower(item.userType).includes(toLower(term))));
+      searchedItems = uniqueElementsBy(searchedItems, (a,b) => a.username == b.username);
+    }
 
 
-//     return searchedItems
-// }
+    return searchedItems
+}
 
 export default {
     name: 'UsersTable',
@@ -70,10 +73,11 @@ export default {
         searched: [],
         users: [],
         filterActive: false,
-        activeFilters: ['userType', 'gender']
+        activeFilters: ['userType', 'gender'],
+        isAddHost: false
     }),
     components: {
-        filterComponent: FilterComponent
+        filterComponent: FilterComponent,
     },
     mounted() {
         if(this.loggedInUser === null) {
@@ -104,13 +108,13 @@ export default {
     },
 
     methods: {
-        // searchOnTable() {
-        //     if(this.searchedWord == "") {
-        //         this.searched = this.users;
-        //     } else {
-        //         this.searched = searchOnTable(this.users, this.searchedWord);
-        //     }
-        // },
+        searchOnTable() {
+            if(this.searchedWord == "") {
+                this.searched = this.users;
+            } else {
+                this.searched = searchOnTable(this.users, this.searchedWord);
+            }
+        },
         activateFilter() {
             this.filterActive = true
         },
@@ -134,6 +138,10 @@ export default {
                 
             });
             this.searched = searchedItems;
+        },
+        addHost() {
+            this.isAddHost = true;
+            this.$emit('addingHost')
         }
     }
 }
