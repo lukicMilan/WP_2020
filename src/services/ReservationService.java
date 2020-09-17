@@ -20,7 +20,7 @@ import javax.ws.rs.core.Response;
 import dao.ReservationDAO;
 import dto.ReservationDTO;
 import dto.ReservationStatusDTO;
-
+import dto.ReservedDatesDTO;
 import model.User;
 import model.UserType;
 
@@ -36,6 +36,21 @@ public class ReservationService {
 		if(ctx.getAttribute("reservationDAO")==null) {
 			ctx.setAttribute("reservationDAO", new ReservationDAO(ctx.getRealPath("")));
 		}
+	}
+	
+	@GET
+	@Path("/dates")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getAllReservedDates() {
+		ReservationDAO reservationDAO = (ReservationDAO) ctx.getAttribute("reservationDAO");
+		ArrayList<ReservationDTO> reservationDTOs = reservationDAO.getAll();
+		ArrayList<ReservedDatesDTO> reservedDatesDTOList = new ArrayList<ReservedDatesDTO>();
+		
+		for (ReservationDTO reservationDTO : reservationDTOs) {
+			reservedDatesDTOList.add(new ReservedDatesDTO(reservationDTO));
+		}
+		
+		return Response.status(200).entity(reservedDatesDTOList).build();
 	}
 	
 	@GET

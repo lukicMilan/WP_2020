@@ -103,7 +103,7 @@
       filterComponent: FilterComponent,
     },
     data: () => ({
-      activeFilters: ['city', 'street', 'price', 'roomNumber','guestNumber', 'type', 'hasAmenty', 'apartmentStatus', 'calendar'],
+      activeFilters: ['city', 'street', 'price', 'roomNumber','guestNumber', 'type', 'hasAmenity', 'apartmentStatus', 'calendar'],
       search: null,
       searched: [],
       apartments: [],
@@ -114,6 +114,7 @@
       isEdit: false,
       apartment: null,
       filterActive: false,
+      reservedDates: []
     }),
     props: {
       loggedInUser: null,
@@ -176,6 +177,34 @@
           if(!hasAllAmenities) {
             valid = false;
           }
+
+          if(parameters.apartment.checkoutDate !== null && parameters.apartment.arrivalDate !== null) {
+            let startRentDate = new Date(apartment.rentDates[0]);
+            let endRentDate = new Date(apartment.rentDates[1]);
+
+          
+            if(startRentDate >parameters.apartment.arrivalDate || endRentDate < parameters.apartment.checkoutDate) {
+              valid = false;
+            }
+            
+            if(valid) {
+              this.reservedDates.forEach(dateInfo => {
+                if(apartment.id === dateInfo.apartmentId) {
+                  let startReservation = new Date(dateInfo.date);
+                  let startReservationTime = startReservation.getTime();
+                  let endReservation = startReservationTime + 86400000 * dateInfo.nights;
+
+                  if(parameters.apartment.arrivalDate.getTime() > startReservationTime && parameters.apartment.arrivalDate.getTime() < endReservation) {
+                    valid = false;
+                  }
+                  if(parameters.apartment.checkoutDate.getTime() > startReservationTime && parameters.apartment.checkoutDate.getTime() < endReservation) {
+                    valid = false;
+                  }
+                }
+              });
+            }
+          }
+
 
           if(valid) {
             searchedItems.push(apartment);
@@ -265,6 +294,10 @@
             this.amenities = data.data;
           });
       this.reservationActive = false;
+      http.get('reservation/dates')
+          .then(data=> {
+            this.reservedDates = data.data;
+          });
     },
     computed: {
       addButton: function() {
