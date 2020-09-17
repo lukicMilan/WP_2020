@@ -6,12 +6,13 @@
         <div class="main-panel">
             <!--top-navbar -->
             <!--content-->
-            <router-view :logged-in-user="loggedInUser" :selected-apartment="selectedApartment"
+            <router-view :logged-in-user="loggedInUser" :selected-apartment="selectedApartment" :addingHost="addingHost"
              @userLoggedIn="userLoggedIn($event)" 
              @activateReservation="activateReservation($event)"
              @reservationCompleted="reservationCompleted($event)"
              @globalMessage="showGlobalMessage($event)"
-             @openGallery="openGallery($event)">
+             @openGallery="openGallery($event)"
+             @addingHost= "openAddHost($event)"
              @userEdited = "userEdited($event)"></router-view>
         </div>
         <md-snackbar :md-position="'center'" :md-duration="snackbarDuration" :md-active.sync="showSnackbar" md-persistent>
@@ -40,7 +41,7 @@ export default {
     },
     props: {
 
-    },
+    }, 
     methods: {
         userLoggedIn(user) {
             this.loggedInUser = user;
@@ -73,6 +74,10 @@ export default {
         this.userLoggedIn(user)
         this.$router.push('/apartment')
         
+        },
+        openAddHost() {
+            this.addingHost = true
+            this.$router.push('/register')
         }
     },
     
@@ -85,6 +90,7 @@ export default {
                 showSnackbar: false,
                 snackbarText: "",
                 media: [],
+                addingHost: false
             }
         },
     

@@ -68,31 +68,31 @@
   import Apartment from '../Apartment'
   import FilterComponent from '../FilterComponent'
 
-  // const toLower = text => {
-  //   return text.toString().toLowerCase()
-  // }
+  const toLower = text => {
+    return text.toString().toLowerCase()
+  }
 
-  // const searchOnTable = (items, term) => {
-  //   let searchedItems = [];
-  //   if (term) {
-  //     searchedItems = searchedItems.concat(items.filter(item => (item.id).includes(term)));
-  //     searchedItems = searchedItems.concat(items.filter(item => toLower(item.type).includes(toLower(term))));
-  //     searchedItems = searchedItems.concat(items.filter(item => (item.rootNumber).includes(term)));
-  //     searchedItems = searchedItems.concat(items.filter(item => (item.guestNumber).includes(term)));
-  //     searchedItems = searchedItems.concat(items.filter(item => (item.entryTime).includes(term)));
-  //     searchedItems = searchedItems.concat(items.filter(item => (item.leaveTime).includes(term)));
+  const searchOnTable = (items, term) => {
+    let searchedItems = [];
+    if (term) {
+      searchedItems = searchedItems.concat(items.filter(item => (item.id).includes(term)));
+      searchedItems = searchedItems.concat(items.filter(item => toLower(item.type).includes(toLower(term))));
+      searchedItems = searchedItems.concat(items.filter(item => (item.rootNumber).includes(term)));
+      searchedItems = searchedItems.concat(items.filter(item => (item.guestNumber).includes(term)));
+      searchedItems = searchedItems.concat(items.filter(item => (item.entryTime).includes(term)));
+      searchedItems = searchedItems.concat(items.filter(item => (item.leaveTime).includes(term)));
       
-  //     searchedItems = uniqueElementsBy(searchedItems, (a,b) => a.id === b.id);
-  //   }
+      searchedItems = uniqueElementsBy(searchedItems, (a,b) => a.id === b.id);
+    }
 
-  //   return searchedItems
-  // }
+    return searchedItems
+  }
 
-  // const uniqueElementsBy = (arr, fn) =>
-  // arr.reduce((acc, v) => {
-  //   if (!acc.some(x => fn(v, x))) acc.push(v);
-  //   return acc;
-  // }, []);
+  const uniqueElementsBy = (arr, fn) =>
+  arr.reduce((acc, v) => {
+    if (!acc.some(x => fn(v, x))) acc.push(v);
+    return acc;
+  }, []);
 
   export default {
     name: 'ApartmentTable',
@@ -225,7 +225,14 @@
                             .catch(error => {
                                  console.log(error)
                             })
-      }
+      },
+      searchOnTable() {
+          if(this.searchedWord == "") {
+              this.searched = this.reservations;
+          } else {
+              this.searched = searchOnTable(this.reservations, this.searchedWord);
+          }
+      },
     },
     mounted () {
       if(this.loggedInUser === null) {
