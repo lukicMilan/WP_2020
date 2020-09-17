@@ -20,15 +20,22 @@
       <create-reservation v-if="reservationActive" :selected-apartment="this.selectedApartment"></create-reservation>
     </div>
 
+    <span>
+      <md-button class="md-raised" v-if="!filterActive" @click="activateFilter">
+        filter
+      </md-button>
+    </span>
     <md-table v-model="searched" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
       <md-table-toolbar>
         <div class="md-toolbar-section-start">
           <h1 class="md-title">Apartments</h1>
+          
         </div>
-
         <md-field md-clearable class="md-toolbar-section-end">
           <md-input placeholder="Search..." v-model="search" @input="searchOnTable" />
         </md-field>
+        
+
       </md-table-toolbar>
 
       <md-table-row slot="md-table-row" slot-scope="{ item }">
@@ -100,12 +107,16 @@
       selectedDate: null,
       reservationActive: false,
       isEdit: false,
-      apartment: null
+      apartment: null,
+      filterActive: false,
     }),
     props: {
       loggedInUser: null,
     },
     methods: {
+      activateFilter() {
+        this.filterActive = true;
+      },
       searchOnTable () {
         this.searched = searchOnTable(this.apartments, this.search)
       },

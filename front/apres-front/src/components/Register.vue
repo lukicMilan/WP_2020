@@ -232,7 +232,6 @@ export default {
       } else {
         this.isEdit = true;
       }
-      alert(this.isEdit);
       if(this.isEdit){
         this.form.name = this.loggedInUser.name,
         this.form.surname = this.loggedInUser.surname,
