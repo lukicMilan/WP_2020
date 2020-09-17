@@ -4,10 +4,6 @@
         <div v-if="!isAdministrator()">
             <accessDenied/>
         </div>
-        <div v-else>
-            <div>
-                <FilterComponent/>
-            </div>
 
         <span>
         <md-button class="md-raised md-primary" v-if="!filterActive" @click="activateFilter">
@@ -87,7 +83,7 @@ export default {
         isAddHost: false
     }),
     components: {
-        accessDenied: AccessDenied
+        accessDenied: AccessDenied,
         filterComponent: FilterComponent,
     },
     mounted() {

@@ -184,7 +184,7 @@ export default {
             endRentDate: Date,
             selectedDate: Date,
             comments: [],
-            commentsForGuests: []
+            commentsForGuests: [],
             media: [],
         }
     },

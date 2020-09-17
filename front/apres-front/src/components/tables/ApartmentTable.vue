@@ -375,7 +375,6 @@
               this.searched = searchOnTable(this.reservations, this.searchedWord);
           }
       },
-    },
     mounted () {
       if(this.loggedInUser === null) {
         http.get('apartment/active')
@@ -401,7 +400,7 @@
           });
         return;
       }
-      if(this.loggedInUser.userType === "ADMINISTRATOR")
+      if(this.loggedInUser.userType === "ADMINISTRATOR") {
        http.get('apartment')
             .then(data => { 
               this.apartments = data.data
@@ -414,6 +413,7 @@
             this.amenities = data.data;
           });
       this.reservationActive = false;
+      }
     },
     computed: {
       addButton: function() {
