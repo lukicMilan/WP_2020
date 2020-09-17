@@ -150,9 +150,6 @@ export default {
         selectedApartment: null,
         loggedInUser: null
     },
-    components: {
-        
-    },
     data: function() {
         return {
             amenityTypes: [],

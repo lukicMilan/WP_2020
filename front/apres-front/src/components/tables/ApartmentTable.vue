@@ -20,15 +20,24 @@
       <create-reservation v-if="reservationActive" :selected-apartment="this.selectedApartment"></create-reservation>
     </div>
 
+    <span>
+      <md-button class="md-raised md-primary" v-if="!filterActive" @click="activateFilter">
+        Filter
+      </md-button>
+    </span>
+    <div>
+      <filter-component v-if="filterActive" :activeFilters="this.activeFilters"
+                                            :amenityList="this.amenities"
+                                            @filtering="doFiltering"> </filter-component>
+    </div>
     <md-table v-model="searched" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
       <md-table-toolbar>
         <div class="md-toolbar-section-start">
           <h1 class="md-title">Apartments</h1>
+          
         </div>
+        
 
-        <md-field md-clearable class="md-toolbar-section-end">
-          <md-input placeholder="Search..." v-model="search" @input="searchOnTable" />
-        </md-field>
       </md-table-toolbar>
 
       <md-table-row slot="md-table-row" slot-scope="{ item }">
@@ -57,41 +66,44 @@
   import ApartmentDetails from '../dialogContent/ApartmentDetails'
   import CreateReservation from '../CreateReservation'
   import Apartment from '../Apartment'
+  import FilterComponent from '../FilterComponent'
 
-  const toLower = text => {
-    return text.toString().toLowerCase()
-  }
+  // const toLower = text => {
+  //   return text.toString().toLowerCase()
+  // }
 
-  const searchOnTable = (items, term) => {
-    let searchedItems = [];
-    if (term) {
-      searchedItems = searchedItems.concat(items.filter(item => (item.id).includes(term)));
-      searchedItems = searchedItems.concat(items.filter(item => toLower(item.type).includes(toLower(term))));
-      searchedItems = searchedItems.concat(items.filter(item => (item.rootNumber).includes(term)));
-      searchedItems = searchedItems.concat(items.filter(item => (item.guestNumber).includes(term)));
-      searchedItems = searchedItems.concat(items.filter(item => (item.entryTime).includes(term)));
-      searchedItems = searchedItems.concat(items.filter(item => (item.leaveTime).includes(term)));
+  // const searchOnTable = (items, term) => {
+  //   let searchedItems = [];
+  //   if (term) {
+  //     searchedItems = searchedItems.concat(items.filter(item => (item.id).includes(term)));
+  //     searchedItems = searchedItems.concat(items.filter(item => toLower(item.type).includes(toLower(term))));
+  //     searchedItems = searchedItems.concat(items.filter(item => (item.rootNumber).includes(term)));
+  //     searchedItems = searchedItems.concat(items.filter(item => (item.guestNumber).includes(term)));
+  //     searchedItems = searchedItems.concat(items.filter(item => (item.entryTime).includes(term)));
+  //     searchedItems = searchedItems.concat(items.filter(item => (item.leaveTime).includes(term)));
       
-      searchedItems = uniqueElementsBy(searchedItems, (a,b) => a.id === b.id);
-    }
+  //     searchedItems = uniqueElementsBy(searchedItems, (a,b) => a.id === b.id);
+  //   }
 
-    return searchedItems
-  }
+  //   return searchedItems
+  // }
 
-  const uniqueElementsBy = (arr, fn) =>
-  arr.reduce((acc, v) => {
-    if (!acc.some(x => fn(v, x))) acc.push(v);
-    return acc;
-  }, []);
+  // const uniqueElementsBy = (arr, fn) =>
+  // arr.reduce((acc, v) => {
+  //   if (!acc.some(x => fn(v, x))) acc.push(v);
+  //   return acc;
+  // }, []);
 
   export default {
     name: 'ApartmentTable',
     components: {
       apartmentDetails: ApartmentDetails,
       createReservation: CreateReservation,
-      Apartment
+      Apartment,
+      filterComponent: FilterComponent,
     },
     data: () => ({
+      activeFilters: ['city', 'street', 'price', 'roomNumber','guestNumber', 'type', 'hasAmenty', 'apartmentStatus', 'calendar'],
       search: null,
       searched: [],
       apartments: [],
@@ -100,14 +112,80 @@
       selectedDate: null,
       reservationActive: false,
       isEdit: false,
-      apartment: null
+      apartment: null,
+      filterActive: false,
     }),
     props: {
       loggedInUser: null,
     },
     methods: {
-      searchOnTable () {
-        this.searched = searchOnTable(this.apartments, this.search)
+      doFiltering(parameters) {
+        let searchedItems = [];
+        this.apartments.forEach(apartment => {
+          let valid = true;
+          if(parameters.apartment.apartmentStatus !== null) {
+            if(parameters.apartment.apartmentStatus === "ACTIVE") {
+              if(!apartment.active) {
+                valid = false;
+              }
+            }else {
+              if(apartment.active) {
+                valid = false;
+              }
+            }
+          }
+          if(parameters.apartment.apartmentType !== null)
+            if(parameters.apartment.apartmentType !== apartment.type) {
+              valid = false;
+            }
+            
+          if(parameters.apartment.city !== null)
+            if(parameters.apartment.city !== apartment.city) {
+              valid = false;
+            }
+          if(parameters.apartment.fromPrice !== null)
+            if(parameters.apartment.fromPrice > apartment.price || parameters.apartment.toPrice < apartment.price) {
+              valid =false;
+            }
+
+          if(parameters.apartment.fromRoomNumber !== null && parameters.apartment.toRoomNumber !== null)
+            if(parameters.apartment.fromRoomNumber > apartment.roomNumber || parameters.apartment.toRoomNumber < apartment.roomNumber) {
+              valid = false;
+            }
+
+          if(parameters.apartment.guestNumber !== null) 
+            if(parameters.apartment.guestNumber != apartment.guestNumber) {
+              valid = false;
+            }
+
+          let hasAllAmenities = true;
+          if(parameters.apartment.hasAmenities !== null)
+            parameters.apartment.hasAmenities.forEach(amenityId => {
+              let hasAmenity = false;
+              apartment.amenities.forEach(amenity => {
+                if(amenity.id === amenityId) {
+                  hasAmenity = true;
+                }
+              });
+
+              if(!hasAmenity) {
+                hasAllAmenities = false;
+              }
+            });
+
+          if(!hasAllAmenities) {
+            valid = false;
+          }
+
+          if(valid) {
+            searchedItems.push(apartment);
+          }
+        });
+
+        this.searched = searchedItems;
+      },
+      activateFilter() {
+        this.filterActive = true;
       },
       showApartmentDetails(apartment) {
         this.selectedApartment = apartment;
@@ -182,6 +260,10 @@
             .catch(error => {
                 console.log(error) 
         });
+      http.get('amenities')
+          .then(data => {
+            this.amenities = data.data;
+          });
       this.reservationActive = false;
     },
     computed: {

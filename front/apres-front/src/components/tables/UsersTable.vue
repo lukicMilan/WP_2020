@@ -1,5 +1,8 @@
 <template>
     <div class="usersTable">
+        <div>
+            <FilterComponent/>
+        </div>
         <md-table v-model="searched" md-sort="username" md-sort-order="asc" md-card>
             <md-table-toolbar>
                 <div class="md-toolbar-section-start">
@@ -23,6 +26,7 @@
 
 <script>
 import http from '../../http-common'
+import FilterComponent from '../FilterComponent.vue'
 
 const toLower = text => {
     return text.toString().toLowerCase()
@@ -58,7 +62,9 @@ export default {
         searched: [],
         users: []
     }),
-
+    components: {
+        FilterComponent
+    },
     mounted() {
         if(this.loggedInUser === null) {
             return;
