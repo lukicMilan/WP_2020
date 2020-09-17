@@ -1,5 +1,6 @@
 <template>
     <div class="usersTable">
+
         <div v-if="!isAdministrator()">
             <accessDenied/>
         </div>
@@ -7,6 +8,17 @@
             <div>
                 <FilterComponent/>
             </div>
+
+        <span>
+        <md-button class="md-raised md-primary" v-if="!filterActive" @click="activateFilter">
+            Filter
+        </md-button>
+        </span>
+        <div v-if="filterActive">
+            <filterComponent  :activeFilters="this.activeFilters"
+                                                    @filtering="doFiltering"> </filterComponent>
+        </div>
+        <div>  
             <md-table v-model="searched" md-sort="username" md-sort-order="asc" md-card>
                 <md-table-toolbar>
                     <div class="md-toolbar-section-start">
@@ -25,6 +37,9 @@
                     <md-table-cell md-label="Type" md-sort-by="userType">{{item.userType}}</md-table-cell>
                 </md-table-row>
             </md-table>
+        </div>
+        <div >
+            <md-button class="md-dense md-raised md-primary" @click="addHost()" >Add host</md-button>
         </div>
     </div>
 </template>
@@ -66,11 +81,14 @@ export default {
     data: () => ({
         searchedWord: "",
         searched: [],
-        users: []
+        users: [],
+        filterActive: false,
+        activeFilters: ['userType', 'gender'],
+        isAddHost: false
     }),
     components: {
-        FilterComponent,
         accessDenied: AccessDenied
+        filterComponent: FilterComponent,
     },
     mounted() {
         if(this.loggedInUser === null) {
@@ -116,6 +134,34 @@ export default {
             return true
             }
             return false
+        },
+        activateFilter() {
+            this.filterActive = true
+        },
+        doFiltering(parameters) {
+            let searchedItems = [];
+            this.users.forEach(user => {
+                let valid = true;
+                if(parameters.user.userType !== null) {
+                    if(parameters.user.userType !== user.userType) {
+                        valid = false
+                    }
+                }
+                if(parameters.user.gender !== null) {
+                    if(parameters.user.gender !== user.gender) {
+                        valid = false
+                    }
+                }
+                if(valid) {
+                    searchedItems.push(user)
+                }
+                
+            });
+            this.searched = searchedItems;
+        },
+        addHost() {
+            this.isAddHost = true;
+            this.$emit('addingHost')
         }
     }
 }

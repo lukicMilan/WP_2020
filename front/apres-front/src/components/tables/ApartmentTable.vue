@@ -3,7 +3,8 @@
     <md-dialog class="md-dialog-content md-theme-default" :md-active.sync="showDialog">
       <apartmentDetails :selectedApartment="this.selectedApartment"
                         :loggedInUser="this.loggedInUser"
-                         @activateReservation="activateReservation($event)"></apartmentDetails>
+                         @activateReservation="activateReservation($event)"
+                         @openGallery="openGallery($event)"></apartmentDetails>
     </md-dialog>
 
     <md-dialog  class="md-dialog-content md-theme-default" :md-active.sync="isEdit" >
@@ -19,15 +20,24 @@
       <create-reservation v-if="reservationActive" :selected-apartment="this.selectedApartment"></create-reservation>
     </div>
 
+    <span>
+      <md-button class="md-raised md-primary" v-if="!filterActive" @click="activateFilter">
+        Filter
+      </md-button>
+    </span>
+    <div>
+      <filter-component v-if="filterActive" :activeFilters="this.activeFilters"
+                                            :amenityList="this.amenities"
+                                            @filtering="doFiltering"> </filter-component>
+    </div>
     <md-table v-model="searched" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
       <md-table-toolbar>
         <div class="md-toolbar-section-start">
           <h1 class="md-title">Apartments</h1>
+          
         </div>
+        
 
-        <md-field md-clearable class="md-toolbar-section-end">
-          <md-input placeholder="Search..." v-model="search" @input="searchOnTable" />
-        </md-field>
       </md-table-toolbar>
 
       <md-table-row slot="md-table-row" slot-scope="{ item }">
@@ -71,6 +81,7 @@
   import ApartmentDetails from '../dialogContent/ApartmentDetails'
   import CreateReservation from '../CreateReservation'
   import Apartment from '../Apartment'
+  import FilterComponent from '../FilterComponent'
 
   const toLower = text => {
     return text.toString().toLowerCase()
@@ -103,9 +114,11 @@
     components: {
       apartmentDetails: ApartmentDetails,
       createReservation: CreateReservation,
-      Apartment
+      Apartment,
+      filterComponent: FilterComponent,
     },
     data: () => ({
+      activeFilters: ['city', 'street', 'price', 'roomNumber','guestNumber', 'type', 'hasAmenity', 'apartmentStatus', 'calendar'],
       search: null,
       searched: [],
       apartments: [],
@@ -114,14 +127,80 @@
       selectedDate: null,
       reservationActive: false,
       isEdit: false,
-      apartment: null
+      apartment: null,
+      filterActive: false,
     }),
     props: {
       loggedInUser: null,
     },
     methods: {
-      searchOnTable () {
-        this.searched = searchOnTable(this.apartments, this.search)
+      doFiltering(parameters) {
+        let searchedItems = [];
+        this.apartments.forEach(apartment => {
+          let valid = true;
+          if(parameters.apartment.apartmentStatus !== null) {
+            if(parameters.apartment.apartmentStatus === "ACTIVE") {
+              if(!apartment.active) {
+                valid = false;
+              }
+            }else {
+              if(apartment.active) {
+                valid = false;
+              }
+            }
+          }
+          if(parameters.apartment.apartmentType !== null)
+            if(parameters.apartment.apartmentType !== apartment.type) {
+              valid = false;
+            }
+            
+          if(parameters.apartment.city !== null)
+            if(parameters.apartment.city !== apartment.city) {
+              valid = false;
+            }
+          if(parameters.apartment.fromPrice !== null)
+            if(parameters.apartment.fromPrice > apartment.price || parameters.apartment.toPrice < apartment.price) {
+              valid =false;
+            }
+
+          if(parameters.apartment.fromRoomNumber !== null && parameters.apartment.toRoomNumber !== null)
+            if(parameters.apartment.fromRoomNumber > apartment.roomNumber || parameters.apartment.toRoomNumber < apartment.roomNumber) {
+              valid = false;
+            }
+
+          if(parameters.apartment.guestNumber !== null) 
+            if(parameters.apartment.guestNumber != apartment.guestNumber) {
+              valid = false;
+            }
+
+          let hasAllAmenities = true;
+          if(parameters.apartment.hasAmenities !== null)
+            parameters.apartment.hasAmenities.forEach(amenityId => {
+              let hasAmenity = false;
+              apartment.amenities.forEach(amenity => {
+                if(amenity.id === amenityId) {
+                  hasAmenity = true;
+                }
+              });
+
+              if(!hasAmenity) {
+                hasAllAmenities = false;
+              }
+            });
+
+          if(!hasAllAmenities) {
+            valid = false;
+          }
+
+          if(valid) {
+            searchedItems.push(apartment);
+          }
+        });
+
+        this.searched = searchedItems;
+      },
+      activateFilter() {
+        this.filterActive = true;
       },
       showApartmentDetails(apartment) {
         this.selectedApartment = apartment;
@@ -134,6 +213,9 @@
       },
       deactiveReservation() {
         this.reservationActive = false;
+      },
+      openGallery(data) {
+        this.$emit('openGallery', data)
       },
       isEditFunction(item) {
         this.isEdit = true;
@@ -158,7 +240,7 @@
                             .catch(error => {
                                  console.log(error)
                             })
-        
+
       },
       deactivateApartment(item) {
         http.put('apartment',
@@ -285,6 +367,14 @@
         }
         return false;
       }
+      },
+      searchOnTable() {
+          if(this.searchedWord == "") {
+              this.searched = this.reservations;
+          } else {
+              this.searched = searchOnTable(this.reservations, this.searchedWord);
+          }
+      },
     },
     mounted () {
       if(this.loggedInUser === null) {
@@ -319,6 +409,10 @@
             .catch(error => {
                 console.log(error) 
         });
+      http.get('amenities')
+          .then(data => {
+            this.amenities = data.data;
+          });
       this.reservationActive = false;
     },
     computed: {

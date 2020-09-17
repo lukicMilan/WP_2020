@@ -76,7 +76,7 @@
                             <div class="md-layout-item md-small-size-50">
                                 <md-field>
                                     <label>Select images</label>
-                                    <md-file v-model="selectedImages" accept="image/*" multiple />
+                                    <md-file ref="file" v-model="selectedImages" type="file" accept="image/jpg" @change="fileChanged" multiple />
                                 </md-field>
                             </div>
                         </div>
@@ -91,7 +91,7 @@
                             <md-field>
                                 <label for="longitude">Longitude</label>
                                 <md-input type = "number"  autocomplete =0 name="longitude" id="longitude" v-model="form.longitude" />
-                            </md-field>
+                                </md-field>
                             </div>
                         </div>
                         <div class="md-layout md-gutter">
@@ -182,15 +182,18 @@ export default {
             },
             rentDates: null, 
             freeDates: null,
-            images: [], 
+            imageList: [], 
             price: null,
             entryTime: 14,
             leaveTime: 10, 
-            amenities: []
+            amenities: [],
+            loaded: Number,
+            updatingImages: false,
         },
         selectedAmenities: [],
         selectedImages: [],
         allAmenities: [],
+        file: null,
         apartment: null
     }),
     validations: {
@@ -231,17 +234,51 @@ export default {
       }
     },
     methods: {
-        getValidationClass (fieldName) {
-        const field = this.$v.form[fieldName]
+        imageLoaded(image) {
+            this.form.imageList.push(image);
+            console.log(this.form.imageList);
+        },
+        getBase64(file, callback) {
+            var reader = new FileReader();
+            reader.addEventListener('load', function () {
+                callback(reader.result);
+            }, false);
+            reader.readAsDataURL(file);
+        },
+        fileChanged(event) {
+            this.form.imageList = [];
+            
+            this.selectedImages = event.target.files;
+            
+            this.selectedImages.forEach(element => {
+                this.getBase64(element, this.imageLoaded);
+            });
+            
 
-        if (field) {
-          return {
-            'md-invalid': field.$invalid && field.$dirty
-          }
-        }
-      },
-      validateApartment () {
-        this.$v.$touch()
+            // event.target.files.forEach(element => {
+            //     const formData = new FormData();
+            //     formData.append('image', element, element.name);
+            //     //http.post('apartment/'+data.data.id+'/image', formData)
+            //     http.post('apartment/'+'1'+'/image', formData)
+            //         .data(() => {
+            //             console.log("USPEH USPEH");
+            //         })
+            //         .catch(() => {
+            //             console.log("NESTO NE STIMA");
+            //         });
+            // });
+        },
+        getValidationClass (fieldName) {
+            const field = this.$v.form[fieldName]
+
+            if (field) {
+                return {
+                    'md-invalid': field.$invalid && field.$dirty
+                }
+            }
+        },
+        validateApartment () {
+            this.$v.$touch()
 
         if (!this.$v.$invalid) {
           this.saveApartment()
@@ -289,8 +326,11 @@ export default {
                 return false
             }
         },
-      saveEdit()  {
-          http.put('apartment',
+        uploadImages() {
+            
+        },
+        saveEdit()  {
+            http.put('apartment',
                     {
                         id: this.id,
                         type: this.form.type,
@@ -320,7 +360,7 @@ export default {
                     .catch(error => {
                         console.log(error) 
                     });
-      }
+        }
     },
     created() {  
         console.log(this.id)
@@ -344,13 +384,12 @@ export default {
             })
             .catch(error => {console.log(error)});
         http.get('amenities')
-                            .then(data => { 
-                            this.allAmenities = data.data})
-                            .catch(error => {
-                                console.log(error) 
-                            });
-
-    },
+            .then(data => { 
+            this.allAmenities = data.data})
+            .catch(error => {
+                console.log(error) 
+            });
+        },
     mounted() {
         
     }

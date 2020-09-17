@@ -100,6 +100,7 @@ export default {
     mixins: [validationMixin],
     props: {
         loggedInUser: null,
+        addingHost: Boolean
     },
     data: () => ({
         form: {
@@ -174,6 +175,10 @@ export default {
         this.wrongUsername = false
       },
       saveUser: function () {
+        let type = "GUEST"
+        if(this.addingHost) {
+          type = "HOST"
+        }
         http.post('user',
                     {
                       username: this.form.username,
@@ -181,7 +186,7 @@ export default {
                       name: this.form.name,
                       surname: this.form.surname,
                       gender: this.form.gender,
-                      userType: "GUEST"
+                      userType: type
                     })
                     .then((response) => { 
                       this.wrongUsername = false
@@ -237,7 +242,7 @@ export default {
       } else {
         this.isEdit = true;
       }
-      if(this.isEdit){
+      if(this.isEdit && !this.addingHost){
         this.form.name = this.loggedInUser.name,
         this.form.surname = this.loggedInUser.surname,
         this.form.gender = this.loggedInUser.gender,
