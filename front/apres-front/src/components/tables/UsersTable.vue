@@ -1,5 +1,14 @@
 <template>
     <div class="usersTable">
+
+        <div v-if="!isAdministrator()">
+            <accessDenied/>
+        </div>
+        <div v-else>
+            <div>
+                <FilterComponent/>
+            </div>
+
         <span>
         <md-button class="md-raised md-primary" v-if="!filterActive" @click="activateFilter">
             Filter
@@ -38,6 +47,7 @@
 <script>
 import http from '../../http-common'
 import FilterComponent from '../FilterComponent.vue'
+import AccessDenied from '../../pages/AccessDenied'
 
 const toLower = text => {
     return text.toString().toLowerCase()
@@ -77,6 +87,7 @@ export default {
         isAddHost: false
     }),
     components: {
+        accessDenied: AccessDenied
         filterComponent: FilterComponent,
     },
     mounted() {
@@ -114,6 +125,15 @@ export default {
             } else {
                 this.searched = searchOnTable(this.users, this.searchedWord);
             }
+        },
+         isAdministrator() {
+            if(this.loggedInUser === null ) {
+            return false
+            } 
+            if(this.loggedInUser.userType === 'ADMINISTRATOR') {
+            return true
+            }
+            return false
         },
         activateFilter() {
             this.filterActive = true

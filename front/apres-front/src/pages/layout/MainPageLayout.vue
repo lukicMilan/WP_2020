@@ -49,7 +49,7 @@ export default {
             if(user !== null) {
                 if(user.userType==="ADMINISTRATOR") {
                     this.$router.push('/usersTable');
-                } else if(user.userType==="GUEST") {
+                } else  {
                     this.$router.push('/apartmentTable');
                 } 
             }
@@ -72,7 +72,7 @@ export default {
         },
         userEdited(user) {
         this.userLoggedIn(user)
-        this.$router.push('/apartment')
+        this.$router.push('/apartmentTable')
         
         },
         openAddHost() {
