@@ -1,32 +1,49 @@
 <template>
     <div class="usersTable">
-        <div>
-            <FilterComponent/>
-        </div>
-        <md-table v-model="searched" md-sort="username" md-sort-order="asc" md-card>
-            <md-table-toolbar>
-                <div class="md-toolbar-section-start">
-                    <h1 class="md-title">Users</h1>
-                </div>
-                
-                <md-field md-clearable class="md-toolbar-section-end">
-                    <md-input placeholder="Search..." v-model="searchedWord" @input="searchOnTable" />
-                </md-field>
-            </md-table-toolbar>
 
-            <md-table-row slot="md-table-row" slot-scope="{ item }">
-                <md-table-cell md-label="Username" md-sort-by="username">{{item.username}}</md-table-cell>
-                <md-table-cell md-label="First Name" md-sort-by="name">{{item.name}}</md-table-cell>
-                <md-table-cell md-label="Last Name" md-sort-by="surname">{{item.surname}}</md-table-cell>
-                <md-table-cell md-label="Type" md-sort-by="userType">{{item.userType}}</md-table-cell>
-            </md-table-row>
-        </md-table>
+        <div v-if="!isAdministrator()">
+            <accessDenied/>
+        </div>
+
+        <span>
+        <md-button class="md-raised md-primary" v-if="!filterActive" @click="activateFilter">
+            Filter
+        </md-button>
+        </span>
+        <div v-if="filterActive">
+            <filterComponent  :activeFilters="this.activeFilters"
+                                                    @filtering="doFiltering"> </filterComponent>
+        </div>
+        <div>  
+            <md-table v-model="searched" md-sort="username" md-sort-order="asc" md-card>
+                <md-table-toolbar>
+                    <div class="md-toolbar-section-start">
+                        <h1 class="md-title">Users</h1>
+                    </div>
+                    
+                    <md-field md-clearable class="md-toolbar-section-end">
+                        <md-input placeholder="Search..." v-model="searchedWord" @input="searchOnTable" />
+                    </md-field>
+                </md-table-toolbar>
+
+                <md-table-row slot="md-table-row" slot-scope="{ item }">
+                    <md-table-cell md-label="Username" md-sort-by="username">{{item.username}}</md-table-cell>
+                    <md-table-cell md-label="First Name" md-sort-by="name">{{item.name}}</md-table-cell>
+                    <md-table-cell md-label="Last Name" md-sort-by="surname">{{item.surname}}</md-table-cell>
+                    <md-table-cell md-label="Type" md-sort-by="userType">{{item.userType}}</md-table-cell>
+                </md-table-row>
+            </md-table>
+        </div>
+        <div >
+            <md-button class="md-dense md-raised md-primary" @click="addHost()" >Add host</md-button>
+        </div>
     </div>
 </template>
 
 <script>
 import http from '../../http-common'
 import FilterComponent from '../FilterComponent.vue'
+import AccessDenied from '../../pages/AccessDenied'
 
 const toLower = text => {
     return text.toString().toLowerCase()
@@ -60,10 +77,14 @@ export default {
     data: () => ({
         searchedWord: "",
         searched: [],
-        users: []
+        users: [],
+        filterActive: false,
+        activeFilters: ['userType', 'gender'],
+        isAddHost: false
     }),
     components: {
-        FilterComponent
+        accessDenied: AccessDenied,
+        filterComponent: FilterComponent,
     },
     mounted() {
         if(this.loggedInUser === null) {
@@ -100,6 +121,43 @@ export default {
             } else {
                 this.searched = searchOnTable(this.users, this.searchedWord);
             }
+        },
+         isAdministrator() {
+            if(this.loggedInUser === null ) {
+            return false
+            } 
+            if(this.loggedInUser.userType === 'ADMINISTRATOR') {
+            return true
+            }
+            return false
+        },
+        activateFilter() {
+            this.filterActive = true
+        },
+        doFiltering(parameters) {
+            let searchedItems = [];
+            this.users.forEach(user => {
+                let valid = true;
+                if(parameters.user.userType !== null) {
+                    if(parameters.user.userType !== user.userType) {
+                        valid = false
+                    }
+                }
+                if(parameters.user.gender !== null) {
+                    if(parameters.user.gender !== user.gender) {
+                        valid = false
+                    }
+                }
+                if(valid) {
+                    searchedItems.push(user)
+                }
+                
+            });
+            this.searched = searchedItems;
+        },
+        addHost() {
+            this.isAddHost = true;
+            this.$emit('addingHost')
         }
     }
 }

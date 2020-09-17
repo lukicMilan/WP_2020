@@ -1,42 +1,45 @@
 <template>
   <div class = "amenitiesTable">
-   
+   <div v-if="!isAdministrator()">
+      <accessDenied/>
+  </div>
+  
+  <div v-else>
     <md-dialog :md-active.sync="showDialog">
           <Amenity @amenityAdded = "amenityCreated($event)"
                    @amenityEdited = "amenityEdited($event)"
                    :changeId="this.editId" :changeName="this.editName" :changeType="this.editType" :isEdit="this.isEdit" />
     </md-dialog>
-
-    <md-table v-model="searched" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
-      <md-table-toolbar>
-        <div class="md-toolbar-section-start">
-          <h1 class="md-title">Amenities</h1>
-        </div>
-
-        <md-field md-clearable class="md-toolbar-section-end">
-          <md-input placeholder="Search" v-model="searchedWord" @input="searchOnTable" />
-        </md-field>        
-      </md-table-toolbar>
-      <md-table-row slot="md-table-row" slot-scope="{ item }">
-        <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{ item.id }}</md-table-cell>
-        <md-table-cell md-label="Name" md-sort-by="name">{{ item.name }}</md-table-cell>
-        <md-table-cell md-label="Type" md-sort-by="type">{{ item.type }}</md-table-cell>
-        <md-table-cell md-label="Actions" >
-          <md-button class="md-dense md-raised md-default" @click=" isEditFunction(item)">Edit</md-button>
-          <md-button class="md-dense md-raised md-accent" @click = "removeAmenity(item)">Delete</md-button>
-          <div v-if = "item.username === this.loggedInUser.username && item.active == true">
-            <md-button class="md-dense md-raised md-accent" @click = "deactivateApartment(item)">Deactivate</md-button>
+      <md-table v-model="searched" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
+        <md-table-toolbar>
+          <div class="md-toolbar-section-start">
+            <h1 class="md-title">Amenities</h1>
           </div>
-        </md-table-cell>
-      </md-table-row>
-    </md-table>
-    <md-button class="md-dense md-raised md-primary" @click = "showDialogFunction()">Add Amenity</md-button>
+
+          <md-field md-clearable class="md-toolbar-section-end">
+            <md-input placeholder="Search" v-model="searchedWord" @input="searchOnTable" />
+          </md-field>        
+        </md-table-toolbar>
+        <md-table-row slot="md-table-row" slot-scope="{ item }">
+          <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{ item.id }}</md-table-cell>
+          <md-table-cell md-label="Name" md-sort-by="name">{{ item.name }}</md-table-cell>
+          <md-table-cell md-label="Type" md-sort-by="type">{{ item.type }}</md-table-cell>
+          <md-table-cell md-label="Actions" >
+            <md-button class="md-dense md-raised md-default" @click=" isEditFunction(item)">Edit</md-button>
+            <md-button class="md-dense md-raised md-accent" @click = "removeAmenity(item)">Delete</md-button>
+
+          </md-table-cell>
+        </md-table-row>
+      </md-table>
+      <md-button class="md-dense md-raised md-primary" @click = "showDialogFunction()">Add Amenity</md-button>
+    </div>
   </div>
 </template>
 
 <script>
   import http from '../../http-common'
   import Amenity from "../Amenity.vue"
+  import AccessDenied from "../../pages/AccessDenied.vue"
 
   const toLower = text => {
     return text.toString().toLowerCase()
@@ -78,10 +81,11 @@
       editId: null
     }),
     props: {
-
+      loggedInUser: null,
     },
     components: {
-        Amenity
+        Amenity,
+        AccessDenied
     },
     methods: {
       searchOnTable () {
@@ -113,38 +117,6 @@
                             })
         
       },
-      deactivateApartment(item) {
-        http.put('apartment',
-                    {
-                        id: item.id,
-                        type: item.type,
-                        roomNumber: item.roomNumber,
-                        guestNumber: item.guestNumber,
-                        latitude : item.latitude,
-                        longitude : item.longitude,
-                        city: item.city,
-                        street: item.street,
-                        zipCode: item.zipCode,
-                        number: item.number,
-                        imageList: [],
-                        price: item.price,
-                        entryTime: item.entryTime,
-                        leaveTime: item.leaveTime,
-                        amenities: item.selectedAmenities,
-                        active: false,
-                        rentDates: [],
-                        freeDates: [],
-                        comments: [],
-                        hostUsername: this.loggedInUser.username
-
-                    })
-                    .then(data => { 
-                        this.$emit('apartmentEdited', data.data)
-                    })
-                    .catch(error => {
-                        console.log(error) 
-                    });
-      },
       isEditFunction(item) {
         this.isEdit = true
         this.editType = item.type
@@ -167,6 +139,15 @@
                                  console.log(error)
                             })
         
+      },
+      isAdministrator() {
+        if(this.loggedInUser === null ) {
+          return false
+        } 
+        if(this.loggedInUser.userType === 'ADMINISTRATOR') {
+          return true
+        }
+          return false
       }
     },
     created () {

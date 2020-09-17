@@ -31,7 +31,7 @@
             </md-list-item>
 
             <md-list-item v-if="loggedInUser" to="/reservationTable">
-            <md-icon>library-books</md-icon>
+            <md-icon>event</md-icon>
             <span class="md-list-item-text">Reservations</span>
             </md-list-item>
 

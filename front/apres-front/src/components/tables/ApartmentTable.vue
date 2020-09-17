@@ -51,6 +51,21 @@
 
         <md-table-cell md-label="Details"><md-button class="md-dense md-raised md-secondary" @click="showApartmentDetails(item)">Details</md-button></md-table-cell>
         <md-table-cell md-label="Edit"><md-button class="md-dense md-raised md-default" @click="isEditFunction(item)">Edit</md-button></md-table-cell>
+        <md-table-cell md-label="Deactivate" v-if = "canDeactivate(item)">
+          <div v-if = "canDeactivate(item)">
+            <md-button class="md-dense md-raised md-accent" @click = "deactivateApartment(item)">Deactivate</md-button>
+          </div>
+        </md-table-cell>
+        <md-table-cell md-label="Activate" v-if = "canActivate(item)" >
+          <div v-if = "canActivate(item)">
+            <md-button class="md-dense md-raised md-primary" @click = "activate(item)">Activate</md-button>
+          </div>
+        </md-table-cell>
+        <md-table-cell md-label="Delete" v-if = "adminLoggedIn || hostLoggedIn(item)">
+          <div v-if = "adminLoggedIn || hostLoggedIn(item)">
+            <md-button class="md-dense md-raised md-accent" @click = "deleteApartment(item)">Delete</md-button>
+          </div>
+        </md-table-cell>
         <!-- <md-table-cell md-label="EntryTime" md-sort-by="entryTime">{{ item.entryTime }}</md-table-cell>
         <md-table-cell md-label="LeaveTime" md-sort-by="leaveTime">{{ item.leaveTime }}</md-table-cell>
         <md-table-cell md-label="Amenities" md-sort-by="amenities">{{ item.amenities }}</md-table-cell> -->
@@ -68,31 +83,31 @@
   import Apartment from '../Apartment'
   import FilterComponent from '../FilterComponent'
 
-  // const toLower = text => {
-  //   return text.toString().toLowerCase()
-  // }
+  const toLower = text => {
+    return text.toString().toLowerCase()
+  }
 
-  // const searchOnTable = (items, term) => {
-  //   let searchedItems = [];
-  //   if (term) {
-  //     searchedItems = searchedItems.concat(items.filter(item => (item.id).includes(term)));
-  //     searchedItems = searchedItems.concat(items.filter(item => toLower(item.type).includes(toLower(term))));
-  //     searchedItems = searchedItems.concat(items.filter(item => (item.rootNumber).includes(term)));
-  //     searchedItems = searchedItems.concat(items.filter(item => (item.guestNumber).includes(term)));
-  //     searchedItems = searchedItems.concat(items.filter(item => (item.entryTime).includes(term)));
-  //     searchedItems = searchedItems.concat(items.filter(item => (item.leaveTime).includes(term)));
+  const searchOnTable = (items, term) => {
+    let searchedItems = [];
+    if (term) {
+      searchedItems = searchedItems.concat(items.filter(item => (item.id).includes(term)));
+      searchedItems = searchedItems.concat(items.filter(item => toLower(item.type).includes(toLower(term))));
+      searchedItems = searchedItems.concat(items.filter(item => (item.rootNumber).includes(term)));
+      searchedItems = searchedItems.concat(items.filter(item => (item.guestNumber).includes(term)));
+      searchedItems = searchedItems.concat(items.filter(item => (item.entryTime).includes(term)));
+      searchedItems = searchedItems.concat(items.filter(item => (item.leaveTime).includes(term)));
       
-  //     searchedItems = uniqueElementsBy(searchedItems, (a,b) => a.id === b.id);
-  //   }
+      searchedItems = uniqueElementsBy(searchedItems, (a,b) => a.id === b.id);
+    }
 
-  //   return searchedItems
-  // }
+    return searchedItems
+  }
 
-  // const uniqueElementsBy = (arr, fn) =>
-  // arr.reduce((acc, v) => {
-  //   if (!acc.some(x => fn(v, x))) acc.push(v);
-  //   return acc;
-  // }, []);
+  const uniqueElementsBy = (arr, fn) =>
+  arr.reduce((acc, v) => {
+    if (!acc.some(x => fn(v, x))) acc.push(v);
+    return acc;
+  }, []);
 
   export default {
     name: 'ApartmentTable',
@@ -254,8 +269,141 @@
                             .catch(error => {
                                  console.log(error)
                             })
+
+      },
+      deactivateApartment(item) {
+        http.put('apartment',
+                    {
+                        id: item.id,
+                        type: item.type,
+                        roomNumber: item.roomNumber,
+                        guestNumber: item.guestNumber,
+                        latitude : item.latitude,
+                        longitude : item.longitude,
+                        city: item.city,
+                        street: item.street,
+                        zipCode: item.zipCode,
+                        number: item.number,
+                        imageList: [],
+                        price: item.price,
+                        entryTime: item.entryTime,
+                        leaveTime: item.leaveTime,
+                        amenities: item.selectedAmenities,
+                        active: false,
+                        rentDates: [],
+                        freeDates: [],
+                        comments: [],
+                        hostUsername: this.loggedInUser.username
+
+                    })
+                    .then(() => { 
+                        this.searched.forEach(ap => {
+                        if(ap.id === item.id){
+                          ap.active = false;
+                        }
+                      });
+                      this.apartments.forEach(ap => {
+                        if(ap.id === item.id){
+                          ap.active = false;
+                        }
+                      });
+                    })
+                    .catch(error => {
+                        console.log(error) 
+                    });
+      },
+      activate(item) {
+        http.put('apartment',
+                    {
+                        id: item.id,
+                        type: item.type,
+                        roomNumber: item.roomNumber,
+                        guestNumber: item.guestNumber,
+                        latitude : item.latitude,
+                        longitude : item.longitude,
+                        city: item.city,
+                        street: item.street,
+                        zipCode: item.zipCode,
+                        number: item.number,
+                        imageList: [],
+                        price: item.price,
+                        entryTime: item.entryTime,
+                        leaveTime: item.leaveTime,
+                        amenities: item.selectedAmenities,
+                        active: true,
+                        rentDates: [],
+                        freeDates: [],
+                        comments: [],
+                        hostUsername: this.loggedInUser.username
+
+                    })
+                    .then(() => {
+                      this.searched.forEach(ap => {
+                        if(ap.id === item.id){
+                          ap.active = true;
+                        }
+                      });
+                      this.apartments.forEach(ap => {
+                        if(ap.id === item.id){
+                          ap.active = true;
+                        }
+                      });
+                    })
+                    .catch(error => {
+                        console.log(error) 
+                    });
+      },
+      canDeactivate(apartment) {
+        if(this.loggedInUser === null) {
+          return false
+        }
+        if(this.loggedInUser.userType === "GUEST") {
+          return false
+        }
+        if(apartment.active === false) {
+          return false
+        }
+        return true
+      },
+      canActivate(apartment) {
+        if(this.loggedInUser === null) {
+          return false
+        }
+        if(this.loggedInUser.userType === "GUEST") {
+          return false    
+        }
+        if(apartment.active === true) {
+          return false
+        }
+        return true
+      },
+      deleteApartment(apartment) {
+        http.delete('apartment/'+apartment.id)
+        .then(data => console.log(data))
+        .catch(error => {
+          console.log(error)
+        })
+        http.get('apartment')
+            .then(data => {
+              this.apartment = data.data,
+              this.searched = data.data
+            })
+      }, hostLoggedIn: function(apartment) {
+        if(this.loggedInUser===null) {
+          return false;
+        } else if(this.loggedInUser.userType === "HOST" && apartment.hostUsername === this.loggedInUser.username) {
+          return true;
+        }
+        return false;
       }
-    },
+      },
+      searchOnTable() {
+          if(this.searchedWord == "") {
+              this.searched = this.reservations;
+          } else {
+              this.searched = searchOnTable(this.reservations, this.searchedWord);
+          }
+      },
     mounted () {
       if(this.loggedInUser === null) {
         http.get('apartment/active')
@@ -281,7 +429,7 @@
           });
         return;
       }
-      if(this.loggedInUser.userType === "ADMINISTRATOR")
+      if(this.loggedInUser.userType === "ADMINISTRATOR") {
        http.get('apartment')
             .then(data => { 
               this.apartments = data.data
@@ -294,10 +442,12 @@
             this.amenities = data.data;
           });
       this.reservationActive = false;
+
       http.get('reservation/dates')
           .then(data=> {
             this.reservedDates = data.data;
           });
+         
     },
     computed: {
       addButton: function() {
@@ -315,8 +465,10 @@
           return true;
         }
         return false;
-      }
-    }
+      },
+      
+    },
+  
   }
 </script>
 

@@ -94,7 +94,7 @@
 
                     <!-- USER -->
                     <div class="md-layout md-gutter" v-if="userTypeFilterActivated">
-                        <div class="md-layout-item">
+                        <div class="md-layout-item md-small-size-100">
                             <md-field>
                             <label for="userType">User Type</label>
                                 <md-select name="userType" id="userType" v-model="this.user.userType" @md-selected="userTypeSelected" md-dense >
@@ -105,7 +105,7 @@
                                 </md-select>
                             </md-field>
                         </div>
-                        <div class="md-layout-item" v-if="genderFilterActivated">
+                        <div class="md-layout-item md-small-size-100" v-if="genderFilterActivated">
                             <md-field>
                             <label for="gender">Gender</label>
                                 <md-select name="gender" id="gender" v-model="this.user.gender" @md-selected="userGenderSelected" md-dense >
@@ -311,7 +311,7 @@ export default {
             this.user.userType = null;
             this.filter();
         },
-        genderDelted() {
+        genderDeleted() {
             this.user.gender = null;
             this.filter();
         },

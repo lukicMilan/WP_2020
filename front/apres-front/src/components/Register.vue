@@ -29,7 +29,7 @@
                       <div class="md-layout-item md-small-size-100">
                         <md-field :class="getValidationClass('username')">
                             <label for="username">Username</label>
-                            <md-input name="username" id="username" v-model="form.username" @change="changeValue()" />
+                            <md-input name="username" id="username" v-model="form.username" @change="changeValue()" v-if="!this.isEdit" />
                             <span class="md-error" v-if="!$v.form.username.required">The username is required</span>
                             <span class="md-error" v-else-if="!$v.form.username.usernameExists">Username already exists</span>
                             <span class="md-error" v-else-if="!$v.form.username.minlength">Invalid username</span>
@@ -60,8 +60,9 @@
                         <div class="md-layout-item md-small-size-100">
                         <md-field :class="getValidationClass('passwordConfirm')">
                             <label for="passwordConfirm">Confirm password</label>
-                            <md-input type = "password" name="passwordConfirm" id="passwordConfirm" v-model="form.passwordConfirm"  />
-                             <span class="md-error" v-if="!$v.form.passwordConfirm.sameAsPassword">Passwords do not match</span>
+                            <md-input type = "password" name="passwordConfirm" id="passwordConfirm" v-model="form.passwordConfirm" />
+                            <span class="md-error" v-if="!$v.form.passwordConfirm.required">Password confirm is required</span>
+                             <span class="md-error" v-else-if="!$v.form.passwordConfirm.sameAsPassword">Passwords do not match</span>
                         </md-field>
                         </div>
                     </div>
@@ -72,7 +73,7 @@
                     <md-button type="submit" class="md-dense md-raised md-primary">Submit</md-button>
                   </div>
                   <div v-else>
-                    <md-button class="md-dense md-raised md-primary" @click="saveEdit">Submit</md-button>
+                    <md-button class="md-dense md-raised md-primary" @click="validateUser">Submit</md-button>
                   </div>
               </md-card-actions>
             </md-card>
@@ -99,6 +100,7 @@ export default {
     mixins: [validationMixin],
     props: {
         loggedInUser: null,
+        addingHost: Boolean
     },
     data: () => ({
         form: {
@@ -107,7 +109,8 @@ export default {
             username: null,
             gender: null,
             password: null,
-            userType: null
+            userType: null,
+            passwordConfirm: null
         },
         wrongUsername: false,
         isEdit: false
@@ -132,6 +135,7 @@ export default {
             minLength: minLength(6)
         },
         passwordConfirm: {
+            required,
             sameAsPassword: sameAs('password')
         },
         gender: {
@@ -142,7 +146,6 @@ export default {
     methods: {
       getValidationClass (fieldName) {
       const field = this.$v.form[fieldName]
-
       if (field) {
         return {
           'md-invalid': field.$invalid && field.$dirty
@@ -153,7 +156,10 @@ export default {
       this.$v.$touch()
 
       if (!this.$v.$invalid) {
-        this.saveUser()
+        if(!this.isEdit)
+          this.saveUser()
+        else
+          this.saveEdit()
       }
     },
      clearForm () {
@@ -169,6 +175,10 @@ export default {
         this.wrongUsername = false
       },
       saveUser: function () {
+        let type = "GUEST"
+        if(this.addingHost) {
+          type = "HOST"
+        }
         http.post('user',
                     {
                       username: this.form.username,
@@ -176,7 +186,7 @@ export default {
                       name: this.form.name,
                       surname: this.form.surname,
                       gender: this.form.gender,
-                      userType: "GUEST"
+                      userType: type
                     })
                     .then((response) => { 
                       this.wrongUsername = false
@@ -232,7 +242,7 @@ export default {
       } else {
         this.isEdit = true;
       }
-      if(this.isEdit){
+      if(this.isEdit && !this.addingHost){
         this.form.name = this.loggedInUser.name,
         this.form.surname = this.loggedInUser.surname,
         this.form.gender = this.loggedInUser.gender,

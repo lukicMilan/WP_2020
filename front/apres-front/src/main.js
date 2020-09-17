@@ -4,7 +4,6 @@ import App from './App.vue'
 
 import HelloWorld from "@/components/HelloWorld.vue"
 import Register from "@/components/Register.vue"
-import Table from "@/components/Table.vue"
 import Amenity from "@/components/Amenity.vue"
 import Apartment from "@/components/Apartment.vue"
 import ApartmentTable from "@/components/tables/ApartmentTable.vue"
@@ -18,7 +17,6 @@ import 'vue-material/dist/theme/default.css'
 import SideBar from "./components/SidebarPlugin/SideBar"
 import LoginPage from "./pages/LoginPage"
 import UsersTable from "./components/tables/UsersTable"
-import AccessDenied from "./pages/AccessDenied"
 import CreateReservation from "./components/CreateReservation"
 import ReservationTable from "./components/tables/ReservationTable"
 import ApartmentComment from "./components/ApartmentComment"
@@ -67,11 +65,6 @@ const router = new VueRouter({
           component: Register
         },
         {
-          path: "/table",
-          name: "Table",
-          component: Table
-        },
-        {
           path: "/login",
           name: "Login",
           component: LoginPage
@@ -100,11 +93,6 @@ const router = new VueRouter({
           path: "/usersTable",
           name: "UsersTable",
           component: UsersTable
-        },
-        {
-          path: "/accessDenied",
-          name: "AccessDenied",
-          component: AccessDenied
         },
         {
           path: "/apartmentComment",
