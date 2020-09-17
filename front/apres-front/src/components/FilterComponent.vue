@@ -5,6 +5,17 @@
                 <md-card-content>
                     <!-- APARTMENT  -->
                     <div class="md-layout md-gutter">
+                        <div class="md-layout-item md-small-size-100" v-if="dateFilterActivated" >
+                            <md-field>
+                                <label for="avableDateFrom">Avable from:</label>
+                                <md-datepicker v-model="selectedDateFrom"></md-datepicker>
+                            </md-field>
+                        </div>
+                        <div class="md-layout-item md-small-size-100" v-if="dateFilterActivated" >
+                            <md-field>
+                                <md-datepicker v-model="selectedDateTo"></md-datepicker>
+                            </md-field>
+                        </div>
                         <div class="md-layout-item md-small-size-100" v-if="guestNumberFilterActivated">
                             <md-field >
                                 <label for="guestNumber">Guest Number</label>
@@ -233,6 +244,9 @@ export default {
             if(this.activeFilters.includes('hasAmenity')) {
                 this.apartmentAmenitiesFilter = true;
             }
+            if(this.activeFilters.includes('calendar')) {
+                this.dateFilterActivated = true;
+            }
         }
     },
     methods: {
@@ -365,7 +379,7 @@ export default {
             } else {
                 this.reservationsStatusFilter = true
             }
-            
+
             this.$emit('filtering', {apartment: this.apartment, user:this.user, reservation:this.reservation});
         }
     }

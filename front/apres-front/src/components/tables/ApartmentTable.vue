@@ -36,9 +36,6 @@
           <h1 class="md-title">Apartments</h1>
           
         </div>
-        <md-field md-clearable class="md-toolbar-section-end">
-          <md-input placeholder="Search..." v-model="search" @input="searchOnTable" />
-        </md-field>
         
 
       </md-table-toolbar>
@@ -71,31 +68,31 @@
   import Apartment from '../Apartment'
   import FilterComponent from '../FilterComponent'
 
-  const toLower = text => {
-    return text.toString().toLowerCase()
-  }
+  // const toLower = text => {
+  //   return text.toString().toLowerCase()
+  // }
 
-  const searchOnTable = (items, term) => {
-    let searchedItems = [];
-    if (term) {
-      searchedItems = searchedItems.concat(items.filter(item => (item.id).includes(term)));
-      searchedItems = searchedItems.concat(items.filter(item => toLower(item.type).includes(toLower(term))));
-      searchedItems = searchedItems.concat(items.filter(item => (item.rootNumber).includes(term)));
-      searchedItems = searchedItems.concat(items.filter(item => (item.guestNumber).includes(term)));
-      searchedItems = searchedItems.concat(items.filter(item => (item.entryTime).includes(term)));
-      searchedItems = searchedItems.concat(items.filter(item => (item.leaveTime).includes(term)));
+  // const searchOnTable = (items, term) => {
+  //   let searchedItems = [];
+  //   if (term) {
+  //     searchedItems = searchedItems.concat(items.filter(item => (item.id).includes(term)));
+  //     searchedItems = searchedItems.concat(items.filter(item => toLower(item.type).includes(toLower(term))));
+  //     searchedItems = searchedItems.concat(items.filter(item => (item.rootNumber).includes(term)));
+  //     searchedItems = searchedItems.concat(items.filter(item => (item.guestNumber).includes(term)));
+  //     searchedItems = searchedItems.concat(items.filter(item => (item.entryTime).includes(term)));
+  //     searchedItems = searchedItems.concat(items.filter(item => (item.leaveTime).includes(term)));
       
-      searchedItems = uniqueElementsBy(searchedItems, (a,b) => a.id === b.id);
-    }
+  //     searchedItems = uniqueElementsBy(searchedItems, (a,b) => a.id === b.id);
+  //   }
 
-    return searchedItems
-  }
+  //   return searchedItems
+  // }
 
-  const uniqueElementsBy = (arr, fn) =>
-  arr.reduce((acc, v) => {
-    if (!acc.some(x => fn(v, x))) acc.push(v);
-    return acc;
-  }, []);
+  // const uniqueElementsBy = (arr, fn) =>
+  // arr.reduce((acc, v) => {
+  //   if (!acc.some(x => fn(v, x))) acc.push(v);
+  //   return acc;
+  // }, []);
 
   export default {
     name: 'ApartmentTable',
@@ -106,7 +103,7 @@
       filterComponent: FilterComponent,
     },
     data: () => ({
-      activeFilters: ['city', 'street', 'price', 'roomNumber','guestNumber', 'reservationStatus', 'type', 'hasAmenty', 'apartmentStatus', 'calendar'],
+      activeFilters: ['city', 'street', 'price', 'roomNumber','guestNumber', 'type', 'hasAmenty', 'apartmentStatus', 'calendar'],
       search: null,
       searched: [],
       apartments: [],
@@ -123,13 +120,72 @@
     },
     methods: {
       doFiltering(parameters) {
-        console.log(parameters);
+        let searchedItems = [];
+        this.apartments.forEach(apartment => {
+          let valid = true;
+          if(parameters.apartment.apartmentStatus !== null) {
+            if(parameters.apartment.apartmentStatus === "ACTIVE") {
+              if(!apartment.active) {
+                valid = false;
+              }
+            }else {
+              if(apartment.active) {
+                valid = false;
+              }
+            }
+          }
+          if(parameters.apartment.apartmentType !== null)
+            if(parameters.apartment.apartmentType !== apartment.type) {
+              valid = false;
+            }
+            
+          if(parameters.apartment.city !== null)
+            if(parameters.apartment.city !== apartment.city) {
+              valid = false;
+            }
+          if(parameters.apartment.fromPrice !== null)
+            if(parameters.apartment.fromPrice > apartment.price || parameters.apartment.toPrice < apartment.price) {
+              valid =false;
+            }
+
+          if(parameters.apartment.fromRoomNumber !== null && parameters.apartment.toRoomNumber !== null)
+            if(parameters.apartment.fromRoomNumber > apartment.roomNumber || parameters.apartment.toRoomNumber < apartment.roomNumber) {
+              valid = false;
+            }
+
+          if(parameters.apartment.guestNumber !== null) 
+            if(parameters.apartment.guestNumber != apartment.guestNumber) {
+              valid = false;
+            }
+
+          let hasAllAmenities = true;
+          if(parameters.apartment.hasAmenities !== null)
+            parameters.apartment.hasAmenities.forEach(amenityId => {
+              let hasAmenity = false;
+              apartment.amenities.forEach(amenity => {
+                if(amenity.id === amenityId) {
+                  hasAmenity = true;
+                }
+              });
+
+              if(!hasAmenity) {
+                hasAllAmenities = false;
+              }
+            });
+
+          if(!hasAllAmenities) {
+            valid = false;
+          }
+
+          if(valid) {
+            searchedItems.push(apartment);
+          }
+        });
+
+        this.searched = searchedItems;
       },
       activateFilter() {
         this.filterActive = true;
-      },
-      searchOnTable () {
-        this.searched = searchOnTable(this.apartments, this.search)
       },
       showApartmentDetails(apartment) {
         this.selectedApartment = apartment;

@@ -37,8 +37,8 @@ public class ApartmentDAO {
 		imageList.add("1");
 		imageList.add("2");
 		List<Amenities> amenities = new ArrayList<Amenities>();
-		Amenities amenity = new Amenities("Inside", "Room service");
-		//treba jos id dodati na amenity
+		Amenities amenity = new Amenities("Outside", "Hot tub");
+		amenity.setId(1);
 		amenities.add(amenity);
 		
 		Apartment ap = new Apartment(ApartmentType.FULL, 1, 5,  rentDates, freeDates, "host", apartmentComments, imageList, (long) 50 , 14, 10, true, amenities,  50,50,"Ulica",1, "Grad", 10000);
