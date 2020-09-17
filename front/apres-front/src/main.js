@@ -22,6 +22,7 @@ import AccessDenied from "./pages/AccessDenied"
 import CreateReservation from "./components/CreateReservation"
 import ReservationTable from "./components/tables/ReservationTable"
 import ApartmentComment from "./components/ApartmentComment"
+import FilterComponent from "./components/FilterComponent"
 
 import VCalendar from 'v-calendar';
 
@@ -107,8 +108,13 @@ const router = new VueRouter({
         },
         {
           path: "/apartmentComment",
-          name: ApartmentComment,
+          name: "ApartmentComment",
           component: ApartmentComment
+        },
+        {
+          path: "/filterComponent",
+          name: "FilterComponent",
+          component: FilterComponent
         }
         ]
     }
