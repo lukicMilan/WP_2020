@@ -6,6 +6,7 @@ public class ApartmentComment {
 	long apartment;
 	String comment;
 	long stars;
+	boolean visible;
 	
 	public ApartmentComment() {
 		super();
@@ -19,6 +20,25 @@ public class ApartmentComment {
 		this.stars = stars;
 	}
 	
+	public ApartmentComment(long id, String username, long apartment, String comment, long stars, boolean visible) {
+		super();
+		this.id = id;
+		this.username = username;
+		this.apartment = apartment;
+		this.comment = comment;
+		this.stars = stars;
+		this.visible = visible;
+	}
+
+	public ApartmentComment(String username, long apartment, String comment, long stars, boolean visible) {
+		super();
+		this.username = username;
+		this.apartment = apartment;
+		this.comment = comment;
+		this.stars = stars;
+		this.visible = visible;
+	}
+
 	public ApartmentComment(long id, String username, long apartment, String comment, long stars) {
 		super();
 		this.id = id;
@@ -66,6 +86,18 @@ public class ApartmentComment {
 
 	public void setStars(long stars) {
 		this.stars = stars;
+	}
+	
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	@Override

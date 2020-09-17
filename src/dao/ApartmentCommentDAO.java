@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+import dto.AmenitiesDTO;
 import dto.ApartmentDTO;
 import model.Apartment;
 import model.ApartmentComment;
@@ -22,9 +23,13 @@ public class ApartmentCommentDAO {
 	
 	public ApartmentCommentDAO(String contextPath) {
 		this.contextPath = contextPath;
-		ApartmentComment ac = new ApartmentComment("guest", 1, "Odlicna usluga.", 4);
+		ApartmentComment ac = new ApartmentComment("guest", 1, "Odlicna usluga.", 4, true);
 		ac.setId(this.comments.size()+1);
 		this.comments.put(ac.getId(), ac);
+		
+		ApartmentComment ac1 = new ApartmentComment("guest", 1, "Fujcina sram vas bilo.", 1, false);
+		ac1.setId(this.comments.size()+1);
+		this.comments.put(ac1.getId(), ac1);
 		
 		saveApartmentComments();
 	}
@@ -51,9 +56,19 @@ public class ApartmentCommentDAO {
 	
 	public boolean addApartmentComment(ApartmentComment ac) {
 		ac.setId(this.comments.size()+1);
+		ac.setVisible(true);
 		comments.put(ac.getId(), ac);
 		saveApartmentComments();
 		
+		return true;
+	}
+	
+	public boolean editApartmentComment(ApartmentComment ac) {
+		if(!comments.containsKey(ac.getId())) {
+			return false;
+		}
+		comments.put(ac.getId(), ac);
+		saveApartmentComments();
 		return true;
 	}
 	

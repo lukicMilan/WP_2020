@@ -203,19 +203,21 @@ public class ApartmentService {
 	}
 	
 	@DELETE
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response deleteApartment(ApartmentDTO apDTO, @Context HttpServletRequest request) {
+	@Path("{id}")
+	public Response deleteApartment(@PathParam(value = "id") long id, @Context HttpServletRequest request) {
 		ApartmentDAO apDAO = (ApartmentDAO) ctx.getAttribute("apartmentDAO");
 		User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
-		if(loggedInUser.getUserType() == UserType.ADMINISTRATOR ||
-				(loggedInUser.getUsername() == apDTO.getHostUsername() && 
-				loggedInUser.getUserType() == UserType.HOST)) {
-			apDAO.removeApartment(apDTO.getId());
-			return Response.status(200).build();
-		}else {
-			System.out.println("Only the apartment host and the administrator can remove an apartment.");
-			return Response.status(403).build();
-		}
+//		if(loggedInUser.getUserType() == UserType.ADMINISTRATOR ||
+//				(loggedInUser.getUsername() == apDTO.getHostUsername() && 
+//				loggedInUser.getUserType() == UserType.HOST)) {
+//			apDAO.removeApartment(apDTO.getId());
+//			return Response.status(200).build();
+//		}else {
+//			System.out.println("Only the apartment host and the administrator can remove an apartment.");
+//			return Response.status(403).build();
+//		}
+		apDAO.removeApartment(id);
+		return Response.status(200).build();
 	}
 	
 }

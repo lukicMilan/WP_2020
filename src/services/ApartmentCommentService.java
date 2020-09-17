@@ -10,6 +10,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -19,8 +20,11 @@ import javax.ws.rs.core.Response;
 
 import dao.AmenitiesDAO;
 import dao.ApartmentCommentDAO;
+import dao.ApartmentDAO;
 import dto.AmenitiesDTO;
+import dto.ApartmentDTO;
 import model.ApartmentComment;
+import model.User;
 
 @Path("/apartmentComment")
 public class ApartmentCommentService {
@@ -81,6 +85,25 @@ public class ApartmentCommentService {
 		apartmentCommentDAO.removeApartmentComment(apartmentComment.getId());
 		
 		return Response.status(200).build();
+	}
+	
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response editApartmentComment(ApartmentComment apartmentComment, @Context HttpServletRequest request) {
+		User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
+		ApartmentCommentDAO acDAO =(ApartmentCommentDAO) ctx.getAttribute("apartmentCommentDAO");
+		
+//		if(loggedInUser.getUsername() != apartmentDTO.getHostUsername() || 
+//				loggedInUser.getUserType() == UserType.ADMINISTRATOR) {
+//			apartmentDAO.editApartment(apartmentDTO);
+//			return Response.status(200).build();
+//		}else {
+//			System.out.println("Only the apartment host and the administrator can make changes.");
+//			return Response.status(403).build();
+//		}
+		acDAO.editApartmentComment(apartmentComment);
+		return Response.status(200).build();
+		
 	}
 	
 }

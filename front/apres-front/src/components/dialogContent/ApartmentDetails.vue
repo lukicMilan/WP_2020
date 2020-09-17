@@ -77,33 +77,57 @@
                 </div>
             </md-tab>
             <md-tab md-label="Comments">
+                <div v-if = "isHost || isAdministrator">
+                    <div v-if = "hasComments">
+                        <div v-for="comment in this.comments" :key= comment.id>
+                            <md-card>
+                                <md-card-header>
+                                    <h3>{{comment.username}}</h3>
+                                </md-card-header>
 
-                <div v-if = "hasComments">
-                    <div v-for="comment in this.comments" :key= comment.id>
-                        <md-card>
-                            <md-card-header>
-                                <h3>{{comment.username}}</h3>
-                            </md-card-header>
-
-                            <md-card-content>
-                                {{comment.comment}}
-                                <br>
-                                <br>
-                                <label>Rating: </label>
-                                <vue-stars
-                                    :max="5"
-                                    :value= "comment.stars"
-                                    :readonly="true"
-                                    />
-                            </md-card-content>
-
-                            <!-- <md-card-actions>
-                                <md-button>Action</md-button>
-                                <md-button>Action</md-button>
-                            </md-card-actions> -->
-                        </md-card>                    
+                                <md-card-content>
+                                    {{comment.comment}}
+                                    <br>
+                                    <br>
+                                    <label>Rating: </label>
+                                    <vue-stars
+                                        :max="5"
+                                        :value= "comment.stars"
+                                        :readonly="true"
+                                        />
+                                </md-card-content>
+                                <md-card-actions v-if="isHost && commentVisible(comment)">
+                                    <md-button @click="hideComment(comment)" class="md-dense md-raised md-accent" >Hide Comment</md-button>
+                                </md-card-actions>
+                            </md-card>                    
+                        </div>
                     </div>
                 </div>
+                <div v-else>
+                    <div v-if = "hasCommentsForGuests">
+                        <div v-for="comment in this.commentsForGuests" :key= comment.id>
+                            <md-card>
+                                <md-card-header>
+                                    <h3>{{comment.username}}</h3>
+                                </md-card-header>
+
+                                <md-card-content>
+                                    {{comment.comment}}
+                                    <br>
+                                    <br>
+                                    <label>Rating: </label>
+                                    <vue-stars
+                                        :max="5"
+                                        :value= "comment.stars"
+                                        :readonly="true"
+                                        />
+                                </md-card-content>
+                            </md-card>                    
+                        </div>
+                    </div>
+
+                </div>
+
                 <div v-if="canReserve" @click="createReservation">
                     <md-button>RESERVE</md-button>
                 </div>   
@@ -131,7 +155,8 @@ export default {
             startRentDate: Date,
             endRentDate: Date,
             selectedDate: Date,
-            comments: []
+            comments: [],
+            commentsForGuests: []
         }
     },
     computed: {
@@ -150,6 +175,30 @@ export default {
             } else {
                 return true;
             }
+        },
+        hasCommentsForGuests: function() {
+            if(this.commentsForGuests ===null) {
+                return false;
+            }
+            return true;
+        },
+        isHost: function() {
+            if(this.loggedInUser === null) {
+                return false
+            }
+            if(this.loggedInUser.userType === "HOST" && this.selectedApartment.hostUsername === this.loggedInUser.username){
+                return true
+            }
+            return false
+        },
+        isAdministrator: function() {
+            if(this.loggedInUser === null) {
+                return false
+            }
+            if(this.loggedInUser.userType === "ADMINISTRATOR"){
+                return true
+            }
+            return false
         }
     },
     created: function() {
@@ -169,13 +218,43 @@ export default {
 
         http.get('apartmentComment/apartment/'+this.selectedApartment.id)
             .then(data => {
-                this.comments = data.data
+                this.comments = data.data,
+                this.comments.forEach(comment => {
+                    if(comment.visible === true) {
+                        this.commentsForGuests.push(comment)
+                    }
+                });
             })
             .catch(error => {console.log(error)})
     },
     methods: {
         createReservation: function() {
             this.$emit('activateReservation', this.selectedApartment);
+        },
+        commentVisible(comment) {
+            if(comment.visible) {
+                return true
+            }
+            return false
+        },
+        hideComment(comment){
+            http.put('apartmentComment', {
+                id: comment.id,
+                username: comment.username,
+                apartment: comment.apartment,
+                stars: comment.stars,
+                visible: false
+            })
+            .then(() => {
+                this.comments.forEach(com => {
+                    if(com.id === comment.id) {
+                        com.visible = false
+                    }
+                })
+            })
+            .catch(error => {
+                console.log(error)
+            })
         }
     }
 }
