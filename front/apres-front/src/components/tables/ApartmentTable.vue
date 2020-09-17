@@ -447,7 +447,7 @@
           .then(data=> {
             this.reservedDates = data.data;
           });
-         
+      }
     },
     computed: {
       addButton: function() {
