@@ -3,6 +3,15 @@
         <div v-if="!loggedInUser">
             <access-denied> </access-denied>
         </div>
+        <span>
+        <md-button class="md-raised md-primary" v-if="!filterActive" @click="activateFilter">
+            Filter
+        </md-button>
+        </span>
+        <div v-if="filterActive">
+            <filterComponent  :activeFilters="this.activeFilters"
+                                                    @filtering="doFiltering"> </filterComponent>
+        </div>
         <md-dialog :md-active.sync="comment">
           <ApartmentComment :loggedInUser = "loggedInUser" :apartmentId = "this.apartmentId" />
         </md-dialog>
@@ -50,38 +59,39 @@
 import AccessDenied from '../../pages/AccessDenied.vue';
 import http from '../../http-common'
 import ApartmentComment from '../ApartmentComment'
+import FilterComponent from '../FilterComponent'
 
-const toLower = text => {
-    return text.toString().toLowerCase()
-}
+// const toLower = text => {
+//     return text.toString().toLowerCase()
+// }
 
-const uniqueElementsBy = (arr, fn) =>
-  arr.reduce((acc, v) => {
-    if (!acc.some(x => fn(v, x))) acc.push(v);
-    return acc;
-}, []);
+// const uniqueElementsBy = (arr, fn) =>
+//   arr.reduce((acc, v) => {
+//     if (!acc.some(x => fn(v, x))) acc.push(v);
+//     return acc;
+// }, []);
 
-const searchOnTable = (items, term) => {
-    let searchedItems = [];
-    if (term) {
-    //   searchedItems = searchedItems.concat(items.filter(item => (item.reservationId).includes(term)));
-    //   searchedItems = searchedItems.concat(items.filter(item => (item.apartmentId).includes(term)));
-    //   searchedItems = searchedItems.concat(items.filter(item => (item.date).includes(term)));
-    //   searchedItems = searchedItems.concat(items.filter(item => (item.nights).includes(term)));
-    //   searchedItems = searchedItems.concat(items.filter(item => (item.totalPrice).includes(term)));
-    //   if(!loggedInHost) {
-    //     searchedItems = searchedItems.concat(items.filter(item => toLower(item.hostUserame).includes(toLower(term))));
-    //   }
-    //   if(!loggedInGuest) {
-    //     searchedItems = searchedItems.concat(items.filter(item => toLower(item.guestUsername).includes(toLower(term))));
-    //   }
-      searchedItems = searchedItems.concat(items.filter(item => toLower(item.status).includes(toLower(term))));
-      searchedItems = uniqueElementsBy(searchedItems, (a,b) => a.id == b.id);
-    }
+// const searchOnTable = (items, term) => {
+//     let searchedItems = [];
+//     if (term) {
+//     //   searchedItems = searchedItems.concat(items.filter(item => (item.reservationId).includes(term)));
+//     //   searchedItems = searchedItems.concat(items.filter(item => (item.apartmentId).includes(term)));
+//     //   searchedItems = searchedItems.concat(items.filter(item => (item.date).includes(term)));
+//     //   searchedItems = searchedItems.concat(items.filter(item => (item.nights).includes(term)));
+//     //   searchedItems = searchedItems.concat(items.filter(item => (item.totalPrice).includes(term)));
+//     //   if(!loggedInHost) {
+//     //     searchedItems = searchedItems.concat(items.filter(item => toLower(item.hostUserame).includes(toLower(term))));
+//     //   }
+//     //   if(!loggedInGuest) {
+//     //     searchedItems = searchedItems.concat(items.filter(item => toLower(item.guestUsername).includes(toLower(term))));
+//     //   }
+//       searchedItems = searchedItems.concat(items.filter(item => toLower(item.status).includes(toLower(term))));
+//       searchedItems = uniqueElementsBy(searchedItems, (a,b) => a.id == b.id);
+//     }
 
 
-    return searchedItems
-}
+//     return searchedItems
+// }
 
 export default {
     props: {
@@ -89,7 +99,8 @@ export default {
     },
     components: {
         accessDenied: AccessDenied,
-        ApartmentComment
+        ApartmentComment,
+        filterComponent: FilterComponent
     },
     data: function () {
         return {
@@ -99,7 +110,9 @@ export default {
             // loggedInHost: false,
             // loggedInGuest: false,
             comment: false,
-            apartmentId: Number
+            apartmentId: Number,
+            filterActive: false,
+            activeFilters: ['reservationStatus']
         }
     },
     mounted: function () {
@@ -173,13 +186,13 @@ export default {
             } 
             return false;
         },
-        searchOnTable() {
-            if(this.searchedWord == "") {
-                this.searched = this.reservations;
-            } else {
-                this.searched = searchOnTable(this.reservations, this.searchedWord);
-            }
-        },
+        // searchOnTable() {
+        //     if(this.searchedWord == "") {
+        //         this.searched = this.reservations;
+        //     } else {
+        //         this.searched = searchOnTable(this.reservations, this.searchedWord);
+        //     }
+        // },
         cancelReservation(reservation) {
             reservation.status="CANCELED";
             http.put('reservation/status', { 
@@ -222,6 +235,25 @@ export default {
         openCommentDialog(reservation) {
             this.apartmentId = reservation.apartmentId
             this.comment = true
+        }, 
+        activateFilter() {
+            this.filterActive = true
+        },
+        doFiltering(parameters) {
+            let searchedItems = [];
+            this.reservations.forEach(reservation => {
+                let valid = true;
+                if(parameters.reservation.reservationStatus !== null) {
+                    if(parameters.reservation.reservationStatus !== reservation.status) {
+                        valid = false
+                    }
+                }
+                if(valid) {
+                    searchedItems.push(reservation)
+                }
+                
+            });
+            this.searched = searchedItems;
         }
     },
     computed: {

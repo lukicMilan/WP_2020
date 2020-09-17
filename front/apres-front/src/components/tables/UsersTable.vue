@@ -1,26 +1,34 @@
 <template>
     <div class="usersTable">
-        <div>
-            <FilterComponent/>
+        <span>
+        <md-button class="md-raised md-primary" v-if="!filterActive" @click="activateFilter">
+            Filter
+        </md-button>
+        </span>
+        <div v-if="filterActive">
+            <filterComponent  :activeFilters="this.activeFilters"
+                                                    @filtering="doFiltering"> </filterComponent>
         </div>
-        <md-table v-model="searched" md-sort="username" md-sort-order="asc" md-card>
-            <md-table-toolbar>
-                <div class="md-toolbar-section-start">
-                    <h1 class="md-title">Users</h1>
-                </div>
-                
-                <md-field md-clearable class="md-toolbar-section-end">
-                    <md-input placeholder="Search..." v-model="searchedWord" @input="searchOnTable" />
-                </md-field>
-            </md-table-toolbar>
+        <div>  
+            <md-table v-model="searched" md-sort="username" md-sort-order="asc" md-card>
+                <md-table-toolbar>
+                    <div class="md-toolbar-section-start">
+                        <h1 class="md-title">Users</h1>
+                    </div>
+                    
+                    <md-field md-clearable class="md-toolbar-section-end">
+                        <md-input placeholder="Search..." v-model="searchedWord" @input="searchOnTable" />
+                    </md-field>
+                </md-table-toolbar>
 
-            <md-table-row slot="md-table-row" slot-scope="{ item }">
-                <md-table-cell md-label="Username" md-sort-by="username">{{item.username}}</md-table-cell>
-                <md-table-cell md-label="First Name" md-sort-by="name">{{item.name}}</md-table-cell>
-                <md-table-cell md-label="Last Name" md-sort-by="surname">{{item.surname}}</md-table-cell>
-                <md-table-cell md-label="Type" md-sort-by="userType">{{item.userType}}</md-table-cell>
-            </md-table-row>
-        </md-table>
+                <md-table-row slot="md-table-row" slot-scope="{ item }">
+                    <md-table-cell md-label="Username" md-sort-by="username">{{item.username}}</md-table-cell>
+                    <md-table-cell md-label="First Name" md-sort-by="name">{{item.name}}</md-table-cell>
+                    <md-table-cell md-label="Last Name" md-sort-by="surname">{{item.surname}}</md-table-cell>
+                    <md-table-cell md-label="Type" md-sort-by="userType">{{item.userType}}</md-table-cell>
+                </md-table-row>
+            </md-table>
+        </div>
     </div>
 </template>
 
@@ -28,29 +36,29 @@
 import http from '../../http-common'
 import FilterComponent from '../FilterComponent.vue'
 
-const toLower = text => {
-    return text.toString().toLowerCase()
-}
+// const toLower = text => {
+//     return text.toString().toLowerCase()
+// }
 
-const uniqueElementsBy = (arr, fn) =>
-  arr.reduce((acc, v) => {
-    if (!acc.some(x => fn(v, x))) acc.push(v);
-    return acc;
-}, []);
+// const uniqueElementsBy = (arr, fn) =>
+//   arr.reduce((acc, v) => {
+//     if (!acc.some(x => fn(v, x))) acc.push(v);
+//     return acc;
+// }, []);
 
-const searchOnTable = (items, term) => {
-    let searchedItems = [];
-    if (term) {
-      searchedItems = searchedItems.concat(items.filter(item => (item.username).includes(term)));
-      searchedItems = searchedItems.concat(items.filter(item => toLower(item.name).includes(toLower(term))));
-      searchedItems = searchedItems.concat(items.filter(item => toLower(item.surname).includes(toLower(term))));
-      searchedItems = searchedItems.concat(items.filter(item => toLower(item.userType).includes(toLower(term))));
-      searchedItems = uniqueElementsBy(searchedItems, (a,b) => a.username == b.username);
-    }
+// const searchOnTable = (items, term) => {
+//     let searchedItems = [];
+//     if (term) {
+//       searchedItems = searchedItems.concat(items.filter(item => (item.username).includes(term)));
+//       searchedItems = searchedItems.concat(items.filter(item => toLower(item.name).includes(toLower(term))));
+//       searchedItems = searchedItems.concat(items.filter(item => toLower(item.surname).includes(toLower(term))));
+//       searchedItems = searchedItems.concat(items.filter(item => toLower(item.userType).includes(toLower(term))));
+//       searchedItems = uniqueElementsBy(searchedItems, (a,b) => a.username == b.username);
+//     }
 
 
-    return searchedItems
-}
+//     return searchedItems
+// }
 
 export default {
     name: 'UsersTable',
@@ -60,10 +68,12 @@ export default {
     data: () => ({
         searchedWord: "",
         searched: [],
-        users: []
+        users: [],
+        filterActive: false,
+        activeFilters: ['userType', 'gender']
     }),
     components: {
-        FilterComponent
+        filterComponent: FilterComponent
     },
     mounted() {
         if(this.loggedInUser === null) {
@@ -94,12 +104,36 @@ export default {
     },
 
     methods: {
-        searchOnTable() {
-            if(this.searchedWord == "") {
-                this.searched = this.users;
-            } else {
-                this.searched = searchOnTable(this.users, this.searchedWord);
-            }
+        // searchOnTable() {
+        //     if(this.searchedWord == "") {
+        //         this.searched = this.users;
+        //     } else {
+        //         this.searched = searchOnTable(this.users, this.searchedWord);
+        //     }
+        // },
+        activateFilter() {
+            this.filterActive = true
+        },
+        doFiltering(parameters) {
+            let searchedItems = [];
+            this.users.forEach(user => {
+                let valid = true;
+                if(parameters.user.userType !== null) {
+                    if(parameters.user.userType !== user.userType) {
+                        valid = false
+                    }
+                }
+                if(parameters.user.gender !== null) {
+                    if(parameters.user.gender !== user.gender) {
+                        valid = false
+                    }
+                }
+                if(valid) {
+                    searchedItems.push(user)
+                }
+                
+            });
+            this.searched = searchedItems;
         }
     }
 }

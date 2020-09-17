@@ -103,7 +103,7 @@
       filterComponent: FilterComponent,
     },
     data: () => ({
-      activeFilters: ['city', 'street', 'price', 'roomNumber','guestNumber', 'type', 'hasAmenty', 'apartmentStatus', 'calendar'],
+      activeFilters: ['city', 'street', 'price', 'roomNumber','guestNumber', 'type', 'hasAmenity', 'apartmentStatus', 'calendar'],
       search: null,
       searched: [],
       apartments: [],
