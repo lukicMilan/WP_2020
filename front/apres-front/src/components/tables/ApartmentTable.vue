@@ -21,10 +21,15 @@
     </div>
 
     <span>
-      <md-button class="md-raised" v-if="!filterActive" @click="activateFilter">
-        filter
+      <md-button class="md-raised md-primary" v-if="!filterActive" @click="activateFilter">
+        Filter
       </md-button>
     </span>
+    <div>
+      <filter-component v-if="filterActive" :activeFilters="this.activeFilters"
+                                            :amenityList="this.amenities"
+                                            @filtering="doFiltering"> </filter-component>
+    </div>
     <md-table v-model="searched" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
       <md-table-toolbar>
         <div class="md-toolbar-section-start">
@@ -64,6 +69,7 @@
   import ApartmentDetails from '../dialogContent/ApartmentDetails'
   import CreateReservation from '../CreateReservation'
   import Apartment from '../Apartment'
+  import FilterComponent from '../FilterComponent'
 
   const toLower = text => {
     return text.toString().toLowerCase()
@@ -96,9 +102,11 @@
     components: {
       apartmentDetails: ApartmentDetails,
       createReservation: CreateReservation,
-      Apartment
+      Apartment,
+      filterComponent: FilterComponent,
     },
     data: () => ({
+      activeFilters: ['city', 'street', 'price', 'roomNumber','guestNumber', 'reservationStatus', 'type', 'hasAmenty', 'apartmentStatus', 'calendar'],
       search: null,
       searched: [],
       apartments: [],
@@ -114,6 +122,9 @@
       loggedInUser: null,
     },
     methods: {
+      doFiltering(parameters) {
+        console.log(parameters);
+      },
       activateFilter() {
         this.filterActive = true;
       },
@@ -193,6 +204,10 @@
             .catch(error => {
                 console.log(error) 
         });
+      http.get('amenities')
+          .then(data => {
+            this.amenities = data.data;
+          });
       this.reservationActive = false;
     },
     computed: {
