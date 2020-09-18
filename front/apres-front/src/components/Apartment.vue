@@ -131,7 +131,7 @@
                     </md-card-content>
                     <md-card-actions>
                         <div v-if = "this.isEdit">
-                            <md-button class="md-dense md-raised md-primary" @click = "saveEdit()">Submit</md-button>
+                            <md-button class="md-dense md-raised md-primary" @click = "validateApartment()">Submit</md-button>
                         </div>
                         <div v-else>
                             <md-button type="submit" class="md-dense md-raised md-primary">Submit</md-button>
@@ -194,7 +194,8 @@ export default {
         selectedImages: [],
         allAmenities: [],
         file: null,
-        apartment: null
+        apartment: null,
+        comments: []
     }),
     validations: {
       form: {
@@ -280,8 +281,10 @@ export default {
         validateApartment () {
             this.$v.$touch()
 
-        if (!this.$v.$invalid) {
+        if (!this.$v.$invalid && !this.isEdit) {
           this.saveApartment()
+        } else {
+            this.saveEdit()
         }
       },
       saveApartment: function() {
@@ -297,7 +300,7 @@ export default {
                         street: this.form.street,
                         zipCode: this.form.zipCode,
                         number: this.form.number,
-                        imageList: [],
+                        imageList: this.selectedImages,
                         price: this.form.price,
                         entryTime: this.form.entryTime,
                         leaveTime: this.form.leaveTime,
@@ -308,12 +311,14 @@ export default {
                         comments: [],
                         hostUsername: this.loggedInUser.username
                     })
-                    .then(data => {
-                        this.$emit('apartmentAdded', data.data)
+                    .then(
+                        this.$emit('globalMessage', 'Apartment added successfully.'),
                         this.$router.push('apartmentTable')
-                    })
+                    )
                     .catch(error => {
-                        console.log(error) 
+                        if(error.response.status === 403) {
+                            this.$emit('globalMessage', 'Only apartment hosts can add a new apartment.')
+                        }
                     });
       },
         isHost() {
@@ -342,23 +347,22 @@ export default {
                         street: this.form.street,
                         zipCode: this.form.zipCode,
                         number: this.form.number,
-                        imageList: [],
+                        imageList: this.selectedImages,
                         price: this.form.price,
                         entryTime: this.form.entryTime,
                         leaveTime: this.form.leaveTime,
                         amenities: this.selectedAmenities,
                         active: true,
-                        rentDates: [],
-                        freeDates: [],
-                        comments: [],
+                        rentDates: this.rentDates,
+                        freeDates: this.freeDates,
+                        comments: this.comments,
                         hostUsername: this.loggedInUser.username
 
                     })
-                    .then(data => { 
-                        this.$emit('apartmentEdited', data.data)
-                    })
+                    .then(this.$emit('globalMessage', 'Apartment edited successfully.'))
                     .catch(error => {
-                        console.log(error) 
+                        if(error.response.status === 403)
+                            this.$emit('globalMessage', 'Only apartment hosts and admins can edit an apartment.')
                     });
         }
     },
@@ -381,6 +385,9 @@ export default {
                         this.form.entryTime = data.data.entryTime;
                         this.form.leaveTime = data.data.leaveTime;
                         this.form.selectedAmenities = data.data.amenities;
+                        this.rentDates = data.data.rentDates;
+                        this.freeDates = data.data.freeDates;
+                        this.comments = data.data.comments;
             })
             .catch(error => {console.log(error)});
         http.get('amenities')

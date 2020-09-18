@@ -4,38 +4,39 @@
         <div v-if="!isAdministrator()">
             <accessDenied/>
         </div>
+        <div v-else>
+            <span>
+            <md-button class="md-raised md-primary" v-if="!filterActive" @click="activateFilter">
+                Filter
+            </md-button>
+            </span>
+            <div v-if="filterActive">
+                <filterComponent  :activeFilters="this.activeFilters"
+                                                        @filtering="doFiltering"> </filterComponent>
+            </div>
+            <div>  
+                <md-table v-model="searched" md-sort="username" md-sort-order="asc" md-card>
+                    <md-table-toolbar>
+                        <div class="md-toolbar-section-start">
+                            <h1 class="md-title">Users</h1>
+                        </div>
+                        
+                        <md-field md-clearable class="md-toolbar-section-end">
+                            <md-input placeholder="Search..." v-model="searchedWord" @input="searchOnTable" />
+                        </md-field>
+                    </md-table-toolbar>
 
-        <span>
-        <md-button class="md-raised md-primary" v-if="!filterActive" @click="activateFilter">
-            Filter
-        </md-button>
-        </span>
-        <div v-if="filterActive">
-            <filterComponent  :activeFilters="this.activeFilters"
-                                                    @filtering="doFiltering"> </filterComponent>
-        </div>
-        <div>  
-            <md-table v-model="searched" md-sort="username" md-sort-order="asc" md-card>
-                <md-table-toolbar>
-                    <div class="md-toolbar-section-start">
-                        <h1 class="md-title">Users</h1>
-                    </div>
-                    
-                    <md-field md-clearable class="md-toolbar-section-end">
-                        <md-input placeholder="Search..." v-model="searchedWord" @input="searchOnTable" />
-                    </md-field>
-                </md-table-toolbar>
-
-                <md-table-row slot="md-table-row" slot-scope="{ item }">
-                    <md-table-cell md-label="Username" md-sort-by="username">{{item.username}}</md-table-cell>
-                    <md-table-cell md-label="First Name" md-sort-by="name">{{item.name}}</md-table-cell>
-                    <md-table-cell md-label="Last Name" md-sort-by="surname">{{item.surname}}</md-table-cell>
-                    <md-table-cell md-label="Type" md-sort-by="userType">{{item.userType}}</md-table-cell>
-                </md-table-row>
-            </md-table>
-        </div>
+                    <md-table-row slot="md-table-row" slot-scope="{ item }">
+                        <md-table-cell md-label="Username" md-sort-by="username">{{item.username}}</md-table-cell>
+                        <md-table-cell md-label="First Name" md-sort-by="name">{{item.name}}</md-table-cell>
+                        <md-table-cell md-label="Last Name" md-sort-by="surname">{{item.surname}}</md-table-cell>
+                        <md-table-cell md-label="Type" md-sort-by="userType">{{item.userType}}</md-table-cell>
+                    </md-table-row>
+                </md-table>
+            </div>
         <div >
             <md-button class="md-dense md-raised md-primary" @click="addHost()" >Add host</md-button>
+        </div>
         </div>
     </div>
 </template>

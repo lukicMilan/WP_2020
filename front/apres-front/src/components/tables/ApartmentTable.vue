@@ -11,7 +11,7 @@
       <div v-if = this.isEdit>
         <Apartment @apartmentAdded = "apartmentCreated($event)"
                    @apartmentEdited = "apartmentEdited($event)"
-        :id = "this.apartment.id" :isEdit = "this.isEdit" />
+        :id = "this.apartment.id" :isEdit = "this.isEdit" :loggedInUser="this.loggedInUser" />
       </div>
     </md-dialog>
     
@@ -255,15 +255,15 @@
                         street: item.street,
                         zipCode: item.zipCode,
                         number: item.number,
-                        imageList: [],
+                        imageList: item.imageList,
                         price: item.price,
                         entryTime: item.entryTime,
                         leaveTime: item.leaveTime,
                         amenities: item.selectedAmenities,
                         active: false,
-                        rentDates: [],
-                        freeDates: [],
-                        comments: [],
+                        rentDates: item.rentDates,
+                        freeDates: item.freeDates,
+                        comments: item.comments,
                         hostUsername: this.loggedInUser.username
 
                     })
@@ -278,10 +278,10 @@
                           ap.active = false;
                         }
                       });
+                      this.$emit('globalMessage', 'Apartment successfully deactivated.')
                     })
-                    .catch(error => {
-                        console.log(error) 
-                    });
+                    .catch(
+                          this.$emit('globalMessage', 'Only the apartment host and the administrator can deactivate the apartment.'));
       },
       activate(item) {
         http.put('apartment',
@@ -296,15 +296,15 @@
                         street: item.street,
                         zipCode: item.zipCode,
                         number: item.number,
-                        imageList: [],
+                        imageList: item.imageList,
                         price: item.price,
                         entryTime: item.entryTime,
                         leaveTime: item.leaveTime,
                         amenities: item.selectedAmenities,
                         active: true,
-                        rentDates: [],
-                        freeDates: [],
-                        comments: [],
+                        rentDates: item.rentDates,
+                        freeDates: item.freeDates,
+                        comments: item.comments,
                         hostUsername: this.loggedInUser.username
 
                     })
@@ -319,10 +319,9 @@
                           ap.active = true;
                         }
                       });
+                      this.$emit('globalMessage', 'Apartment successfully activated.')
                     })
-                    .catch(error => {
-                        console.log(error) 
-                    });
+                    .catch(this.$emit('globalMessage', 'Only the apartment host and the administrator can activate the apartment.'));
       },
       canDeactivate(apartment) {
         if(this.loggedInUser === null) {
@@ -350,9 +349,11 @@
       },
       deleteApartment(apartment) {
         http.delete('apartment/'+apartment.id)
-        .then(data => console.log(data))
+        .then(this.$emit('globalMessage', 'Apartment successfully deleted'))
         .catch(error => {
-          console.log(error)
+          if(error.response.status === 403) {
+            this.$emit('globalMessage', 'You do not have access to this option.')
+          }
         })
         http.get('apartment')
             .then(data => {

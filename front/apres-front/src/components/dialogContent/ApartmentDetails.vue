@@ -257,7 +257,9 @@ export default {
                     }
                 });
             })
-            .catch(error => {console.log(error)})
+            .catch(
+                this.$emit('globalForm', 'Unable to access apartment details.'))
+                
     },
     methods: {
         openGallery(index) {
@@ -288,9 +290,11 @@ export default {
                         com.visible = false
                     }
                 })
+                this.$emit('globalMessage', 'Comment successfully hidden.')
             })
             .catch(error => {
-                console.log(error)
+                if(error.response.status !== 200)
+                 this.$emit('globalMessage', 'You do not have access to this option.')
             })
         }
     }
