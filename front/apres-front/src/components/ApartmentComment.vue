@@ -82,12 +82,10 @@ export default {
                             comment: this.form.comment,
                             stars: this.rating
                         })
-                        .then(data => {
-                            console.log(data.data)
-                            // this.$emit('commentAdded', data.data)
-                        })
+                        .then(this.$emit('globalMessage', 'Comment added.'))
                         .catch(error => {
-                            console.log(error) 
+                            if(error.response.status === 403)
+                                this.$emit('globalMessage', 'Only guests can add new comments.')
                         });
         },
         setRating: function(rating){

@@ -13,7 +13,8 @@
              @globalMessage="showGlobalMessage($event)"
              @openGallery="openGallery($event)"
              @addingHost= "openAddHost($event)"
-             @userEdited = "userEdited($event)"></router-view>
+             @userEdited = "userEdited($event)"
+             @userAdded = "userAdded($event)"></router-view>
         </div>
         <md-snackbar :md-position="'center'" :md-duration="snackbarDuration" :md-active.sync="showSnackbar" md-persistent>
             <span>{{snackbarText}}</span>
@@ -78,6 +79,10 @@ export default {
         openAddHost() {
             this.addingHost = true
             this.$router.push('/register')
+        },
+        userAdded() {
+            this.addingHost = false
+            this.$router.push('/login')
         }
     },
     

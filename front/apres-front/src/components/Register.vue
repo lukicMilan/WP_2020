@@ -29,7 +29,7 @@
                       <div class="md-layout-item md-small-size-100">
                         <md-field :class="getValidationClass('username')">
                             <label for="username">Username</label>
-                            <md-input name="username" id="username" v-model="form.username" @change="changeValue()" v-if="!this.isEdit" />
+                            <md-input name="username" id="username" v-model="form.username" @change="changeValue()" v-if="!this.isEdit ||  this.addingHost" />
                             <span class="md-error" v-if="!$v.form.username.required">The username is required</span>
                             <span class="md-error" v-else-if="!$v.form.username.usernameExists">Username already exists</span>
                             <span class="md-error" v-else-if="!$v.form.username.minlength">Invalid username</span>
@@ -158,6 +158,9 @@ export default {
       if (!this.$v.$invalid) {
         if(!this.isEdit)
           this.saveUser()
+        else if(this.addingHost) [
+          this.saveUser()
+        ]
         else
           this.saveEdit()
       }
@@ -190,9 +193,10 @@ export default {
                     })
                     .then((response) => { 
                       this.wrongUsername = false
+                      this.$emit('globalMessage', 'User added.')
                       console.log(response) })
-                    .catch(error => {
-                       console.log(error)
+                    .catch(() => {
+                       this.$emit('globalMessage', 'User NOT added.')
                       this.wrongUsername = true
                     }) ;
 
@@ -210,7 +214,7 @@ export default {
                     })
                     .then(() => { 
                       this.wrongUsername = false
-                      this.$emit('userEdited', this.form) })
+                      this.$emit('globalMessage', 'User edited successfully.') })
                     .catch(() => {
                       this.$emit('globalMessage', 'Username already exists!')
                       this.wrongUsername = true

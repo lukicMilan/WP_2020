@@ -145,7 +145,7 @@
                     </md-card-content>
                     <md-card-actions>
                         <div v-if = "this.isEdit">
-                            <md-button class="md-dense md-raised md-primary" @click = "saveEdit()">Submit</md-button>
+                            <md-button class="md-dense md-raised md-primary" @click = "validateApartment()">Submit</md-button>
                         </div>
                         <div v-if = "!isEdit">
                             <md-button type="submit" class="md-dense md-raised md-primary">Submit</md-button>
@@ -211,7 +211,8 @@ export default {
         selectedImages: [],
         allAmenities: [],
         file: null,
-        apartment: null
+        apartment: null,
+        comments: []
     }),
     validations: {
       form: {
@@ -297,8 +298,10 @@ export default {
         validateApartment () {
             this.$v.$touch()
 
-        if (!this.$v.$invalid) {
+        if (!this.$v.$invalid && !this.isEdit) {
           this.saveApartment()
+        } else {
+            this.saveEdit()
         }
       },
       saveApartment: function() {
@@ -324,12 +327,14 @@ export default {
                         comments: [],
                         hostUsername: this.loggedInUser.username
                     })
-                    .then(data => {
-                        this.$emit('apartmentAdded', data.data)
+                    .then(
+                        this.$emit('globalMessage', 'Apartment added successfully.'),
                         this.$router.push('apartmentTable')
-                    })
+                    )
                     .catch(error => {
-                        console.log(error) 
+                        if(error.response.status === 403) {
+                            this.$emit('globalMessage', 'Only apartment hosts can add a new apartment.')
+                        }
                     });
       },
         isHost() {
@@ -367,15 +372,13 @@ export default {
                         active: this.selectedApartment.active,
                         fancyRentDates: [this.form.startRentDate.getTime(), this.form.endRentDate.getTime()],
                         freeDates: [],
-                        comments: [],
+                        comments: this.comments,
                         hostUsername: username
-
                     })
-                    .then(data => { 
-                        this.$emit('apartmentEdited', data.data)
-                    })
+                    .then(this.$emit('globalMessage', 'Apartment edited successfully.'))
                     .catch(error => {
-                        console.log(error) 
+                        if(error.response.status === 403)
+                            this.$emit('globalMessage', 'Only apartment hosts and admins can edit an apartment.')
                     });
         }
     },
