@@ -51,12 +51,12 @@
 
         <md-table-cell md-label="Details"><md-button class="md-dense md-raised md-secondary" @click="showApartmentDetails(item)">Details</md-button></md-table-cell>
         <md-table-cell md-label="Edit"><md-button class="md-dense md-raised md-default" @click="isEditFunction(item)">Edit</md-button></md-table-cell>
-        <md-table-cell md-label="Deactivate" v-if = "canDeactivate(item)">
+        <md-table-cell md-label="Deactivate" >
           <div v-if = "canDeactivate(item)">
             <md-button class="md-dense md-raised md-accent" @click = "deactivateApartment(item)">Deactivate</md-button>
           </div>
         </md-table-cell>
-        <md-table-cell md-label="Activate" v-if = "canActivate(item)" >
+        <md-table-cell md-label="Activate" >
           <div v-if = "canActivate(item)">
             <md-button class="md-dense md-raised md-primary" @click = "activate(item)">Activate</md-button>
           </div>

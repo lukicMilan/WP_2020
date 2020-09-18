@@ -99,10 +99,13 @@ export default {
                         type: this.form.type,
                         name: this.form.name
         })
-                .then(this.$emit('globalMessage', 'Amenity edited successfully.'))
+                .then(data => {
+                     this.$emit('amenityEdited', data.data)
+                })
                 .catch(error => {
-                    if(error.response.status === 403) 
-                        this.$emit('globalMessage', 'Only the admin can edit amenities.')
+                    if(error.response.status=== 403)  {
+                        this.$emit('globalMessage', 'Only the admin can edit amenities')
+                    }
             });
     },
     saveAmenity: function() {
@@ -111,11 +114,13 @@ export default {
                         type: this.form.type,
                         name: this.form.name
                     })
-                    .then(this.$emit('globalMessage', 'Amenity added successfully.'))
+                    .then(data => {
+                        this.$emit('amenityAdded', data.data)
+                    })
                     .catch(error => {
-                        if(error.response.status === 403) {
-                            this.$emit('globalMessage', 'Only the admin can add new amenities.')
-                        }
+                        if(error.response.status=== 403)  {
+                        this.$emit('globalMessage', 'Only the admin can add amenities')
+                    }
                     });
       }
     },

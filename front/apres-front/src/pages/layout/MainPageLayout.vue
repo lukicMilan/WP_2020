@@ -14,7 +14,8 @@
              @openGallery="openGallery($event)"
              @addingHost= "openAddHost($event)"
              @userEdited = "userEdited($event)"
-             @userAdded = "userAdded($event)"></router-view>
+             @userAdded = "userAdded($event)"
+             @apartmentAdded="apartmentAdded($event)"></router-view>
         </div>
         <md-snackbar :md-position="'center'" :md-duration="snackbarDuration" :md-active.sync="showSnackbar" md-persistent>
             <span>{{snackbarText}}</span>
@@ -81,8 +82,15 @@ export default {
             this.$router.push('/register')
         },
         userAdded() {
-            this.addingHost = false
-            this.$router.push('/login')
+            if(this.addingHost) {
+                this.addingHost = false
+                this.$router.push('/usersTable')
+            } else{
+                this.$router.push('/login')
+            }
+        },
+        aoartmentAdded() {
+            this.$router.push('/apartmentTable')
         }
     },
     

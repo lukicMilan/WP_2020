@@ -185,15 +185,14 @@ export default {
             type: null,
             roomNumber: null,
             guestNumber: null,
+            
+            street: null,
+            number:null,
+            city: null,
+            zipCode: null,
             location: {
                 latitude: 0, 
                 longitude: 0, 
-                adress: { 
-                    street: null,
-                    number:null,
-                    city: null,
-                    zipCode: null
-                }
             },
             rentDates: null, 
             freeDates: null,
@@ -300,7 +299,7 @@ export default {
 
         if (!this.$v.$invalid && !this.isEdit) {
           this.saveApartment()
-        } else {
+        } else if(!this.$v.$invalid  && this.isEdit) {
             this.saveEdit()
         }
       },
@@ -375,7 +374,9 @@ export default {
                         comments: this.comments,
                         hostUsername: username
                     })
-                    .then(this.$emit('globalMessage', 'Apartment edited successfully.'))
+                    .then(() => {
+                        this.$emit('globalMessage', 'Apartment edited successfully.')
+                            this.$emit('apartmentAdded')})
                     .catch(error => {
                         if(error.response.status === 403)
                             this.$emit('globalMessage', 'Only apartment hosts and admins can edit an apartment.')
@@ -401,6 +402,7 @@ export default {
                 this.form.startRentDate = new Date(this.selectedApartment.rentDates[0]);
                 this.form.endRentDate =  new Date(this.selectedApartment.rentDates[1]);
         } 
+        http.get('amenities').then(data => {this.allAmenities = data.data})
     },
 }
 </script>
