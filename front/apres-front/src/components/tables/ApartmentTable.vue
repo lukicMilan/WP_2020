@@ -11,7 +11,7 @@
       <div v-if = this.isEdit>
         <Apartment @apartmentAdded = "apartmentCreated($event)"
                    @apartmentEdited = "apartmentEdited($event)"
-        :id = "this.apartment.id" :isEdit = "this.isEdit" />
+        :id = "this.apartment.id" :loggedInUser="this.loggedInUser" :selectedApartment="selectedApartment" :isEdit = "this.isEdit" />
       </div>
     </md-dialog>
     
@@ -248,6 +248,7 @@
       },
       isEditFunction(item) {
         this.isEdit = true;
+        this.selectedApartment = item;
         this.apartment = item;
       },
       apartmentCreated() {
@@ -379,7 +380,9 @@
       },
       deleteApartment(apartment) {
         http.delete('apartment/'+apartment.id)
-        .then(data => console.log(data))
+        .then(() => {
+          this.$emit('globalMessage', 'Apartment deleted.')
+        })
         .catch(error => {
           console.log(error)
         })

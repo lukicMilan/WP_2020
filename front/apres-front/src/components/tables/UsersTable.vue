@@ -1,10 +1,10 @@
 <template>
     <div class="usersTable">
 
-        <div v-if="!isAdministrator()">
+        <div v-if="isGuest()">
             <accessDenied/>
         </div>
-
+        
         <span>
         <md-button class="md-raised md-primary" v-if="!filterActive" @click="activateFilter">
             Filter
@@ -121,6 +121,15 @@ export default {
             } else {
                 this.searched = searchOnTable(this.users, this.searchedWord);
             }
+        },
+        isGuest() {
+            if(this.loggedInUser === null) {
+                return false;
+            } 
+            if(this.loggedInUser.userType ==="GUEST") {
+                return true;
+            }
+            return false;
         },
          isAdministrator() {
             if(this.loggedInUser === null ) {

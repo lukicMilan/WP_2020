@@ -133,7 +133,7 @@
                         <div v-if = "this.isEdit">
                             <md-button class="md-dense md-raised md-primary" @click = "saveEdit()">Submit</md-button>
                         </div>
-                        <div v-else>
+                        <div v-if = "!isEdit">
                             <md-button type="submit" class="md-dense md-raised md-primary">Submit</md-button>
                         </div>
                 </md-card-actions>
@@ -160,7 +160,8 @@ export default {
     props: {
         loggedInUser: null,
         id: Number,
-        isEdit: Boolean
+        isEdit: Boolean,
+        selectedApartment: null
     },
     components: {
         accessDenied: AccessDenied
@@ -297,7 +298,7 @@ export default {
                         street: this.form.street,
                         zipCode: this.form.zipCode,
                         number: this.form.number,
-                        imageList: [],
+                        imageList: this.form.imageList,
                         price: this.form.price,
                         entryTime: this.form.entryTime,
                         leaveTime: this.form.leaveTime,
@@ -326,10 +327,12 @@ export default {
                 return false
             }
         },
-        uploadImages() {
-            
-        },
         saveEdit()  {
+            alert(JSON.stringify(this.form));
+            let username = this.loggedInUser.username;
+            if(this.isHost()) {
+                username = this.selectedApartment.hostUsername;
+            }
             http.put('apartment',
                     {
                         id: this.id,
@@ -342,16 +345,16 @@ export default {
                         street: this.form.street,
                         zipCode: this.form.zipCode,
                         number: this.form.number,
-                        imageList: [],
+                        imageList: this.form.imageList,
                         price: this.form.price,
                         entryTime: this.form.entryTime,
                         leaveTime: this.form.leaveTime,
                         amenities: this.selectedAmenities,
-                        active: true,
+                        active: this.selectedApartment.active,
                         rentDates: [],
                         freeDates: [],
                         comments: [],
-                        hostUsername: this.loggedInUser.username
+                        hostUsername: username
 
                     })
                     .then(data => { 
@@ -362,37 +365,25 @@ export default {
                     });
         }
     },
-    created() {  
-        console.log(this.id)
-        http.get('apartment/' + this.id)
-            .then(data => {
-                console.log(data.data)
-                        this.form.type = data.data.type;
-                        this.form.roomNumber = data.data.roomNumber;
-                        this.form.guestNumber = data.data.guestNumber;
-                        this.form.latitude = data.data.latitude;
-                        this.form.longitude = data.data.longitude;
-                        this.form.city = data.data.city;
-                        this.form.street = data.data.street;
-                        this.form.zipCode = data.data.zipCode;
-                        this.form.number = data.data.number;
-                        this.form.imageList = data.data.imageList;
-                        this.form.price = data.data.price;
-                        this.form.entryTime = data.data.entryTime;
-                        this.form.leaveTime = data.data.leaveTime;
-                        this.form.selectedAmenities = data.data.amenities;
-            })
-            .catch(error => {console.log(error)});
-        http.get('amenities')
-            .then(data => { 
-            this.allAmenities = data.data})
-            .catch(error => {
-                console.log(error) 
-            });
-        },
-    mounted() {
-        
-    }
+    mounted() {  
+        if(this.isEdit) {
+                this.form.type = this.selectedApartment.type;
+                this.form.roomNumber = this.selectedApartment.roomNumber;
+                this.form.guestNumber = this.selectedApartment.guestNumber;
+                this.form.latitude = this.selectedApartment.latitude;
+                this.form.longitude = this.selectedApartment.longitude;
+                this.form.city = this.selectedApartment.city;
+                this.form.street = this.selectedApartment.street;
+                this.form.zipCode = this.selectedApartment.zipCode;
+                this.form.number = this.selectedApartment.number;
+                this.form.imageList = this.selectedApartment.imageList;
+                this.form.price = this.selectedApartment.price;
+                this.form.entryTime = this.selectedApartment.entryTime;
+                this.form.leaveTime = this.selectedApartment.leaveTime;
+                this.form.selectedAmenities = this.selectedApartment.amenities;
+            
+        } 
+    },
 }
 </script>
 
