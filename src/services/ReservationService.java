@@ -121,7 +121,7 @@ public class ReservationService {
 		ArrayList<ReservationDTO> reservationDTOList = reservationDAO.getAllFromApartment(apartmentId);
 		
 		if(reservationDTOList.size() == 0) {
-			return Response.status(404).build();
+//			return Response.status(404).build();
 		}
 		
 		return Response.status(200).entity(reservationDTOList).build();

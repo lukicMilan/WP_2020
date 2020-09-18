@@ -194,6 +194,7 @@ export default {
                     .then((response) => { 
                       this.wrongUsername = false
                       this.$emit('globalMessage', 'User added.')
+                      this.$emit('userAdded')
                       console.log(response) })
                     .catch(() => {
                        this.$emit('globalMessage', 'User NOT added.')

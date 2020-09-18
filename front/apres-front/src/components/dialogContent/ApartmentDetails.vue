@@ -282,6 +282,7 @@ export default {
                 username: comment.username,
                 apartment: comment.apartment,
                 stars: comment.stars,
+                comment: comment.comment,
                 visible: false
             })
             .then(() => {

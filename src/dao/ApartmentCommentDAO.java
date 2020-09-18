@@ -23,11 +23,11 @@ public class ApartmentCommentDAO {
 	
 	public ApartmentCommentDAO(String contextPath) {
 		this.contextPath = contextPath;
-		ApartmentComment ac = new ApartmentComment("guest", 1, "Odlicna usluga.", 4, true);
+		ApartmentComment ac = new ApartmentComment("guest", 1, "Odlicna usluga.", 5, true);
 		ac.setId(this.comments.size()+1);
 		this.comments.put(ac.getId(), ac);
 		
-		ApartmentComment ac1 = new ApartmentComment("guest", 1, "Fujcina sram vas bilo.", 1, false);
+		ApartmentComment ac1 = new ApartmentComment("guest", 1, "Fujcina sram vas bilo.", 1, true);
 		ac1.setId(this.comments.size()+1);
 		this.comments.put(ac1.getId(), ac1);
 		
