@@ -83,6 +83,20 @@
                         <div class="md-layout md-gutter">
                             <div class="md-layout-item md-small-size-100">
                             <md-field>
+                                <label for="startRentDate">Start rent date</label>
+                                <md-datepicker name="startRentDate" id="startRentDate" v-model="form.startRentDate" />
+                            </md-field>
+                            </div>
+                            <div class="md-layout-item md-small-size-100">
+                            <md-field>
+                                <label for="endRentDate">End rent date</label>
+                                <md-datepicker name="endRentDate" id="endRentDate" v-model="form.endRentDate" />
+                                </md-field>
+                            </div>
+                        </div>
+                        <div class="md-layout md-gutter">
+                            <div class="md-layout-item md-small-size-100">
+                            <md-field>
                                 <label for="latitude">Latitude</label>
                                 <md-input type = "number" autocomplete =0  name="latitude" id="latitude" v-model="form.latitude" />
                             </md-field>
@@ -133,7 +147,7 @@
                         <div v-if = "this.isEdit">
                             <md-button class="md-dense md-raised md-primary" @click = "validateApartment()">Submit</md-button>
                         </div>
-                        <div v-else>
+                        <div v-if = "!isEdit">
                             <md-button type="submit" class="md-dense md-raised md-primary">Submit</md-button>
                         </div>
                 </md-card-actions>
@@ -160,7 +174,8 @@ export default {
     props: {
         loggedInUser: null,
         id: Number,
-        isEdit: Boolean
+        isEdit: Boolean,
+        selectedApartment: null
     },
     components: {
         accessDenied: AccessDenied
@@ -189,6 +204,8 @@ export default {
             amenities: [],
             loaded: Number,
             updatingImages: false,
+            startRentDate: Date,
+            endRentDate: Date
         },
         selectedAmenities: [],
         selectedImages: [],
@@ -288,7 +305,6 @@ export default {
         }
       },
       saveApartment: function() {
-        console.log(this.selectedAmenities)
         http.post('apartment',
                     {
                         type: this.form.type,
@@ -300,13 +316,13 @@ export default {
                         street: this.form.street,
                         zipCode: this.form.zipCode,
                         number: this.form.number,
-                        imageList: this.selectedImages,
+                        imageList: this.form.imageList,
                         price: this.form.price,
                         entryTime: this.form.entryTime,
                         leaveTime: this.form.leaveTime,
                         amenities: this.selectedAmenities,
                         active: true,
-                        rentDates: [],
+                        fancyRentDates: [this.form.startRentDate.getTime(), this.form.endRentDate.getTime()],
                         freeDates: [],
                         comments: [],
                         hostUsername: this.loggedInUser.username
@@ -331,10 +347,11 @@ export default {
                 return false
             }
         },
-        uploadImages() {
-            
-        },
         saveEdit()  {
+            let username = this.loggedInUser.username;
+            if(this.isHost()) {
+                username = this.selectedApartment.hostUsername;
+            }
             http.put('apartment',
                     {
                         id: this.id,
@@ -347,17 +364,16 @@ export default {
                         street: this.form.street,
                         zipCode: this.form.zipCode,
                         number: this.form.number,
-                        imageList: this.selectedImages,
+                        imageList: this.form.imageList,
                         price: this.form.price,
                         entryTime: this.form.entryTime,
                         leaveTime: this.form.leaveTime,
                         amenities: this.selectedAmenities,
-                        active: true,
-                        rentDates: this.rentDates,
-                        freeDates: this.freeDates,
+                        active: this.selectedApartment.active,
+                        fancyRentDates: [this.form.startRentDate.getTime(), this.form.endRentDate.getTime()],
+                        freeDates: [],
                         comments: this.comments,
-                        hostUsername: this.loggedInUser.username
-
+                        hostUsername: username
                     })
                     .then(this.$emit('globalMessage', 'Apartment edited successfully.'))
                     .catch(error => {
@@ -366,40 +382,26 @@ export default {
                     });
         }
     },
-    created() {  
-        console.log(this.id)
-        http.get('apartment/' + this.id)
-            .then(data => {
-                console.log(data.data)
-                        this.form.type = data.data.type;
-                        this.form.roomNumber = data.data.roomNumber;
-                        this.form.guestNumber = data.data.guestNumber;
-                        this.form.latitude = data.data.latitude;
-                        this.form.longitude = data.data.longitude;
-                        this.form.city = data.data.city;
-                        this.form.street = data.data.street;
-                        this.form.zipCode = data.data.zipCode;
-                        this.form.number = data.data.number;
-                        this.form.imageList = data.data.imageList;
-                        this.form.price = data.data.price;
-                        this.form.entryTime = data.data.entryTime;
-                        this.form.leaveTime = data.data.leaveTime;
-                        this.form.selectedAmenities = data.data.amenities;
-                        this.rentDates = data.data.rentDates;
-                        this.freeDates = data.data.freeDates;
-                        this.comments = data.data.comments;
-            })
-            .catch(error => {console.log(error)});
-        http.get('amenities')
-            .then(data => { 
-            this.allAmenities = data.data})
-            .catch(error => {
-                console.log(error) 
-            });
-        },
-    mounted() {
-        
-    }
+    mounted() {  
+        if(this.isEdit) {
+                this.form.type = this.selectedApartment.type;
+                this.form.roomNumber = this.selectedApartment.roomNumber;
+                this.form.guestNumber = this.selectedApartment.guestNumber;
+                this.form.latitude = this.selectedApartment.latitude;
+                this.form.longitude = this.selectedApartment.longitude;
+                this.form.city = this.selectedApartment.city;
+                this.form.street = this.selectedApartment.street;
+                this.form.zipCode = this.selectedApartment.zipCode;
+                this.form.number = this.selectedApartment.number;
+                this.form.imageList = this.selectedApartment.imageList;
+                this.form.price = this.selectedApartment.price;
+                this.form.entryTime = this.selectedApartment.entryTime;
+                this.form.leaveTime = this.selectedApartment.leaveTime;
+                this.form.selectedAmenities = this.selectedApartment.amenities;
+                this.form.startRentDate = new Date(this.selectedApartment.rentDates[0]);
+                this.form.endRentDate =  new Date(this.selectedApartment.rentDates[1]);
+        } 
+    },
 }
 </script>
 

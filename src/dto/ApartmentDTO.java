@@ -15,6 +15,7 @@ public class ApartmentDTO {
 	private int roomNumber;
 	private int guestNumber;
 	private List<String> rentDates;
+	private List<Date> fancyRentDates;
 	private List<String> freeDates;
 	private String hostUsername;
 	private List<ApartmentComment> comments;
@@ -111,7 +112,9 @@ public class ApartmentDTO {
 		ap.setType(ApartmentType.valueOf(apartmentDTO.type));
 		ap.setRoomNumber(apartmentDTO.roomNumber);
 		ap.setGuestNumber(apartmentDTO.guestNumber);
-		//rent dates i free dates????
+		if(apartmentDTO.getFancyRentDates() != null) {
+			ap.setRentDates(apartmentDTO.getFancyRentDates());
+		}
 		ap.setHostUsername(apartmentDTO.hostUsername);
 		ap.setComments(apartmentDTO.comments);
 		ap.setImageList(apartmentDTO.imageList);
@@ -260,6 +263,14 @@ public class ApartmentDTO {
 
 	public void setZipCode(int zipCode) {
 		this.zipCode = zipCode;
+	}
+
+	public List<Date> getFancyRentDates() {
+		return fancyRentDates;
+	}
+
+	public void setFancyRentDates(List<Date> fancyRentDates) {
+		this.fancyRentDates = fancyRentDates;
 	}
 	
 	

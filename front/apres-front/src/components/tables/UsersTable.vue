@@ -1,7 +1,7 @@
 <template>
     <div class="usersTable">
 
-        <div v-if="!isAdministrator()">
+        <div v-if="isGuest()">
             <accessDenied/>
         </div>
         <div v-else>
@@ -34,6 +34,7 @@
                     </md-table-row>
                 </md-table>
             </div>
+
         <div >
             <md-button class="md-dense md-raised md-primary" @click="addHost()" >Add host</md-button>
         </div>
@@ -122,6 +123,15 @@ export default {
             } else {
                 this.searched = searchOnTable(this.users, this.searchedWord);
             }
+        },
+        isGuest() {
+            if(this.loggedInUser === null) {
+                return false;
+            } 
+            if(this.loggedInUser.userType ==="GUEST") {
+                return true;
+            }
+            return false;
         },
          isAdministrator() {
             if(this.loggedInUser === null ) {

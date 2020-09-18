@@ -7,15 +7,17 @@
                     <div class="md-layout md-gutter">
                         <div class="md-layout-item md-small-size-100" v-if="dateFilterActivated" >
                             <md-field>
-                                <label for="avableDateFrom">Avable from:</label>
-                                <md-datepicker v-model="selectedDateFrom"></md-datepicker>
+                                <label for="availableDateFrom">Available from:</label>
+                                <md-datepicker v-model="apartment.arrivalDate"></md-datepicker>
                             </md-field>
                         </div>
                         <div class="md-layout-item md-small-size-100" v-if="dateFilterActivated" >
                             <md-field>
-                                <md-datepicker v-model="selectedDateTo"></md-datepicker>
+                                <label for="availableDateTo">To: </label>
+                                <md-datepicker v-model="apartment.checkoutDate"></md-datepicker>
                             </md-field>
                         </div>
+                        <br>
                         <div class="md-layout-item md-small-size-100" v-if="guestNumberFilterActivated">
                             <md-field >
                                 <label for="guestNumber">Guest Number</label>
@@ -70,7 +72,7 @@
                                 </md-select>
                             </md-field>
                         </div>
-                        <div class="md-layout-item" v-if="typeFilterActivated">
+                        <div class="md-layout-item" v-if="amenitiesFilterActivated">
                             <md-field>
                             <label for="apartmentAmenities">Apartment amenities</label>
                                 <md-select v-model="this.apartment.hasAmenities" @md-selected="amenitySelected" multiple md-dense>
@@ -145,6 +147,7 @@
                 <md-chip v-if="this.userTypeFilter" class="md-primary" md-deletable @md-delete="userTypeDeleted($event)">{{this.user.userType}} <md-tooltip md-direction="top">User Type</md-tooltip></md-chip>
                 <md-chip v-if="this.genderFilter" class="md-primary" md-deletable @md-delete="genderDeleted($event)">{{this.user.gender}} <md-tooltip md-direction="top">Gender</md-tooltip></md-chip>
                 <md-chip v-if="this.reservationsStatusFilter" class="md-primary" md-deletable @md-delete="reservationStatusDeleted($event)">{{this.reservation.reservationStatus}} <md-tooltip md-direction="top">Reservation Status</md-tooltip></md-chip>
+                 <md-chip v-if="this.dateFilter" class="md-primary" md-deletable @md-delete="dateFilterDeleted($event)">Selected dates <md-tooltip md-direction="top">Reservation Status</md-tooltip></md-chip>
 
                 <md-button  class="md-dense md-raised md-primary" @click="filter()" >Filter</md-button>
             </md-card>
@@ -188,6 +191,7 @@ export default {
         userTypeFilter: false,
         genderFilter: false,
         reservationsStatusFilter: false,
+        dateFilter: false,
 
         guestNumberFilterActivated: false,
         cityFilterActivated: false,
@@ -200,6 +204,8 @@ export default {
         genderFilterActivated: false,
         reservationsStatusFilterActivated: false,
         apartmentStatusFilterActivated: false,
+        dateFilterActivated: false,
+        amenitiesFilterActivated: false,
     }),
     props: {
         activeFilters: Array,
@@ -241,7 +247,7 @@ export default {
                 this.apartmentStatusFilterActivated = true;
             }
             if(this.activeFilters.includes('hasAmenity')) {
-                this.apartmentAmenitiesFilter = true;
+                this.amenitiesFilterActivated = true;
             }
             if(this.activeFilters.includes('calendar')) {
                 this.dateFilterActivated = true;
@@ -313,7 +319,17 @@ export default {
             this.reservation.reservationStatus = null;
             this.filter();
         },
+        dateFilterDeleted() {
+            this.apartment.arrivalDate = null;
+            this.apartment.checkoutDate = null;
+            this.filter();
+        },
         filter() { 
+            if(this.apartment.arrivalDate === null || this.apartment.checkoutDate === "null") {
+                this.dateFilter = false;
+            } else {
+                this.dateFilter = true;
+            }
             if(this.apartment.guestNumber === null || this.apartment.guestNumber === "") {
                 this.guestNumberFilter = false
             } else {
