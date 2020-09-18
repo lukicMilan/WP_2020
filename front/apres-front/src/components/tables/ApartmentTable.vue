@@ -247,6 +247,7 @@
         this.$emit('openGallery', data)
       },
       isEditFunction(item) {
+        alert(JSON.stringify(item));
         this.isEdit = true;
         this.selectedApartment = item;
         this.apartment = item;

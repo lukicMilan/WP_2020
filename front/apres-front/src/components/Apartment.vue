@@ -83,6 +83,20 @@
                         <div class="md-layout md-gutter">
                             <div class="md-layout-item md-small-size-100">
                             <md-field>
+                                <label for="startRentDate">Start rent date</label>
+                                <md-datepicker name="startRentDate" id="startRentDate" v-model="form.startRentDate" />
+                            </md-field>
+                            </div>
+                            <div class="md-layout-item md-small-size-100">
+                            <md-field>
+                                <label for="endRentDate">End rent date</label>
+                                <md-datepicker name="endRentDate" id="endRentDate" v-model="form.endRentDate" />
+                                </md-field>
+                            </div>
+                        </div>
+                        <div class="md-layout md-gutter">
+                            <div class="md-layout-item md-small-size-100">
+                            <md-field>
                                 <label for="latitude">Latitude</label>
                                 <md-input type = "number" autocomplete =0  name="latitude" id="latitude" v-model="form.latitude" />
                             </md-field>
@@ -190,6 +204,8 @@ export default {
             amenities: [],
             loaded: Number,
             updatingImages: false,
+            startRentDate: Date,
+            endRentDate: Date
         },
         selectedAmenities: [],
         selectedImages: [],
@@ -286,7 +302,6 @@ export default {
         }
       },
       saveApartment: function() {
-        console.log(this.selectedAmenities)
         http.post('apartment',
                     {
                         type: this.form.type,
@@ -304,7 +319,7 @@ export default {
                         leaveTime: this.form.leaveTime,
                         amenities: this.selectedAmenities,
                         active: true,
-                        rentDates: [],
+                        fancyRentDates: [this.form.startRentDate.getTime(), this.form.endRentDate.getTime()],
                         freeDates: [],
                         comments: [],
                         hostUsername: this.loggedInUser.username
@@ -328,7 +343,6 @@ export default {
             }
         },
         saveEdit()  {
-            alert(JSON.stringify(this.form));
             let username = this.loggedInUser.username;
             if(this.isHost()) {
                 username = this.selectedApartment.hostUsername;
@@ -351,7 +365,7 @@ export default {
                         leaveTime: this.form.leaveTime,
                         amenities: this.selectedAmenities,
                         active: this.selectedApartment.active,
-                        rentDates: [],
+                        fancyRentDates: [this.form.startRentDate.getTime(), this.form.endRentDate.getTime()],
                         freeDates: [],
                         comments: [],
                         hostUsername: username
@@ -381,7 +395,8 @@ export default {
                 this.form.entryTime = this.selectedApartment.entryTime;
                 this.form.leaveTime = this.selectedApartment.leaveTime;
                 this.form.selectedAmenities = this.selectedApartment.amenities;
-            
+                this.form.startRentDate = new Date(this.selectedApartment.rentDates[0]);
+                this.form.endRentDate =  new Date(this.selectedApartment.rentDates[1]);
         } 
     },
 }
